@@ -1,0 +1,15 @@
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\DapperFactory.deps.json
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\DapperFactory.dll
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\DapperFactory.pdb
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\DBHelper.dll
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\IDapperFactory.dll
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\DBHelper.pdb
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\IDapperFactory.pdb
+D:\学习\.Net Core\Blog\Blog\DapperFactory\obj\Debug\netcoreapp2.0\DapperFactory.csprojResolveAssemblyReference.cache
+D:\学习\.Net Core\Blog\Blog\DapperFactory\obj\Debug\netcoreapp2.0\DapperFactory.csproj.CoreCompileInputs.cache
+D:\学习\.Net Core\Blog\Blog\DapperFactory\obj\Debug\netcoreapp2.0\DapperFactory.AssemblyInfoInputs.cache
+D:\学习\.Net Core\Blog\Blog\DapperFactory\obj\Debug\netcoreapp2.0\DapperFactory.AssemblyInfo.cs
+D:\学习\.Net Core\Blog\Blog\DapperFactory\obj\Debug\netcoreapp2.0\DapperFactory.dll
+D:\学习\.Net Core\Blog\Blog\DapperFactory\obj\Debug\netcoreapp2.0\DapperFactory.pdb
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\Orm.dll
+D:\学习\.Net Core\Blog\Blog\DapperFactory\bin\Debug\netcoreapp2.0\Orm.pdb

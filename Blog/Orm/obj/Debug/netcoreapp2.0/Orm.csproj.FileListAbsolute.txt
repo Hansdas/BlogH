@@ -1,0 +1,11 @@
+D:\学习\.Net Core\Blog\Blog\Orm\bin\Debug\netcoreapp2.0\Orm.deps.json
+D:\学习\.Net Core\Blog\Blog\Orm\bin\Debug\netcoreapp2.0\Orm.dll
+D:\学习\.Net Core\Blog\Blog\Orm\obj\Debug\netcoreapp2.0\Orm.csproj.CoreCompileInputs.cache
+D:\学习\.Net Core\Blog\Blog\Orm\obj\Debug\netcoreapp2.0\Orm.AssemblyInfoInputs.cache
+D:\学习\.Net Core\Blog\Blog\Orm\obj\Debug\netcoreapp2.0\Orm.AssemblyInfo.cs
+D:\学习\.Net Core\Blog\Blog\Orm\bin\Debug\netcoreapp2.0\Orm.pdb
+D:\学习\.Net Core\Blog\Blog\Orm\bin\Debug\netcoreapp2.0\Microsoft.EntityFrameworkCore.dll
+D:\学习\.Net Core\Blog\Blog\Orm\bin\Debug\netcoreapp2.0\Microsoft.EntityFrameworkCore.xml
+D:\学习\.Net Core\Blog\Blog\Orm\obj\Debug\netcoreapp2.0\Orm.dll
+D:\学习\.Net Core\Blog\Blog\Orm\obj\Debug\netcoreapp2.0\Orm.pdb
+D:\学习\.Net Core\Blog\Blog\Orm\obj\Debug\netcoreapp2.0\Orm.csprojResolveAssemblyReference.cache
