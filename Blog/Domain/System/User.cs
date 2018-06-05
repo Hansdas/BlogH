@@ -34,6 +34,10 @@ namespace Domain.System
         /// 是否冻结
         /// </summary>
         public bool IsValid { get; set; }
+        /// <summary>
+        /// 头像地址
+        /// </summary>
+        public string PhotoUrl { get; set; }
     }
 
 }
