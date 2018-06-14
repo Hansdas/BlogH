@@ -24,4 +24,8 @@
     <ProjectReference Include="..\ResultStatu\ResultStatu.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\angular\Controllers\UploadFile\" />
+  </ItemGroup>
+
 </Project>
