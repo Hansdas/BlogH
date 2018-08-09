@@ -1,0 +1,27 @@
+{
+  "iisSettings": {
+    "windowsAuthentication": false,//启用window身份
+    "anonymousAuthentication": true,//其余匿名身份
+    "iisExpress": {
+      "applicationUrl": "http://localhost:9939/",//应用启动路径
+      "sslPort": 0//ssl端口
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",//运行环境
+      "launchBrowser": true,//是否在浏览器中启动
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Blog": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:9940/"
+    }
+  }
+}

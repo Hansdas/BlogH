@@ -1,0 +1,26 @@
+D:\学习\.Net Core\Blog\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.deps.json
+D:\学习\.Net Core\Blog\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.dll
+D:\学习\.Net Core\Blog\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.pdb
+D:\学习\.Net Core\Blog\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.csprojResolveAssemblyReference.cache
+D:\学习\.Net Core\Blog\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.csproj.CoreCompileInputs.cache
+D:\学习\.Net Core\Blog\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.AssemblyInfoInputs.cache
+D:\学习\.Net Core\Blog\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.AssemblyInfo.cs
+D:\学习\.Net Core\Blog\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.dll
+D:\学习\.Net Core\Blog\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.pdb
+D:\学习\.Net Core\Blog\Image\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.deps.json
+D:\学习\.Net Core\Blog\Image\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.dll
+D:\学习\.Net Core\Blog\Image\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.pdb
+D:\学习\.Net Core\Blog\Image\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.csproj.CoreCompileInputs.cache
+D:\学习\.Net Core\Blog\Image\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.AssemblyInfoInputs.cache
+D:\学习\.Net Core\Blog\Image\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.AssemblyInfo.cs
+D:\学习\.Net Core\Blog\Image\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.dll
+D:\学习\.Net Core\Blog\Image\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.pdb
+D:\学习\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.deps.json
+D:\学习\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.dll
+D:\学习\Blog\FileHelper\bin\Debug\netstandard2.0\FileHelper.pdb
+D:\学习\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.csproj.CoreCompileInputs.cache
+D:\学习\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.AssemblyInfoInputs.cache
+D:\学习\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.AssemblyInfo.cs
+D:\学习\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.dll
+D:\学习\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.pdb
+D:\学习\Blog\FileHelper\obj\Debug\netstandard2.0\FileHelper.csprojAssemblyReference.cache

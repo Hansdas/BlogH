@@ -1,0 +1,110 @@
+2018-07-11 14:44:48.3693 | Info | Request starting HTTP/1.1 GET http://localhost:9939/   
+2018-07-11 14:44:48.9782 | Info | Executing action method Blog.Controllers.LoginController.Index (Blog) with arguments ((null)) - ModelState is Valid 
+2018-07-11 14:44:54.5261 | Info | Executing ViewResult, running view at path /Views/Login/Index.cshtml. 
+2018-07-11 14:44:54.6726 | Info | Executed action Blog.Controllers.LoginController.Index (Blog) in 5735.677ms 
+2018-07-11 14:44:54.6992 | Info | Request finished in 6361.565ms 200 text/html; charset=utf-8 
+2018-07-11 14:44:54.7233 | Info | Request starting HTTP/1.1 GET http://localhost:9939/css/warn.css   
+2018-07-11 14:44:54.7553 | Info | Request starting HTTP/1.1 GET http://localhost:9939/demo/metronic.bootstrap/media/js/jquery-1.10.2.min.js   
+2018-07-11 14:44:54.7713 | Info | The file /css/warn.css was not modified 
+2018-07-11 14:44:54.7921 | Info | The file /demo/metronic.bootstrap/media/js/jquery-1.10.2.min.js was not modified 
+2018-07-11 14:44:54.7946 | Info | Request finished in 43.6754ms 304 application/javascript 
+2018-07-11 14:44:54.7946 | Info | Request finished in 72.8366ms 304 text/css 
+2018-07-11 14:44:54.8799 | Info | Request starting HTTP/1.1 GET http://localhost:9939/angular/Controllers/LoginIndex/LoginController.js   
+2018-07-11 14:44:54.8799 | Info | Request starting HTTP/1.1 GET http://localhost:9939/angular/Service/LoginService.js   
+2018-07-11 14:44:54.8799 | Info | The file /angular/Controllers/LoginIndex/LoginController.js was not modified 
+2018-07-11 14:44:54.8799 | Info | The file /angular/Service/LoginService.js was not modified 
+2018-07-11 14:44:54.8900 | Info | Request finished in 11.2631ms 304 application/javascript 
+2018-07-11 14:44:54.8900 | Info | Request finished in 8.0769ms 304 application/javascript 
+2018-07-11 14:44:54.9827 | Info | Request starting HTTP/1.1 GET http://localhost:9939/demo/metronic.bootstrap/media/image/css   
+2018-07-11 14:44:54.9827 | Info | Request finished in 6.9564ms 404  
+2018-07-11 14:44:55.0090 | Info | Request starting HTTP/1.1 GET http://localhost:9939/angular/Controllers/LoginIndex/RegisterController.js   
+2018-07-11 14:44:55.0090 | Info | The file /angular/Controllers/LoginIndex/RegisterController.js was not modified 
+2018-07-11 14:44:55.0146 | Info | Request finished in 5.7643ms 304 application/javascript 
+2018-07-11 15:22:17.6918 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Login/Login?password=admin&username=admin   
+2018-07-11 15:22:17.7923 | Info | Executing action method Blog.Controllers.LoginController.Login (Blog) with arguments (admin, admin) - ModelState is Valid 
+2018-07-11 15:22:18.6482 | Info | Executing JsonResult, writing value ResultStatu.ReturnResult. 
+2018-07-11 15:22:18.7087 | Info | Executed action Blog.Controllers.LoginController.Login (Blog) in 952.865ms 
+2018-07-11 15:22:18.7087 | Info | Request finished in 1019.3726ms 200 application/json; charset=utf-8 
+2018-07-11 15:22:18.7263 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/Index   
+2018-07-11 15:22:18.7263 | Info | Executing action method Blog.Controllers.Home.HomeController.Index (Blog) with arguments ((null)) - ModelState is Valid 
+2018-07-11 15:22:19.3962 | Info | Executing ViewResult, running view at path /Views/Home/Index.cshtml. 
+2018-07-11 15:22:19.5453 | Info | Request starting HTTP/1.1 GET http://localhost:9939/demo/metronic.bootstrap/media/css/glyphicon.css   
+2018-07-11 15:22:19.5453 | Info | Executed action Blog.Controllers.Home.HomeController.Index (Blog) in 823.2542ms 
+2018-07-11 15:22:19.5607 | Info | The file /demo/metronic.bootstrap/media/css/glyphicon.css was not modified 
+2018-07-11 15:22:19.5453 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/avatar3.jpg   
+2018-07-11 15:22:19.5607 | Info | Request finished in 12.5655ms 404  
+2018-07-11 15:22:19.5453 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/avatar2.jpg   
+2018-07-11 15:22:19.6031 | Info | Request finished in 45.1624ms 404  
+2018-07-11 15:22:19.6031 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/avatar.png   
+2018-07-11 15:22:19.5607 | Info | Request finished in 846.931ms 200 text/html; charset=utf-8 
+2018-07-11 15:22:19.6215 | Info | Request finished in 17.6024ms 404  
+2018-07-11 15:22:19.5453 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/menu-toggler.png   
+2018-07-11 15:22:19.6443 | Info | Request finished in 90.7105ms 404  
+2018-07-11 15:22:19.5607 | Info | Request finished in 19.4262ms 304 text/css 
+2018-07-11 15:22:19.6443 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/avatar1.jpg   
+2018-07-11 15:22:19.6443 | Info | Request finished in 1.4349ms 404  
+2018-07-11 15:22:19.6245 | Info | Request starting HTTP/1.1 GET http://localhost:9939/images/banner1.svg   
+2018-07-11 15:22:19.6650 | Info | The file /images/banner1.svg was not modified 
+2018-07-11 15:22:19.6793 | Info | Request finished in 52.5419ms 304 image/svg+xml 
+2018-07-11 15:22:19.6793 | Info | Request starting HTTP/1.1 GET http://localhost:9939/demo/metronic.bootstrap/media/image/css   
+2018-07-11 15:22:19.7024 | Info | Request finished in 28.999ms 404  
+2018-07-11 15:22:19.7024 | Info | Request starting HTTP/1.1 GET http://localhost:9939/demo/metronic.bootstrap/media/js/app.js   
+2018-07-11 15:22:19.7162 | Info | The file /demo/metronic.bootstrap/media/js/app.js was not modified 
+2018-07-11 15:22:19.7162 | Info | Request finished in 15.7726ms 304 application/javascript 
+2018-07-11 15:22:27.1462 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Login/Login?password=admin&username=admin   
+2018-07-11 15:22:27.1462 | Info | Executing action method Blog.Controllers.LoginController.Login (Blog) with arguments (admin, admin) - ModelState is Valid 
+2018-07-11 15:22:27.1561 | Info | Executing JsonResult, writing value ResultStatu.ReturnResult. 
+2018-07-11 15:22:27.1561 | Info | Executed action Blog.Controllers.LoginController.Login (Blog) in 9.1659ms 
+2018-07-11 15:22:27.1561 | Info | Request finished in 13.0289ms 200 application/json; charset=utf-8 
+2018-07-11 15:22:27.1561 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/Index   
+2018-07-11 15:22:27.1773 | Info | Executing action method Blog.Controllers.Home.HomeController.Index (Blog) with arguments ((null)) - ModelState is Valid 
+2018-07-11 15:22:27.1773 | Info | Executing ViewResult, running view at path /Views/Home/Index.cshtml. 
+2018-07-11 15:22:27.1773 | Info | Executed action Blog.Controllers.Home.HomeController.Index (Blog) in 11.3786ms 
+2018-07-11 15:22:27.1909 | Info | Request finished in 22.5401ms 200 text/html; charset=utf-8 
+2018-07-11 15:22:27.2260 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/avatar2.jpg   
+2018-07-11 15:22:27.2260 | Info | Request finished in 3.5728ms 404  
+2018-07-11 15:22:27.2260 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/menu-toggler.png   
+2018-07-11 15:22:27.2470 | Info | Request finished in 20.5332ms 404  
+2018-07-11 15:22:27.2399 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/avatar3.jpg   
+2018-07-11 15:22:27.2470 | Info | Request finished in 19.5407ms 404  
+2018-07-11 15:22:27.2694 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/avatar1.jpg   
+2018-07-11 15:22:27.2786 | Info | Request finished in 9.3291ms 404  
+2018-07-11 15:22:27.3172 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Home/media/image/avatar.png   
+2018-07-11 15:22:27.3172 | Info | Request finished in 4.0274ms 404  
+2018-07-11 15:22:27.3272 | Info | Request starting HTTP/1.1 GET http://localhost:9939/demo/metronic.bootstrap/media/image/css   
+2018-07-11 15:22:27.3272 | Info | Request finished in 3.7133ms 404  
+2018-07-11 15:22:38.3143 | Info | Request starting HTTP/1.1 GET http://localhost:9939/Views/Home/Index.cshtml?id=1   
+2018-07-11 15:22:38.3143 | Info | Request finished in 2.0806ms 404  
+2018-07-11 15:22:53.6125 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/UserInfo   
+2018-07-11 15:22:53.6125 | Info | Executing action method Blog.Controllers.User.UserController.UserInfo (Blog) with arguments ((null)) - ModelState is Valid 
+2018-07-11 15:22:54.2745 | Info | Executing ViewResult, running view at path /Views/User/UserInfo.cshtml. 
+2018-07-11 15:22:54.3983 | Info | Executed action Blog.Controllers.User.UserController.UserInfo (Blog) in 780.8967ms 
+2018-07-11 15:22:54.4101 | Info | Request finished in 796.1766ms 200 text/html; charset=utf-8 
+2018-07-11 15:22:54.4545 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/media/image/avatar2.jpg   
+2018-07-11 15:22:54.4545 | Info | Request finished in 1.8693ms 404  
+2018-07-11 15:22:54.4545 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/media/image/avatar1.jpg   
+2018-07-11 15:22:54.4720 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/media/image/profile-img.png   
+2018-07-11 15:22:54.4855 | Info | Request finished in 13.7525ms 404  
+2018-07-11 15:22:54.4545 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/media/image/avatar3.jpg   
+2018-07-11 15:22:54.4996 | Info | Request finished in 39.8919ms 404  
+2018-07-11 15:22:54.4720 | Info | Request finished in 12.9699ms 404  
+2018-07-11 15:22:54.5164 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/media/image/logo_conquer.jpg   
+2018-07-11 15:22:54.5164 | Info | Request finished in 5.4235ms 404  
+2018-07-11 15:22:54.4996 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/media/image/logo_azteca.jpg   
+2018-07-11 15:22:54.5164 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/media/image/logo_metronic.jpg   
+2018-07-11 15:22:54.5318 | Info | Request finished in 16.6429ms 404  
+2018-07-11 15:22:54.4855 | Info | Request starting HTTP/1.1 GET http://localhost:9939/User/media/image/avatar1_small.jpg   
+2018-07-11 15:22:54.5490 | Info | Request finished in 56.7722ms 404  
+2018-07-11 15:22:54.5318 | Info | Request finished in 32.2784ms 404  
+2018-07-11 15:22:54.5318 | Info | Request starting HTTP/1.1 GET http://localhost:9939/demo/metronic.bootstrap/media/image/css   
+2018-07-11 15:22:54.5630 | Info | Request finished in 26.2858ms 404  
+2018-07-11 15:22:54.6568 | Info | Request starting HTTP/1.1 GET http://localhost:9939/angular/Controllers/UserInfo/directives.js   
+2018-07-11 15:22:54.6568 | Info | Request finished in 4.0766ms 404  
+2018-07-11 15:22:54.6784 | Info | Request starting HTTP/1.1 GET http://localhost:9939/js/SaveUpload.js   
+2018-07-11 15:22:54.6784 | Info | The file /js/SaveUpload.js was not modified 
+2018-07-11 15:22:54.6932 | Info | Request finished in 15.5063ms 304 application/javascript 
+2018-07-11 15:22:54.8872 | Info | Request starting HTTP/1.1 GET http://localhost:9939/angular/Controllers/UserInfo/directives.js   
+2018-07-11 15:22:54.8922 | Info | Request finished in 4.7432ms 404  
+2018-07-11 15:22:54.9574 | Info | Request starting HTTP/1.1 GET http://localhost:9939/favicon.ico   
+2018-07-11 15:22:54.9574 | Info | Sending file. Request path: '/favicon.ico'. Physical path: 'D:\学习\Blog\Blog\wwwroot\favicon.ico' 
+2018-07-11 15:22:54.9913 | Info | Request finished in 33.9166ms 200 image/x-icon 
