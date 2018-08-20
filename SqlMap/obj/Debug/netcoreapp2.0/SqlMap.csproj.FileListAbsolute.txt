@@ -15,4 +15,3 @@ D:\学习\Blog\SqlMap\obj\Debug\netcoreapp2.0\SqlMap.AssemblyInfoInputs.cache
 D:\学习\Blog\SqlMap\obj\Debug\netcoreapp2.0\SqlMap.AssemblyInfo.cs
 D:\学习\Blog\SqlMap\obj\Debug\netcoreapp2.0\SqlMap.dll
 D:\学习\Blog\SqlMap\obj\Debug\netcoreapp2.0\SqlMap.pdb
-D:\学习\Blog\SqlMap\obj\Debug\netcoreapp2.0\SqlMap.csprojAssemblyReference.cache

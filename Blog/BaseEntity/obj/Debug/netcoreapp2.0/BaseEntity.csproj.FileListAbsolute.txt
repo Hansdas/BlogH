@@ -1,9 +1,0 @@
-D:\学习\.Net Core\Blog\Blog\BaseEntity\bin\Debug\netcoreapp2.0\BaseEntity.deps.json
-D:\学习\.Net Core\Blog\Blog\BaseEntity\bin\Debug\netcoreapp2.0\BaseEntity.dll
-D:\学习\.Net Core\Blog\Blog\BaseEntity\bin\Debug\netcoreapp2.0\BaseEntity.pdb
-D:\学习\.Net Core\Blog\Blog\BaseEntity\obj\Debug\netcoreapp2.0\BaseEntity.csproj.CoreCompileInputs.cache
-D:\学习\.Net Core\Blog\Blog\BaseEntity\obj\Debug\netcoreapp2.0\BaseEntity.AssemblyInfoInputs.cache
-D:\学习\.Net Core\Blog\Blog\BaseEntity\obj\Debug\netcoreapp2.0\BaseEntity.AssemblyInfo.cs
-D:\学习\.Net Core\Blog\Blog\BaseEntity\obj\Debug\netcoreapp2.0\BaseEntity.dll
-D:\学习\.Net Core\Blog\Blog\BaseEntity\obj\Debug\netcoreapp2.0\BaseEntity.pdb
-D:\学习\.Net Core\Blog\Blog\BaseEntity\obj\Debug\netcoreapp2.0\BaseEntity.csprojResolveAssemblyReference.cache
