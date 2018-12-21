@@ -23,7 +23,10 @@
           "Microsoft.Extensions.Primitives": "2.0.0"
         },
         "runtime": {
-          "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.dll": {}
+          "lib/netstandard2.0/Microsoft.AspNetCore.Http.Features.dll": {
+            "assemblyVersion": "2.0.2.0",
+            "fileVersion": "2.0.2.18051"
+          }
         }
       },
       "Microsoft.Extensions.Primitives/2.0.0": {
@@ -31,12 +34,18 @@
           "System.Runtime.CompilerServices.Unsafe": "4.4.0"
         },
         "runtime": {
-          "lib/netstandard2.0/Microsoft.Extensions.Primitives.dll": {}
+          "lib/netstandard2.0/Microsoft.Extensions.Primitives.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.17205"
+          }
         }
       },
       "System.Runtime.CompilerServices.Unsafe/4.4.0": {
         "runtime": {
-          "lib/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {}
+          "lib/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
+            "assemblyVersion": "4.0.3.0",
+            "fileVersion": "0.0.0.0"
+          }
         }
       },
       "BaseEntity/1.0.0": {
@@ -46,7 +55,10 @@
       },
       "CacheFactory/1.0.0": {
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "2.0.0"
+          "Microsoft.Extensions.Primitives": "2.0.0",
+          "Microsoft.Extensions.Caching.Memory": "2.0.0.0",
+          "Microsoft.Extensions.Caching.Abstractions": "2.0.0.0",
+          "Microsoft.Extensions.Options": "2.0.0.0"
         },
         "runtime": {
           "CacheFactory.dll": {}
@@ -54,7 +66,8 @@
       },
       "CommonHelper/1.0.0": {
         "dependencies": {
-          "Microsoft.AspNetCore.Http.Features": "2.0.2"
+          "Microsoft.AspNetCore.Http.Features": "2.0.2",
+          "Newtonsoft.Json": "10.0.0.0"
         },
         "runtime": {
           "CommonHelper.dll": {}
@@ -62,12 +75,50 @@
       },
       "Microsoft.AspNetCore.Authentication.Cookies/2.0.1.0": {
         "runtime": {
-          "Microsoft.AspNetCore.Authentication.Cookies.dll": {}
+          "Microsoft.AspNetCore.Authentication.Cookies.dll": {
+            "assemblyVersion": "2.0.1.0",
+            "fileVersion": "2.0.1.17303"
+          }
         }
       },
       "Microsoft.AspNetCore.Http.Abstractions/2.0.1.0": {
         "runtime": {
-          "Microsoft.AspNetCore.Http.Abstractions.dll": {}
+          "Microsoft.AspNetCore.Http.Abstractions.dll": {
+            "assemblyVersion": "2.0.1.0",
+            "fileVersion": "2.0.1.17303"
+          }
+        }
+      },
+      "Microsoft.Extensions.Caching.Memory.Reference/2.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Caching.Memory.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.17205"
+          }
+        }
+      },
+      "Microsoft.Extensions.Caching.Abstractions.Reference/2.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Caching.Abstractions.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.17205"
+          }
+        }
+      },
+      "Microsoft.Extensions.Options.Reference/2.0.0.0": {
+        "runtime": {
+          "Microsoft.Extensions.Options.dll": {
+            "assemblyVersion": "2.0.0.0",
+            "fileVersion": "2.0.0.17205"
+          }
+        }
+      },
+      "Newtonsoft.Json.Reference/10.0.0.0": {
+        "runtime": {
+          "Newtonsoft.Json.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1.20720"
+          }
         }
       }
     }
@@ -120,6 +171,26 @@
       "sha512": ""
     },
     "Microsoft.AspNetCore.Http.Abstractions/2.0.1.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Caching.Memory.Reference/2.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Caching.Abstractions.Reference/2.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Microsoft.Extensions.Options.Reference/2.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Newtonsoft.Json.Reference/10.0.0.0": {
       "type": "reference",
       "serviceable": false,
       "sha512": ""

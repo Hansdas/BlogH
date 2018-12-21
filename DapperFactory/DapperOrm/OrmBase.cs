@@ -18,7 +18,7 @@ namespace DapperFactory
    public abstract class OrmBase
     {
         private static readonly object obj = new object();
-        protected static MySqlConnection mySqlConnection = ConnectionProvider.Provider.connection;
+        protected static MySqlConnection mySqlConnection = ConnectionProvider.connection;
         /// <summary>
         /// sql语句
         /// </summary>
@@ -36,7 +36,7 @@ namespace DapperFactory
         /// <returns></returns>
         public void LambdaAnalysis<T>(Expression<Func<T, bool>> expression)
         {
-            Tuple<string, DynamicParameters> tuple = null;
+            Tuple<string, DynamicParameters> tuple =null;
             string className = expression.Body.GetType().Name;
             string sql = string.Empty;
             switch (className)

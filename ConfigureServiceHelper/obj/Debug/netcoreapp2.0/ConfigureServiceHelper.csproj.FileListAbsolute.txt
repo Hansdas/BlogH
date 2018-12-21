@@ -106,3 +106,5 @@ D:\学习\Blog\ConfigureServiceHelper\obj\Debug\netcoreapp2.0\ConfigureServiceHe
 D:\学习\Blog\ConfigureServiceHelper\obj\Debug\netcoreapp2.0\ConfigureServiceHelper.pdb
 D:\学习\Blog\ConfigureServiceHelper\obj\Debug\netcoreapp2.0\ConfigureServiceHelper.csprojAssemblyReference.cache
 D:\学习\Blog\ConfigureServiceHelper\obj\Debug\netcoreapp2.0\ConfigureServiceHelper.csproj.CopyComplete
+D:\学习\Blog\ConfigureServiceHelper\bin\Debug\netcoreapp2.0\AOP.dll
+D:\学习\Blog\ConfigureServiceHelper\bin\Debug\netcoreapp2.0\AOP.pdb

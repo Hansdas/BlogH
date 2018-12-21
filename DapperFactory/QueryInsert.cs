@@ -3,6 +3,7 @@ using IDapperFactory;
 using MySql.Data.MySqlClient;
 using Dapper;
 using System.Threading.Tasks;
+using AOP;
 
 namespace DapperFactory
 {
@@ -12,7 +13,6 @@ namespace DapperFactory
         {
             return base.Insert(t).Result;
         }
-
         public async Task<T> InsertSingle<T>(string sql,T t)
         {
             T entity = await mySqlConnection.ExecuteScalarAsync<T>(sql, t);

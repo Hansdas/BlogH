@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 using NLog;
+using System;
 
 namespace Blog
 {
@@ -23,13 +24,14 @@ namespace Blog
         public void OnException(ExceptionContext context)
         {
             LogEventInfo lei = new LogEventInfo();
-            lei.Properties["Account"] = "1";
-            lei.Properties["Date"] = "1";
-            lei.Properties["ActionType"] = "1";
-            lei.Properties["Level"] = "1";
-            lei.Properties["Message"] = "1";
-            lei.Properties["Exception"] = "1";
-            _logger.Log(lei);
+            //lei.Properties["Account"] = "1";
+            //lei.Properties["Date"] = DateTime.Now;
+            //lei.Properties["Logger"] = "1";
+            //lei.Properties["Level"] = "1";
+            //lei.Properties["Message"] = "1";
+            //lei.Properties["Exception"] = "1";
+            //lei.Level = NLog.LogLevel.Info; 
+            //_logger.Log(lei);
         }
     }
 }

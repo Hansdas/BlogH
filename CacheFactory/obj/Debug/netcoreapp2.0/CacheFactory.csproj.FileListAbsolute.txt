@@ -48,5 +48,5 @@ D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.AssemblyInfoInp
 D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.AssemblyInfo.cs
 D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.dll
 D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.pdb
-D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.csprojAssemblyReference.cache
 D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.csproj.CopyComplete
+D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.csprojAssemblyReference.cache

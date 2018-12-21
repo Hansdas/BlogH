@@ -69,3 +69,5 @@ D:\学习\Blog\TestLambdaClips\bin\Debug\netcoreapp2.0\DapperFactory.pdb
 D:\学习\Blog\TestLambdaClips\bin\Debug\netcoreapp2.0\DBHelper.pdb
 D:\学习\Blog\TestLambdaClips\obj\Debug\netcoreapp2.0\TestLambdaClips.csprojAssemblyReference.cache
 D:\学习\Blog\TestLambdaClips\obj\Debug\netcoreapp2.0\TestLambdaClips.csproj.CopyComplete
+D:\学习\Blog\TestLambdaClips\bin\Debug\netcoreapp2.0\AOP.dll
+D:\学习\Blog\TestLambdaClips\bin\Debug\netcoreapp2.0\AOP.pdb

@@ -56,3 +56,5 @@ D:\学习\Blog\DapperFactory\bin\Debug\netcoreapp2.0\Microsoft.Extensions.Option
 D:\学习\Blog\DapperFactory\bin\Debug\netcoreapp2.0\Microsoft.AspNetCore.Http.Abstractions.xml
 D:\学习\Blog\DapperFactory\obj\Debug\netcoreapp2.0\DapperFactory.csprojAssemblyReference.cache
 D:\学习\Blog\DapperFactory\obj\Debug\netcoreapp2.0\DapperFactory.csproj.CopyComplete
+D:\学习\Blog\DapperFactory\bin\Debug\netcoreapp2.0\AOP.dll
+D:\学习\Blog\DapperFactory\bin\Debug\netcoreapp2.0\AOP.pdb

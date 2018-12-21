@@ -1,0 +1,83 @@
+﻿.header{
+    margin:10px;
+}
+.head-block {
+    border: 1px solid #d8dfea;
+    height:65px;
+    border-radius:7px
+}
+.nav-menu {
+    box-shadow: -3px 1px 3px rgba(0,0,0,0.25);
+    -moz-box-shadow: -3px 1px 3px rgba(0,0,0,.25);
+    -o-box-shadow: -3px 1px 3px rgba(0,0,0,.25);
+    -webkit-box-shadow: -3px 1px 3px rgba(0,0,0,.25);
+    background: -moz-linear-gradient(center top,#2b6695,#0e4773) repeat scroll 0 0 transparent;
+    background-color: #2b6695;
+    margin: 8px 0 0 0;
+    padding: 0;
+    height: 30px;
+    line-height: 30px;
+}
+    .nav-menu a {
+        font-size: 14px;
+        padding-left: 24px;
+    }
+        .nav-menu a:link, .nav-menu a:visited, .nav-menu a:active, .nav-menu a:hover {
+            color: #eee;
+            text-decoration: none;
+        }
+.main {
+    padding: 0;
+    margin: 10px 320px 0 180px;
+}
+.sid-nav {
+    position: absolute;
+    left: 10px;
+    top: 142px;
+    width: 160px;
+    margin-top: 0;
+    padding-top: 0;
+    background-color: #eef;
+}
+.sid-title{
+    position:relative
+}
+.title-title {
+    background-color: #eff5fc;
+    height: 30px;
+    line-height: 30px;
+    border-top: 2px solid #83abc6;
+    border-left: 4px solid #83abc6;
+    border-right: 1px solid #83abc6;
+    border-top-left-radius: 7px
+}
+.cate-title {
+    border-bottom: 1px solid #83abc6;
+    font-size: 14px;
+    color: #333;
+    font-weight: bold;
+    padding-left: 32px;
+    padding-top: 0;
+    line-height: 30px;
+}
+.cate-item {
+    border-left: 4px solid #146eb4;
+    border-right: 1px solid #83abc6;
+}
+    .cate-item li {
+        color: #00003a;
+        font-size: 12px;
+        height: 27px;
+        line-height: 27px;
+        border-bottom: 1px dotted #83abc6;
+        padding-left: 8px;
+        border-right-width: 0;
+        background: url(//common.cnblogs.com/images/icon_blue_arrow.gif) no-repeat 136px center;
+    }
+    li{
+        list-style:none
+    }
+
+
+
+

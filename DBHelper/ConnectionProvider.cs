@@ -8,10 +8,8 @@ namespace DBHelper
 {
   public  class ConnectionProvider
     {
-        private static readonly object _lock = new object();
-        private static ConnectionProvider _Provider = null;
-        private static string _MySqlConnection;
-        public MySqlConnection connection;
+        private string _MySqlConnection;
+        public static MySqlConnection connection;
         /// <summary>
         /// Startup类传入连接字符串
         /// </summary>
@@ -19,25 +17,11 @@ namespace DBHelper
         public ConnectionProvider(string conn)
         {
             _MySqlConnection = conn;
-        }
-        ConnectionProvider()
-        {
             connection = GetConnection();
         }
-        public static ConnectionProvider Provider
+        private ConnectionProvider()
         {
-            get
-            {
-                if (_Provider == null)
-                {
-                    lock (_lock)
-                    {
-                        if (_Provider == null)
-                            _Provider = new ConnectionProvider();
-                    }
-                }
-                return _Provider;
-            }
+
         }
         private MySqlConnection GetConnection()
         {

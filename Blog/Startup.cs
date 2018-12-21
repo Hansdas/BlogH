@@ -32,8 +32,8 @@ namespace Blog
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,ILoggerFactory loggerFactory)
         {
+            env.ConfigureNLog("nlog.config");
             loggerFactory.AddNLog();
-            env.ConfigureNLog("Nlog.config");
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
@@ -53,7 +53,7 @@ namespace Blog
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Login}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }
