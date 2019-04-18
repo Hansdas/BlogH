@@ -5,10 +5,10 @@ D:\学习\Blog\CommonHelper\bin\Debug\netcoreapp2.0\Microsoft.AspNetCore.Server.
 D:\学习\Blog\CommonHelper\bin\Debug\netcoreapp2.0\Newtonsoft.Json.dll
 D:\学习\Blog\CommonHelper\bin\Debug\netcoreapp2.0\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.xml
 D:\学习\Blog\CommonHelper\bin\Debug\netcoreapp2.0\Newtonsoft.Json.xml
-D:\学习\Blog\CommonHelper\obj\Debug\netcoreapp2.0\CommonHelper.csprojAssemblyReference.cache
 D:\学习\Blog\CommonHelper\obj\Debug\netcoreapp2.0\CommonHelper.csproj.CoreCompileInputs.cache
 D:\学习\Blog\CommonHelper\obj\Debug\netcoreapp2.0\CommonHelper.AssemblyInfoInputs.cache
 D:\学习\Blog\CommonHelper\obj\Debug\netcoreapp2.0\CommonHelper.AssemblyInfo.cs
 D:\学习\Blog\CommonHelper\obj\Debug\netcoreapp2.0\CommonHelper.csproj.CopyComplete
 D:\学习\Blog\CommonHelper\obj\Debug\netcoreapp2.0\CommonHelper.dll
 D:\学习\Blog\CommonHelper\obj\Debug\netcoreapp2.0\CommonHelper.pdb
+D:\学习\Blog\CommonHelper\obj\Debug\netcoreapp2.0\CommonHelper.csprojAssemblyReference.cache

@@ -1,22 +1,18 @@
 ﻿using CommonHelper;
 using Dapper;
-using DBHelper;
-using Domain;
 using MySql.Data.MySqlClient;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace DapperFactory
 {
-   public abstract class OrmBase
+    public abstract class OrmBase
     {
         private static readonly object obj = new object();
         protected static MySqlConnection mySqlConnection = ConnectionProvider.connection;

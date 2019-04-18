@@ -1,7 +1,5 @@
 ﻿using IDapperFactory;
 using Dapper;
-using MySql.Data.MySqlClient;
-using DBHelper;
 using System;
 using System.Linq.Expressions;
 using System.Linq;

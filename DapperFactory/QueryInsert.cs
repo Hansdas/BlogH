@@ -1,9 +1,6 @@
-﻿using DBHelper;
-using IDapperFactory;
-using MySql.Data.MySqlClient;
+﻿using IDapperFactory;
 using Dapper;
 using System.Threading.Tasks;
-using AOP;
 
 namespace DapperFactory
 {
