@@ -28,7 +28,6 @@ namespace DBHelper
             //_MySqlConnection = ConfigurationProvider.configuration.GetConnectionString("MySqlConnection");
             using (MySqlConnection conn = new MySqlConnection(_MySqlConnection))
             {
-                conn.Open();
                 return conn;
             }
         }

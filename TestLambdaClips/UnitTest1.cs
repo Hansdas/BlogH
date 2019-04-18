@@ -1,11 +1,7 @@
-using Dapper;
 using DapperFactory;
 using Domain;
 using IDapperFactory;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SqlMap;
-using System;
-using System.Linq.Expressions;
 
 namespace TestLambdaClips
 {

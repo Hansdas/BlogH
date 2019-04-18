@@ -16,7 +16,6 @@
     <ProjectReference Include="..\DapperFactory\DapperFactory.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\IDapperFactory\IDapperFactory.csproj" />
-    <ProjectReference Include="..\SqlMap\SqlMap.csproj" />
   </ItemGroup>
 
 </Project>

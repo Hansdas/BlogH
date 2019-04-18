@@ -1,18 +1,6 @@
-﻿using BaseEntity;
-using CacheFactory.Provider;
-using CommonHelper;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Net;
-using System.Security.Claims;
-using System.Text;
-
-namespace Domain
+﻿namespace Domain
 {
-  public  class User: DomainBase
+    public  class User: DomainBase
     {
         /// <summary>
         /// 账号

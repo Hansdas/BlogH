@@ -21,8 +21,9 @@ namespace SqlMap
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
+        /// <param name="fieldNameBegin">字段名前缀</param>
         /// <returns></returns>
-        public static string InsertSqlExpress<T>(this T t)
+        public static string InsertSqlExpress<T>(this T t,string fieldNameBegin)
         {
             Tuple<string, PropertyInfo[]> tuple = GetPropertyInfos<T>(t);
             StringBuilder sb = new StringBuilder();
@@ -36,8 +37,7 @@ namespace SqlMap
                 propertyInfo = tuple.Item2[i];
                 if (propertyInfo.Name == "Id")
                     continue;
-                tableNames.Add(propertyInfo.Name);
-                values.Add("@" + propertyInfo.Name);
+                tableNames.Add(fieldNameBegin+"_"+propertyInfo.Name);
             }
             sb.Append("(");
             sb.Append(string.Join(",", tableNames));

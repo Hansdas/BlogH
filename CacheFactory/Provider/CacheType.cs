@@ -19,6 +19,6 @@ namespace CacheFactory.Provider
         /// <summary>
         /// ServiceStack redis缓存
         /// </summary>
-        ServiceStackREDIS = 2,
+        Redis = 2,
     }
 }

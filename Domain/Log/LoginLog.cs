@@ -1,11 +1,8 @@
-﻿using BaseEntity;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Domain.Log
 {
-   public class LoginLog: DomainBase
+    public class LoginLog: DomainBase
     {
         /// <summary>
         /// 用户Id

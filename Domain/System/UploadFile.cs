@@ -1,11 +1,6 @@
-﻿using BaseEntity;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.System
+﻿namespace Domain.System
 {
-   public class UploadFile:DomainBase
+    public class UploadFile:DomainBase
     {
         /// <summary>
         /// 账号

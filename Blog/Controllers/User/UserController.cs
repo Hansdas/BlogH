@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using Domain;
 using FileHelper;
 using Microsoft.AspNetCore.Mvc;
-using ResultStatu;
 
 namespace Blog.Controllers.User
 {
@@ -31,16 +31,16 @@ namespace Blog.Controllers.User
                 string path = DirectoryHelper.CreateDirectory() + fileName;
                 using (Stream stream=System.IO.File.Create(path))
                 {
-                    photoImage.CopyTo(stream);                    
+                    photoImage.CopyToAsync(stream);                    
                     stream.Flush();
                 }
                 Domain.User user = new Domain.User();
             }
             catch (Exception e)
             {
-                return Json(new ReturnResult() { IsSuccess = false, Message = e.Message });
+                return Json(new ReturnResult() {Code="500", Message = e.Message });
             }
-            return Json(new ReturnResult() { IsSuccess = true, Message = "更新成功" });
+            return Json(new ReturnResult() { Code="200", Message = "更新成功" });
         }
     }
 }

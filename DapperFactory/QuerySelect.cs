@@ -11,9 +11,9 @@ namespace DapperFactory
     public class QuerySelect: OrmBase,IQuerySelect
     {
         /// <summary>
-        /// Dapper查询
+        /// 查询单条信息
         /// </summary>
-        /// <param name="sql">sql（不要使用全表查询）</param>
+        /// <param name="sql">sql</param>
         /// <param name="paras"></param>
         /// <returns></returns>
         public  T SelectSingle<T>(string sql,object paras=null)
@@ -22,6 +22,12 @@ namespace DapperFactory
             t = mySqlConnection.QueryFirstOrDefault<T>(sql, paras);
             return t;
         }
+        /// <summary>
+        /// 查询单条信息
+        /// </summary>
+        /// <param name="sql">sql</param>
+        /// <param name="paras"></param>
+        /// <returns></returns>
         public T SelectSingle<T>(Expression<Func<T, bool>> expression)
         {
             T t=base.SelectEntity<T>(expression);

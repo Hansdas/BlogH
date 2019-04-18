@@ -1,4 +1,4 @@
-﻿using ConfigureServiceHelper;
+﻿using CommonHelper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -7,8 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using NLog.Web;
-using NLog.Web.AspNetCore;
-using System.IO;
+using System;
 
 namespace Blog
 {
@@ -26,7 +25,14 @@ namespace Blog
         {
             services.AddMvc(s=>s.Filters.Add<GlobaExceptionFilter>());
             services.ConfigureServices(Configuration);
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+            services.AddSession(s=> {
+                s.IdleTimeout = TimeSpan.FromDays(30);
+            });
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(s=> {
+                s.LoginPath = "/Login/Login";
+                s.ExpireTimeSpan = TimeSpan.FromDays(30);
+                s.SlidingExpiration = false;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,11 +49,10 @@ namespace Blog
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
             app.UseStaticFiles();
             app.UseAuthentication();
-
-
+            app.UseSession();
+            app.UseStaticHttpContext();
 
             app.UseMvc(routes =>
             {

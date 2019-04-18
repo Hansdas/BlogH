@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using CommonHelper;
+using Dapper;
 using DBHelper;
 using Domain;
 using MySql.Data.MySqlClient;
@@ -47,7 +48,7 @@ namespace DapperFactory
                     tuple = Where(binaryExpression.Left, binaryExpression.Right, binaryExpression.NodeType);
                     break;
             }
-            Sql = string.Format("{0} where {1} and DeleteTime is null", GetSqlLeft(typeof(T)), tuple.Item1);
+            Sql = string.Format("{0} where {1} ", GetSqlLeft(typeof(T)), tuple.Item1);
             DynamicParameters = tuple.Item2;
         }
         /// <summary>
@@ -188,7 +189,52 @@ namespace DapperFactory
 
             return string.Format("select {0} from {1} ", string.Join(',', fieldList), tableName);
         }
-
+        /// <summary>
+        /// 返回类型名字和属性数组
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        private static Tuple<string, PropertyInfo[]> GetPropertyInfos<T>()
+        {
+            var type = typeof(T);
+            string tableName = type.Name;
+            PropertyInfo[] propertys = type.GetProperties();
+            Tuple<string, PropertyInfo[]> tuple = new Tuple<string, PropertyInfo[]>(tableName, propertys);
+            return tuple;
+        }
+        /// <summary>
+        /// 返回insert语句
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
+        /// <param name="fieldNameBegin">字段名前缀</param>
+        /// <returns></returns>
+        private static string InsertSqlExpress<T>(string fieldNameBegin)
+        {
+            Tuple<string, PropertyInfo[]> tuple = GetPropertyInfos<T>();
+            StringBuilder sb = new StringBuilder();
+            sb.Append("insert into ");
+            sb.Append(typeof(T).GetTableName());
+            sb.Append(tuple.Item1);
+            PropertyInfo propertyInfo;
+            List<string> tableNames = new List<string>();
+            List<string> values = new List<string>();
+            for (int i = 0; i < tuple.Item2.Length; i++)
+            {
+                propertyInfo = tuple.Item2[i];
+                if (propertyInfo.Name == "Id")
+                    continue;
+                tableNames.Add(fieldNameBegin + "_" + propertyInfo.Name);
+            }
+            sb.Append("(");
+            sb.Append(string.Join(",", tableNames));
+            sb.Append(") ");
+            sb.Append("values (");
+            sb.Append(string.Join(",", values));
+            sb.Append(")");
+            string sql = sb.ToString();
+            return sql;
+        }
         /// <summary>
         /// 查询单个实体
         /// </summary>

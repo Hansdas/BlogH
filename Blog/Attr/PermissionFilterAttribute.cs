@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+/// <summary>
+/// 使用Lamda生成sql时在实体类使用该特性
+/// </summary>
 namespace Blog.Attr
 {
     [AttributeUsage(AttributeTargets.Method|AttributeTargets.Class,AllowMultiple =false)]

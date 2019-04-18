@@ -16,13 +16,17 @@ namespace ServiceSvc.Service
             _querySelect = querySelect;
             _queryInsert = queryInsert;
         }
+        /// <summary>
+        /// 查询单个用户
+        /// </summary>
+        /// <param name="Account"></param>
+        /// <param name="Password"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public User GetSingleUser(string Account, string Password, out string message)
         {
-            User user = new User();
-            lock (_lock)
-            {                
-                user = _querySelect.SelectSingle<User>(s=>s.Account==Account&&s.Password==Password);
-            }
+            User user = new User();             
+            user = _querySelect.SelectSingle<User>(s=>s.Account==Account&&s.Password==Password);
             if (user == null)
             {
                 message = "账号不存在";
@@ -37,7 +41,7 @@ namespace ServiceSvc.Service
                 }
                 if (user.Password != Password)
                 {
-                    message = "密码错误";
+                    message = "用户名或密码错误";
                     return user;
                 }
             }

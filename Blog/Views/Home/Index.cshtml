@@ -1,469 +1,118 @@
-﻿
-@{
-    Layout = null;
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <link href="~/css/aggsite.css" rel="stylesheet" />
-    <link href="~/css/base.css" rel="stylesheet" />
-</head>
-<body>
-    <div id="wrapper" ng-app="myHome">
-        <div id="hd_info">
-            <div id="cnts">
-                <div id="site_nav_top">代码改变世界</div>
-                <div id="login_area"><span id="span_userinfo">[<a href="#" onclick="login();return false">登录</a>·<a href="#" onclick="register();return false">注册</a>]</span></div>
-                <div class="clear"></div>
-            </div>
+<div class="banner">
+    <img src="~/img/banner.jpg" style="height:400px;width:100%" />
+</div>
+<div class="content">
+    <div class="cont w1000">
+        <div class="title">
+            <span class="layui-breadcrumb" lay-separator="|">
+                <a href="javascript:;" class="active">设计文章</a>
+                <a href="javascript:;">前端文章</a>
+                <a href="javascript:;">旅游杂记</a>
+            </span>
         </div>
-        <div id="header">
-            <p class="h_r_3"></p><p class="h_r_2"></p><p class="h_r_1"></p>
-            <div id="header_block">
-                <div id="logo">
-                    <h1>
-                        <a href="https://www.cnblogs.com/" title="开发者的网上家园"><img src="/images/logo_small.gif" alt="博客园Logo" width="142" height="55"></a>
-                    </h1>
-                </div>
-
-                <div class="clear"></div>
-            </div>
-            <p class="h_r_1"></p><p class="h_r_2"></p><p class="h_r_3"></p>
-        </div>
-        <div id="nav_menu"><a href="https://home.cnblogs.com/">园子</a><a href="https://news.cnblogs.com">新闻</a><a href="https://q.cnblogs.com/">博问</a><a href="https://ing.cnblogs.com/">闪存</a><a href="https://group.cnblogs.com/">小组</a><a href="https://wz.cnblogs.com/">收藏</a><a href="https://job.cnblogs.com/">招聘</a><a href="https://edu.cnblogs.com/">班级</a><a href="http://zzk.cnblogs.com/">找找看</a></div>
-        <div id="main">
-            <div class="post_nav_block_wrapper">
-                <ul class="post_nav_block">
-                    <li><a href="/" class="current_nav">首页</a></li>
-                    <li><a href="/pick/" title="编辑精选博文">精华</a></li>
-                    <li><a href="/candidate/" title="候选区的博文">候选</a></li>
-                    <li><a href="/news/" title="新闻频道最新新闻">新闻</a></li>
-                    <li><a href="/following" title="我关注博客的最新博文">关注</a></li>
-                    <li><a href="/aggsite/mycommented" title="我评论过的博文">我评</a></li>
-                    <li><a href="/aggsite/mydigged" title="我推荐过的博文">我赞</a></li>
-                </ul>
-                <div class="clear"></div>
-            </div>
-            <div class="rss_link" id="rss_block">
-                <span id="posts_refresh_tips"></span><a id="posts_refresh" href="#" class="refresh" title="刷新博文列表" onclick="aggSite.loadCategoryPostList();return false">刷新</a>                <a href="http://feed.cnblogs.com/blog/sitehome/rss"><img src="//common.cnblogs.com/images/icon_rss.gif" alt="点击订阅" style="position:relative;top:2px;" title="订阅博客园文章"></a>
-            </div>
-            <div id="headline_block" class="headline"><ul><li class="editor_pick"><a href="https://www.cnblogs.com/DragonStart/p/10136246.html" id="editor_pick_lnk" target="_blank">【编辑推荐】[纯C#实现]基于BP神经网络的中文手写识别算法<span id="editor_pick_count"> (14/1507)</span></a> <a href="/aggsite/headline" title="查看更多编辑推荐" class="right_more">»</a></li><li><a href="https://www.cnblogs.com/codelove/p/10147506.html" target="_blank" title="阅读948, 评论9, 推荐28">[最多推荐]开源库Magicodes.Storage正式发布(9/948)</a> <a href="/aggsite/topdigged24h" title="查看24小时推荐排行" class="right_more">»</a></li><li><a href="https://www.cnblogs.com/yilezhu/p/10146311.html" target="_blank" title="阅读811, 评论8, 推荐8">[最多评论].NET Core实战项目之CMS 第十二章 开发篇-Dapper封装CURD及仓储代码生成器实现(8/811)</a> <a href="/aggsite/topcommented24h" title="查看24小时评论排行" class="right_more">»</a></li><li><a href="https://news.cnblogs.com/n/615395/" target="_blank" title="阅读1285, 评论5, 推荐9">[新闻头条]ofo不需要拯救：速度滑落始料未及 或只能靠破产重组(5/1285)</a> <a href="https://news.cnblogs.com/" title="查看更多新闻" class="right_more">»</a></li><li><a href="https://news.cnblogs.com/n/615358/" target="_blank" title="阅读1639, 评论4, 推荐5">[推荐新闻]年终策划｜“逆风”之中 他们等着翻盘(4/1639)</a> <a href="https://news.cnblogs.com/n/recommend" title="查看更多推荐新闻" class="right_more">»</a></li></ul></div>
-
-
-
-
-            <div id="pager_top" style="display:none"></div>
-            <div id="post_list_tips" class="hide"></div>
-
-            <div id="post_list" ng-controller="myRead">
-
-                <div class="post_item" ng-repeat="item in Books">
-                    <div class="digg">
-                        <div class="diggit" onclick="DiggPost('dasusu',10151331,244416,1)">
-                            <span class="diggnum" id="digg_count_10151331">{{item.GoodCount}}</span>
+        <div class="list-item">
+            <div class="item">
+                <div class="layui-fluid">
+                    <div class="layui-row">
+                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                            <div class="img"><img src="../res/img/sy_img1.jpg" alt=""></div>
                         </div>
-                        <div class="clear"></div>
-                        <div id="digg_tip_10151331" class="digg_tip"></div>
-                    </div>
-                    <div class="post_item_body">
-                        <h3><a class="titlelnk" href="https://www.cnblogs.com/dasusu/p/10151331.html" target="_blank">{{item.ReadTitle}}</a></h3>
-                        <p class="post_item_summary">
-                            <a href="https://www.cnblogs.com/dasusu/" target="_blank"><img width="48" height="48" class="pfs" src="//pic.cnblogs.com/face/810210/20150915211453.png" alt=""></a>
-                            {{item.ReadContent}}
-                        </p>
-                        <div class="post_item_foot">
-                            <a href="https://www.cnblogs.com/dasusu/" class="lightblue">{{item.Author}}</a>
-                            发布于 {{item.SubmitDate}}
-                            <span class="article_comment">
-                                <a href="https://www.cnblogs.com/dasusu/p/10151331.html#commentform" title="" class="gray">
-                                    评论({{item.Comment}})
-                                </a>
-                            </span><span class="article_view"><a href="https://www.cnblogs.com/dasusu/p/10151331.html" class="gray">阅读({{item.ReadCount}})</a></span>
+                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
+                            <div class="item-cont">
+                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
+                                <h5>设计文章</h5>
+                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
+                                <a href="details.html" class="go-icon"></a>
+                            </div>
                         </div>
                     </div>
-                    <div class="clear"></div>
                 </div>
             </div>
-            <script>editorPickStat(); aggSite.user.getUserInfo();</script>
-            <script type="text/javascript">
-                var aggSiteModel = { "CategoryType": "SiteHome", "ParentCategoryId": 0, "CategoryId": 808, "PageIndex": 1, "TotalPostCount": 4000, "ItemListActionName": "PostList" };
-            </script>
-            <div id="pager_bottom">
-                <div id="paging_block"><div class="pager"><a href="/" class="p_1 current" onclick="aggSite.loadCategoryPostList(1,20);buildPaging(1);return false;">1</a><a href="/sitehome/p/2" class="p_2 middle" onclick="aggSite.loadCategoryPostList(2,20);buildPaging(2);return false;">2</a><a href="/sitehome/p/3" class="p_3 middle" onclick="aggSite.loadCategoryPostList(3,20);buildPaging(3);return false;">3</a><a href="/sitehome/p/4" class="p_4 middle" onclick="aggSite.loadCategoryPostList(4,20);buildPaging(4);return false;">4</a><a href="/sitehome/p/5" class="p_5 middle" onclick="aggSite.loadCategoryPostList(5,20);buildPaging(5);return false;">5</a><a href="/sitehome/p/6" class="p_6 middle" onclick="aggSite.loadCategoryPostList(6,20);buildPaging(6);return false;">6</a><a href="/sitehome/p/7" class="p_7 middle" onclick="aggSite.loadCategoryPostList(7,20);buildPaging(7);return false;">7</a><a href="/sitehome/p/8" class="p_8 middle" onclick="aggSite.loadCategoryPostList(8,20);buildPaging(8);return false;">8</a><a href="/sitehome/p/9" class="p_9 middle" onclick="aggSite.loadCategoryPostList(9,20);buildPaging(9);return false;">9</a><a href="/sitehome/p/10" class="p_10 middle" onclick="aggSite.loadCategoryPostList(10,20);buildPaging(10);return false;">10</a><a href="/sitehome/p/11" class="p_11 middle" onclick="aggSite.loadCategoryPostList(11,20);buildPaging(11);return false;">11</a><span class="ellipsis">···</span><a href="/sitehome/p/200" class="p_200 last" onclick="aggSite.loadCategoryPostList(200,20);buildPaging(200);return false;">200</a><a href="/sitehome/p/2" onclick="aggSite.loadCategoryPostList(2,20);buildPaging(2);return false;">Next &gt;</a></div></div>
-                <script type="text/javascript">var pagingBuider = { "OnlyLinkText": false, "TotalCount": 4000, "PageIndex": 1, "PageSize": 20, "ShowPageCount": 5, "SkipCount": 0, "UrlFormat": "/sitehome/p/{0}", "OnlickJsFunc": "aggSite.loadCategoryPostList()", "FirstPageLink": "/", "AjaxUrl": "/mvc/ToolkitPaging/load.aspx", "AjaxCallbak": null, "TopPagerId": "pager_top", "IsRenderScript": true }; function buildPaging(pageIndex) { pagingBuider.PageIndex = pageIndex; $.ajax({ url: pagingBuider.AjaxUrl, data: JSON.stringify(pagingBuider), type: 'post', dataType: 'text', contentType: 'application/json; charset=utf-8', success: function (data) { $('#paging_block').html(data); var pagerTop = $('#pager_top'); if (pageIndex > 1) { $(pagerTop).html(data).show(); } else { $(pagerTop).hide(); } } }); }</script>
+            <div class="item">
+                <div class="layui-fluid">
+                    <div class="layui-row">
+                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                            <div class="img"><img src="../res/img/sy_img2.jpg" alt=""></div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
+                            <div class="item-cont">
+                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
+                                <h5>设计文章</h5>
+                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
+                                <a href="details.html" class="go-icon"></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div id="side_nav">
-
-                <div id="cate_title_block">
-                    <div id="cate_title_title"><div class="cate_title">网站分类</div></div>
-                    <ul id="cate_item">
-                        <li id="cate_item_108698" onmouseover="cateShow(108698)" onmouseout="cateHidden(108698)" class="">
-                            <a href="/cate/108698/">.NET技术(9)</a>
-                        </li>
-                        <li id="cate_item_2" onmouseover="cateShow(2)" onmouseout="cateHidden(2)" class="">
-                            <a href="/cate/2/">编程语言(33)</a>
-                        </li>
-                        <li id="cate_item_108701" onmouseover="cateShow(108701)" onmouseout="cateHidden(108701)" class="">
-                            <a href="/cate/108701/">软件设计(8)</a>
-                        </li>
-                        <li id="cate_item_108703" onmouseover="cateShow(108703)" onmouseout="cateHidden(108703)" class="">
-                            <a href="/cate/108703/">Web前端(30)</a>
-                        </li>
-                        <li id="cate_item_108704" onmouseover="cateShow(108704)" onmouseout="cateHidden(108704)" class="">
-                            <a href="/cate/108704/">企业信息化(2)</a>
-                        </li>
-                        <li id="cate_item_108705" onmouseover="cateShow(108705)" onmouseout="cateHidden(108705)" class="">
-                            <a href="/cate/108705/">手机开发(5)</a>
-                        </li>
-                        <li id="cate_item_108709" onmouseover="cateShow(108709)" onmouseout="cateHidden(108709)" class="">
-                            <a href="/cate/108709/">软件工程(1)</a>
-                        </li>
-                        <li id="cate_item_108712" onmouseover="cateShow(108712)" onmouseout="cateHidden(108712)" class="">
-                            <a href="/cate/108712/">数据库技术(14)</a>
-                        </li>
-                        <li id="cate_item_108724" onmouseover="cateShow(108724)" onmouseout="cateHidden(108724)" class="">
-                            <a href="/cate/108724/">操作系统(9)</a>
-                        </li>
-                        <li id="cate_item_4" onmouseover="cateShow(4)" onmouseout="cateHidden(4)" class="">
-                            <a href="/cate/4/">其他分类(14)</a>
-                        </li>
-                        <li id="cate_item_0" onmouseover="cateShow(0)" onmouseout="cateHidden(0)" class="">
-                            <a href="/cate/all/">所有随笔(2988)</a>
-                        </li>
-                        <li id="cate_item_-1" onmouseover="cateShow(-1)" onmouseout="cateHidden(-1)" class="">
-                            <a href="/comment/">所有评论(578)</a>
-                        </li>
-                    </ul>
-                    <div class="cate_bottom"></div>
-                    <div id="cate_sub_block"><div id="cate_content_block_108698" onmouseover="cateShow(108698)" onmouseout="cateHidden(108698)" class="cate_content_block_wrapper" style="top: 30px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/beginner/">.NET新手区(1)</a></li><li><a href="/cate/aspnet/">ASP.NET(1)</a></li><li><a href="/cate/csharp/">C#(3)</a></li><li><a href="/cate/dotnetcore/">.NET Core(2)</a></li><li><a href="/cate/winform/">WinForm(0)</a></li><li><a href="/cate/silverlight/">Silverlight(0)</a></li><li><a href="/cate/wcf/">WCF(0)</a></li><li><a href="/cate/clr/">CLR(0)</a></li><li><a href="/cate/wpf/">WPF(1)</a></li><li><a href="/cate/xna/">XNA(0)</a></li><li><a href="/cate/vs2010/">Visual Studio(0)</a></li><li><a href="/cate/mvc/">ASP.NET MVC(1)</a></li><li><a href="/cate/control/">控件开发(0)</a></li><li><a href="/cate/ef/">Entity Framework(0)</a></li><li><a href="/cate/nhibernate/">NHibernate(0)</a></li><li><a href="/cate/winrt_metro/">WinRT/Metro(0)</a></li><li><a href="/cate/uwp/">UWP(0)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_2" onmouseover="cateShow(2)" onmouseout="cateHidden(2)" class="cate_content_block_wrapper" style="top: 58px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/java/">Java(15)</a></li><li><a href="/cate/cpp/">C++(1)</a></li><li><a href="/cate/php/">PHP(2)</a></li><li><a href="/cate/delphi/">Delphi(0)</a></li><li><a href="/cate/python/">Python(11)</a></li><li><a href="/cate/ruby/">Ruby(0)</a></li><li><a href="/cate/c/">C语言(1)</a></li><li><a href="/cate/erlang/">Erlang(0)</a></li><li><a href="/cate/go/">Go(1)</a></li><li><a href="/cate/swift/">Swift(0)</a></li><li><a href="/cate/scala/">Scala(0)</a></li><li><a href="/cate/r/">R语言(0)</a></li><li><a href="/cate/verilog/">Verilog(0)</a></li><li><a href="/cate/dart/">Dart(0)</a></li><li><a href="/cate/otherlang/">其它语言(2)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_108701" onmouseover="cateShow(108701)" onmouseout="cateHidden(108701)" class="cate_content_block_wrapper" style="top: 86px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/design/">架构设计(2)</a></li><li><a href="/cate/108702/">面向对象(1)</a></li><li><a href="/cate/dp/">设计模式(5)</a></li><li><a href="/cate/ddd/">领域驱动设计(0)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_108703" onmouseover="cateShow(108703)" onmouseout="cateHidden(108703)" class="cate_content_block_wrapper" style="top: 114px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/web/">Html/Css(5)</a></li><li><a href="/cate/javascript/">JavaScript(16)</a></li><li><a href="/cate/jquery/">jQuery(4)</a></li><li><a href="/cate/html5/">HTML5(5)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_108704" onmouseover="cateShow(108704)" onmouseout="cateHidden(108704)" class="cate_content_block_wrapper" style="top: 142px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/bpm/">BPM(0)</a></li><li><a href="/cate/sharepoint/">SharePoint(0)</a></li><li><a href="/cate/gis/">GIS技术(1)</a></li><li><a href="/cate/sap/">SAP(0)</a></li><li><a href="/cate/OracleERP/">Oracle ERP(1)</a></li><li><a href="/cate/dynamics/">Dynamics(0)</a></li><li><a href="/cate/infosec/">信息安全(0)</a></li><li><a href="/cate/3/">企业信息化其他(0)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_108705" onmouseover="cateShow(108705)" onmouseout="cateHidden(108705)" class="cate_content_block_wrapper" style="top: 170px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/android/">Android开发(0)</a></li><li><a href="/cate/ios/">iOS开发(5)</a></li><li><a href="/cate/wp/">Windows Phone(0)</a></li><li><a href="/cate/wm/">Windows Mobile(0)</a></li><li><a href="/cate/mobile/">其他手机开发(0)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_108709" onmouseover="cateShow(108709)" onmouseout="cateHidden(108709)" class="cate_content_block_wrapper" style="top: 198px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/agile/">敏捷开发(1)</a></li><li><a href="/cate/pm/">项目与团队管理(0)</a></li><li><a href="/cate/Engineering/">软件工程其他(0)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_108712" onmouseover="cateShow(108712)" onmouseout="cateHidden(108712)" class="cate_content_block_wrapper" style="top: 226px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/sqlserver/">SQL Server(3)</a></li><li><a href="/cate/oracle/">Oracle(2)</a></li><li><a href="/cate/mysql/">MySQL(1)</a></li><li><a href="/cate/nosql/">NoSQL(3)</a></li><li><a href="/cate/bigdata/">大数据(4)</a></li><li><a href="/cate/database/">其它数据库(1)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_108724" onmouseover="cateShow(108724)" onmouseout="cateHidden(108724)" class="cate_content_block_wrapper" style="top: 254px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/win7/">Windows(0)</a></li><li><a href="/cate/winserver/">Windows Server(0)</a></li><li><a href="/cate/linux/">Linux(9)</a></li><li><a href="/cate/osx/">OS X(0)</a></li><li><a href="/cate/eos/">嵌入式(0)</a></li></ul></div><div class="cate_content_bottom"></div></div><div id="cate_content_block_4" onmouseover="cateShow(4)" onmouseout="cateHidden(4)" class="cate_content_block_wrapper" style="top: 282px; display: none;"><div class="cate_content_top"></div><div class="cate_content_block"><ul><li><a href="/cate/life/">非技术区(3)</a></li><li><a href="/cate/testing/">软件测试(4)</a></li><li><a href="/cate/software/">代码与软件发布(0)</a></li><li><a href="/cate/cg/">计算机图形学(0)</a></li><li><a href="/cate/gamedev/">游戏开发(0)</a></li><li><a href="/cate/codelife/">程序人生(1)</a></li><li><a href="/cate/job/">求职面试(0)</a></li><li><a href="/cate/book/">读书区(0)</a></li><li><a href="/cate/quoted/">转载区(0)</a></li><li><a href="/cate/wince/">Windows CE(0)</a></li><li><a href="/cate/translate/">翻译区(0)</a></li><li><a href="/cate/opensource/">开源研究(0)</a></li><li><a href="/cate/flex/">Flex(0)</a></li><li><a href="/cate/cloud/">云计算(0)</a></li><li><a href="/cate/algorithm/">算法与数据结构(1)</a></li><li><a href="/cate/ai/">人工智能(2)</a></li><li><a href="/cate/blockchain/">区块链(1)</a></li><li><a href="/cate/networksecurity/">网络安全(1)</a></li><li><a href="/cate/misc/">其他技术区(1)</a></li></ul></div><div class="cate_content_bottom"></div></div></div>
-                    <script type="text/javascript">var cateIdList = '108698,2,108701,108703,108704,108705,108709,108712,108724,4'; aggSite.loadSubCategories();</script>
-                </div>
-                <div class="l_s"></div>
-                <p class="r_l_3"></p><p class="r_l_2"></p><p class="r_l_1"></p>
-                <div class="w_l">
-                    <h4>链接</h4>
-                    <ul>
-                        <li><a href="https://group.cnblogs.com/forum/public/" target="_blank">反馈或建议</a></li>
-                        <li><a href="//www.cnblogs.com/cmt/" target="_blank">官方博客</a></li>
-                        <li><a href="/skins.aspx" target="_blank">博客模板</a></li>
-                        <li><a href="http://www.blogjava.net/">Java博客</a></li>
-                        <li><a href="http://www.cppblog.com/">C++博客</a></li>
-                        <li><a href="//www.cnblogs.com/cmt/archive/2009/09/26/1574616.html">手机版</a></li>
-                    </ul>
-                </div>
-                <p class="r_l_1"></p><p class="r_l_2"></p><p class="r_l_3"></p>
-                <div class="l_s"></div>
-                <div id="user_stats">
-                    <p class="r_l_3"></p><p class="r_l_2"></p><p class="r_l_1"></p>
-                    <div class="w_l">
-                        <h4>最新推荐博客</h4>
-                        <div>
-                            <ul>
-
-                                <li><a href="//www.cnblogs.com/smark/" target="_blank">smark</a></li>
-                                <li><a href="//www.cnblogs.com/sheng-jie/" target="_blank">『圣杰』</a></li>
-                                <li><a href="//www.cnblogs.com/sherrywasp/" target="_blank">sherrywasp</a></li>
-                                <li><a href="//www.cnblogs.com/hafiz/" target="_blank">阿豪聊干货</a></li>
-                                <li><a href="//www.cnblogs.com/inday/" target="_blank">James.Ying</a></li>
-                                <li class="blogger_more"><a href="//www.cnblogs.com/expert/" target="_blank">» 更多推荐博客</a></li>
-                            </ul>
+            <div class="item">
+                <div class="layui-fluid">
+                    <div class="layui-row">
+                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                            <div class="img"><img src="../res/img/sy_img3.jpg" alt=""></div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
+                            <div class="item-cont">
+                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
+                                <h5>设计文章</h5>
+                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
+                                <a href="details.html" class="go-icon"></a>
+                            </div>
                         </div>
                     </div>
-                    <p class="r_l_1"></p><p class="r_l_2"></p><p class="r_l_3"></p>
-                    <div class="l_s"></div>
-                    <p class="r_l_3"></p><p class="r_l_2"></p><p class="r_l_1"></p>
-                    <div class="w_l">
-                        <h4>推荐博客排行</h4>
-                        <div id="blogger_list">
-                            <ul>
-
-                                <li>1. <a href="//www.cnblogs.com/artech/" target="_blank">Artech</a></li>
-                                <li>2. <a href="//www.cnblogs.com/cyq1162/" target="_blank">路过秋天</a></li>
-                                <li>3. <a href="//www.cnblogs.com/TankXiao/" target="_blank">小坦克</a></li>
-                                <li>4. <a href="//www.cnblogs.com/asxinyu/" target="_blank">数据之巅</a></li>
-                                <li>5. <a href="//www.cnblogs.com/shanyou/" target="_blank">张善友</a></li>
-                                <li>6. <a href="//www.cnblogs.com/powertoolsteam/" target="_blank">葡萄城技术团队</a></li>
-                                <li>7. <a href="//www.cnblogs.com/sanshi/" target="_blank">三生石上(FineUI控件)</a></li>
-                                <li>8. <a href="//www.cnblogs.com/huangxincheng/" target="_blank">一线码农</a></li>
-                                <li>9. <a href="//www.cnblogs.com/vamei/" target="_blank">Vamei</a></li>
-                                <li>10. <a href="//www.cnblogs.com/edisonchou/" target="_blank">Edison Chou</a></li>
-                                <li>11. <a href="//www.cnblogs.com/zhaopei/" target="_blank">农码一生</a></li>
-                                <li>12. <a href="//www.cnblogs.com/yexiaochai/" target="_blank">叶小钗</a></li>
-                                <li>13. <a href="//www.cnblogs.com/coco1s/" target="_blank">ChokCoco</a></li>
-                                <li>14. <a href="//www.cnblogs.com/savorboard/" target="_blank">Savorboard</a></li>
-                                <li>15. <a href="//www.cnblogs.com/JimmyZhang/" target="_blank">Jimmy Zhang</a></li>
-                                <li>16. <a href="//www.cnblogs.com/zhili/" target="_blank">Learning hard</a></li>
-                                <li>17. <a href="//www.cnblogs.com/ityouknow/" target="_blank">纯洁的微笑</a></li>
-                                <li>18. <a href="//www.cnblogs.com/toutou/" target="_blank">请叫我头头哥</a></li>
-                                <li>19. <a href="//www.cnblogs.com/insus/" target="_blank">Insus.NET</a></li>
-                                <li>20. <a href="//www.cnblogs.com/kenshincui/" target="_blank">KenshinCui</a></li>
-                                <li>21. <a href="//www.cnblogs.com/aaronjs/" target="_blank">【艾伦】</a></li>
-                                <li>22. <a href="//www.cnblogs.com/rubylouvre/" target="_blank">司徒正美</a></li>
-                                <li>23. <a href="//www.cnblogs.com/hegezhou_hot/" target="_blank">何戈洲</a></li>
-                                <li>24. <a href="//www.cnblogs.com/zuoxiaolong/" target="_blank">左潇龙</a></li>
-                                <li>25. <a href="//www.cnblogs.com/gaochundong/" target="_blank">匠心十年</a></li>
-                                <li>26. <a href="//www.cnblogs.com/CreateMyself/" target="_blank">Jeffcky</a></li>
-                                <li>27. <a href="//www.cnblogs.com/Wayou/" target="_blank">刘哇勇</a></li>
-                                <li>28. <a href="//www.cnblogs.com/lyhabc/" target="_blank">桦仔</a></li>
-                                <li>29. <a href="//www.cnblogs.com/sparkdev/" target="_blank">sparkdev</a></li>
-                                <li>30. <a href="//www.cnblogs.com/stoneniqiu/" target="_blank">stoneniqiu</a></li>
-                                <li>31. <a href="//www.cnblogs.com/baochuan/" target="_blank">川山甲</a></li>
-                                <li>32. <a href="//www.cnblogs.com/kerrycode/" target="_blank">潇湘隐者</a></li>
-                                <li>33. <a href="//www.cnblogs.com/freeflying/" target="_blank">自由飞</a></li>
-                                <li>34. <a href="//www.cnblogs.com/yanweidie/" target="_blank">焰尾迭</a></li>
-                                <li>35. <a href="//www.cnblogs.com/daxnet/" target="_blank">dax.net</a></li>
-                                <li>36. <a href="//www.cnblogs.com/xiaotie/" target="_blank">xiaotie</a></li>
-                                <li>37. <a href="//www.cnblogs.com/wolf-sun/" target="_blank">wolfy</a></li>
-                                <li>38. <a href="//www.cnblogs.com/chenxizhang/" target="_blank">陈希章</a></li>
-                                <li>39. <a href="//www.cnblogs.com/wangiqngpei557/" target="_blank">王清培</a></li>
-                                <li>40. <a href="//www.cnblogs.com/index-html/" target="_blank">EtherDream</a></li>
-                                <li>41. <a href="//www.cnblogs.com/xiaozhi_5638/" target="_blank">周见智</a></li>
-                                <li>42. <a href="//www.cnblogs.com/ljhdo/" target="_blank">悦光阴</a></li>
-                                <li>43. <a href="//www.cnblogs.com/haogj/" target="_blank">冠军</a></li>
-                                <li>44. <a href="//www.cnblogs.com/highend/" target="_blank">dotNetDR_</a></li>
-                                <li>45. <a href="//www.cnblogs.com/downmoon/" target="_blank">邀月</a></li>
-                                <li>46. <a href="//www.cnblogs.com/hustskyking/" target="_blank">Barret Lee</a></li>
-                                <li>47. <a href="//www.cnblogs.com/penghuwan/" target="_blank">外婆的彭湖湾</a></li>
-                                <li>48. <a href="//www.cnblogs.com/tcjiaan/" target="_blank">东邪独孤</a></li>
-                                <li>49. <a href="//www.cnblogs.com/yjmyzz/" target="_blank">菩提树下的杨过</a></li>
-                                <li>50. <a href="//www.cnblogs.com/murongxiaopifu/" target="_blank">陈嘉栋</a></li>
-                                <li>51. <a href="//www.cnblogs.com/iamzhanglei/" target="_blank">【当耐特】</a></li>
-                                <li>52. <a href="//www.cnblogs.com/liuhaorain/" target="_blank">木小楠</a></li>
-                                <li>53. <a href="//www.cnblogs.com/sheng-jie/" target="_blank">『圣杰』</a></li>
-                                <li>54. <a href="//www.cnblogs.com/richieyang/" target="_blank">richiezhang</a></li>
-                                <li>55. <a href="//www.cnblogs.com/webabcd/" target="_blank">webabcd</a></li>
-                                <li>56. <a href="//www.cnblogs.com/leslies2/" target="_blank">风尘浪子</a></li>
-                                <li>57. <a href="//www.cnblogs.com/charlotte77/" target="_blank">Charlotte77</a></li>
-                                <li>58. <a href="//www.cnblogs.com/hafiz/" target="_blank">阿豪聊干货</a></li>
-                                <li>59. <a href="//www.cnblogs.com/zjutlitao/" target="_blank">beautifulzzzz</a></li>
-                                <li>60. <a href="//www.cnblogs.com/bitzhuwei/" target="_blank">BIT祝威</a></li>
-                                <li>61. <a href="//www.cnblogs.com/mushroom/" target="_blank">蘑菇先生</a></li>
-                                <li>62. <a href="//www.cnblogs.com/over140/" target="_blank">农民伯伯</a></li>
-                                <li>63. <a href="//www.cnblogs.com/GoodHelper/" target="_blank">刘冬.NET</a></li>
-                                <li>64. <a href="//www.cnblogs.com/aspnetx/" target="_blank">哥本哈士奇(aspnetx)</a></li>
-                                <li>65. <a href="//www.cnblogs.com/mindwind/" target="_blank">mindwind</a></li>
-                                <li>66. <a href="//www.cnblogs.com/zichi/" target="_blank">子迟</a></li>
-                                <li>67. <a href="//www.cnblogs.com/cathsfz/" target="_blank">Cat Chen</a></li>
-                                <li>68. <a href="//www.cnblogs.com/luminji/" target="_blank">陆敏技</a></li>
-                                <li>69. <a href="//www.cnblogs.com/skyme/" target="_blank">skyme</a></li>
-                                <li>70. <a href="//www.cnblogs.com/technology/" target="_blank">Create Chen</a></li>
-                                <li>71. <a href="//www.cnblogs.com/daizhj/" target="_blank">代震军</a></li>
-                                <li>72. <a href="//www.cnblogs.com/lovecindywang/" target="_blank">lovecindywang</a></li>
-                                <li>73. <a href="//www.cnblogs.com/unruledboy/" target="_blank">灵感之源</a></li>
-                                <li>74. <a href="//www.cnblogs.com/smark/" target="_blank">smark</a></li>
-                                <li>75. <a href="//www.cnblogs.com/blqw/" target="_blank">冰麟轻武</a></li>
-                                <li>76. <a href="//www.cnblogs.com/DebugLZQ/" target="_blank">DebugLZQ</a></li>
-                                <li>77. <a href="//www.cnblogs.com/chyingp/" target="_blank">程序猿小卡</a></li>
-                                <li>78. <a href="//www.cnblogs.com/graphics/" target="_blank">zdd</a></li>
-                                <li>79. <a href="//www.cnblogs.com/jyk/" target="_blank">金色海洋（jyk）阳光男孩</a></li>
-                                <li>80. <a href="//www.cnblogs.com/jeffwongishandsome/" target="_blank">JeffWong</a></li>
-                                <li>81. <a href="//www.cnblogs.com/Zachary-Fan/" target="_blank">Zachary_Fan</a></li>
-                                <li>82. <a href="//www.cnblogs.com/zgynhqf/" target="_blank">BloodyAngel</a></li>
-                                <li>83. <a href="//www.cnblogs.com/inday/" target="_blank">James.Ying</a></li>
-                                <li>84. <a href="//www.cnblogs.com/itdragon/" target="_blank">ITDragon龙</a></li>
-                                <li>85. <a href="//www.cnblogs.com/RainingNight/" target="_blank">雨夜朦胧</a></li>
-                                <li>86. <a href="//www.cnblogs.com/multiplesoftware/" target="_blank">拥有的都是恩典</a></li>
-                                <li>87. <a href="//www.cnblogs.com/scy251147/" target="_blank">程序诗人</a></li>
-                                <li>88. <a href="//www.cnblogs.com/xinz/" target="_blank">SoftwareTeacher</a></li>
-                                <li>89. <a href="//www.cnblogs.com/hlxs/" target="_blank">啊汉</a></li>
-                                <li>90. <a href="//www.cnblogs.com/emrys5/" target="_blank">Emrys5</a></li>
-                                <li>91. <a href="//www.cnblogs.com/shaomeng/" target="_blank">shaomeng</a></li>
-                                <li>92. <a href="//www.cnblogs.com/1wen/" target="_blank">子慕大诗人</a></li>
-                                <li>93. <a href="//www.cnblogs.com/beer/" target="_blank">一点一滴的Beer</a></li>
-                                <li>94. <a href="//www.cnblogs.com/oppoic/" target="_blank">oppoic</a></li>
-                                <li>95. <a href="//www.cnblogs.com/parry/" target="_blank">Parry</a></li>
-                                <li>96. <a href="//www.cnblogs.com/zkweb/" target="_blank">q303248153</a></li>
-                                <li>97. <a href="//www.cnblogs.com/fly_dragon/" target="_blank">FlyDragon</a></li>
-                                <li>98. <a href="//www.cnblogs.com/tylerdonet/" target="_blank">nd</a></li>
-                                <li>99. <a href="//www.cnblogs.com/linguanh/" target="_blank">指尖下的幽灵</a></li>
-                                <li>100. <a href="//www.cnblogs.com/zhenbianshu/" target="_blank">枕边书</a></li>
-                                <li class="blogger_more"><a href="//www.cnblogs.com/expert/" target="_blank">» 更多推荐博客</a></li>
-                                <li class="blogger_more"><a href="//www.cnblogs.com/AllBloggers.aspx" target="_blank">» 博客列表(按积分)</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <p class="r_l_1"></p><p class="r_l_2"></p><p class="r_l_3"></p>
                 </div>
-                <div class="l_s"></div>
-                <p class="r_l_3"></p><p class="r_l_2"></p><p class="r_l_1"></p>
-                <div class="w_l">
-                    <h4>统计信息</h4>
-                    <div id="site_stats"><ul><li>博客 - <span>463361</span></li><li>随笔 - <span>6233259</span></li><li>文章 - <span>647678</span></li><li>评论 - <span>3179462</span></li></ul></div>
-                </div>
-                <p class="r_l_1"></p><p class="r_l_2"></p><p class="r_l_3"></p>
-
             </div>
-            <div id="side_right">
-                <div id="search_block">
-                    <div class="side_search">
-                        <input type="text" id="zzk_q" class="search_input" onkeydown="return zzk_go_enter(event);" tabindex="3"><input onclick="zzk_go()" type="button" class="search_btn" value="找找看">
-                    </div>
-                    <div id="google_search" class="side_search">
-                        <input type="text" id="google_search_q" class="search_input" onkeydown="return google_search_enter(event);"><input type="button" value="Google" class="search_btn" onclick="return google_search();">
-                    </div>
-                </div>
-                <div id="cnblogs_a1"><a href="http://clickc.admaster.com.cn/c/a116493,b2949398,c1705,i0,m101,8a1,8b2,h" target="_blank"><img width="468" height="60" src="https://img2018.cnblogs.com/news/24442/201812/24442-20181219214021806-471732135.jpg" alt="华为云1220" onclick="ga('send', 'event', 'Link', 'click', 'A1');"></a></div>
-                <div id="cnblogs_b1" class="sidebar-image"><a href="https://cloud.tencent.com/act/pro/safe?fromSource=gwzcw.1559145.1559145.1559145" target="_blank"><img width="300" height="250" src="https://img2018.cnblogs.com/news/24442/201810/24442-20181023124101732-1607271482.jpg" alt="腾讯云B1" onclick="ga('send', 'event', 'Link', 'click', 'B1');"></a></div>
-                <div id="ad_right_text" class="ad_right_text"><ul><li><a href="https://cloud.tencent.com/act/southwest?fromSource=gwzcw.2017843.2017843.2017843" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T1-腾讯云')">【活动】年末特惠，云服务器首购14元/月起！</a></li><li><a href="http://www.hightopo.com/cn-index.html" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T1-T1-HT')">【推荐】HTML5拓扑3D机房，电力工控Web SCADA</a></li><li><a href="http://clickc.admaster.com.cn/c/a116493,b3125065,c1705,i0,m101,8a1,8b3,h" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T1-华为云')">【活动】华为云12.12会员节全场1折起 满额送Mate20</a></li></ul></div>
-                <div id="side_right_block">
-                    <div class="w_r">
-                        <h4><a href="https://news.cnblogs.com/">最新新闻</a><span class="more"><a href="https://news.cnblogs.com/" class="right_more">»</a></span></h4>
-                        <ul>
-                            <li><a href="https://news.cnblogs.com/n/615428/" target="_blank" onmouseover="set_a_title(this);" title="贾跃亭的2018：令人窒息的20亿美元">贾跃亭的2018：令人窒息的20亿美元</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615423/" target="_blank" onmouseover="set_a_title(this);" title="小小的人工耳蜗为何值20万？丢失后需重新开颅植入？">小小的人工耳蜗为何值20万？丢失后需重新开颅植入？</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615427/" target="_blank" onmouseover="set_a_title(this);" title="骑过ofo也排过退押金长队，但你可能不认识这个戴威">骑过ofo也排过退押金长队，但你可能不认识这个戴威</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615426/" target="_blank" onmouseover="set_a_title(this);" title="百度前员工李成刚违反竞业协议案宣判 被罚83万">百度前员工李成刚违反竞业协议案宣判 被罚83万</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615425/" target="_blank" onmouseover="set_a_title(this);" title="石墨烯口罩可防霾？新材料之王的石墨烯是否名副其实">石墨烯口罩可防霾？新材料之王的石墨烯是否名副其实</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615424/" target="_blank" onmouseover="set_a_title(this);" title="淘宝称支付宝不再是唯一：或将引入云闪付">淘宝称支付宝不再是唯一：或将引入云闪付</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615422/" target="_blank" onmouseover="set_a_title(this);" title="明州案发后，刘强东的“好朋友”都哪去了？">明州案发后，刘强东的“好朋友”都哪去了？</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615421/" target="_blank" onmouseover="set_a_title(this);" title="大陆厂商崛起，台湾&quot;面板五虎&quot;华映在台工厂停工">大陆厂商崛起，台湾"面板五虎"华映在台工厂停工</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615420/" target="_blank" onmouseover="set_a_title(this);" title="易读|百度智能小程序开源联盟成立，爱奇艺、快手等加入">易读|百度智能小程序开源联盟成立，爱奇艺、快手等加入</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615419/" target="_blank" onmouseover="set_a_title(this);" title="金立工业园今昔对比：3年前人头攒动 如今厂房出租">金立工业园今昔对比：3年前人头攒动 如今厂房出租</a></li>
-                        </ul>
-                    </div>
-                    <div class="w_r">
-                        <h4><a href="/aggsite/topviews">48小时阅读排行</a><span class="more"><a href="/aggsite/topviews" class="right_more">»</a></span></h4>
-                        <ul>
-                            <li><a href="https://www.cnblogs.com/laozhang-is-phi/p/10139204.html" target="_blank" onmouseover="set_a_title(this);">从壹开始前后端分离[.NetCore] 37 ║JWT完美实现权限与接口的动态分配</a></li>
-                            <li><a href="https://www.cnblogs.com/wyl-0120/p/10146895.html" target="_blank" onmouseover="set_a_title(this);" title="我为什么放弃MySQL？最终选择了MongoDB">我为什么放弃MySQL？最终选择了MongoDB</a></li>
-                            <li><a href="https://www.cnblogs.com/viter/p/10140697.html" target="_blank" onmouseover="set_a_title(this);">Asp.Net Core 轻松学-在.Net Core 中使用钩子</a></li>
-                            <li><a href="https://www.cnblogs.com/codelove/p/10141411.html" target="_blank" onmouseover="set_a_title(this);" title="Docker最全教程——从理论到实战（七）">Docker最全教程——从理论到实战（七）</a></li>
-                            <li><a href="https://www.cnblogs.com/danvic712/p/10124871.html" target="_blank" onmouseover="set_a_title(this);" title="ASP.NET Core 实战：使用 ASP.NET Core Web API 和 Vue.js 搭建前后端分离项目">ASP.NET Core 实战：使用 ASP.NET Core Web API 和 Vue.js 搭建前后端分离项目</a></li>
-                            <li><a href="https://www.cnblogs.com/codelove/p/10147506.html" target="_blank" onmouseover="set_a_title(this);" title="开源库Magicodes.Storage正式发布">开源库Magicodes.Storage正式发布</a></li>
-                            <li><a href="https://www.cnblogs.com/saper/p/10140736.html" target="_blank" onmouseover="set_a_title(this);">作为IT，你的价值在哪里？</a></li>
-                            <li><a href="https://www.cnblogs.com/bobositlife/p/10147431.html" target="_blank" onmouseover="set_a_title(this);" title="开源干货！！！.NET Core + JWT令牌认证 + Vue.js(iview-admin) 通用动态权限(RBAC)管理系统框架[DncZeus]开源啦！！！">开源干货！！！.NET Core + JWT令牌认证 + Vue.js(iview-admin) 通用动态权限(RBAC)管理系统框架[DncZeus]开源啦！！！</a></li>
-                            <li><a href="https://www.cnblogs.com/yilezhu/p/10146311.html" target="_blank" onmouseover="set_a_title(this);">.NET Core实战项目之CMS 第十二章 开发篇-Dapper封装CURD及仓储代码生成器实现</a></li>
-                            <li><a href="https://www.cnblogs.com/RainingNight/p/servicediscovery-consul-in-asp-net-core.html" target="_blank" onmouseover="set_a_title(this);" title="ASP.NET Core 微服务初探[1]：服务发现之Consul">ASP.NET Core 微服务初探[1]：服务发现之Consul</a></li>
-                        </ul>
-                    </div>
-                    <div id="cnblogs_b2" class="sidebar-image">
-                        <div id="div-gpt-ad-1539007469525-0" style="height:250px; width:300px;" data-google-query-id="CK_Bh52ert8CFceBvQod22YAGg">
-
-                            <div id="google_ads_iframe_/1090369/B2_0__container__" style="border: 0pt none;"><iframe id="google_ads_iframe_/1090369/B2_0" title="3rd party ad content" name="google_ads_iframe_/1090369/B2_0" width="300" height="250" scrolling="no" marginwidth="0" marginheight="0" frameborder="0" srcdoc="" style="border: 0px; vertical-align: bottom;" data-google-container-id="1" data-load-complete="true"></iframe></div>
+            <div class="item">
+                <div class="layui-fluid">
+                    <div class="layui-row">
+                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                            <div class="img"><img src="../res/img/sy_img4.jpg" alt=""></div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
+                            <div class="item-cont">
+                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
+                                <h5>设计文章</h5>
+                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
+                                <a href="details.html" class="go-icon"></a>
+                            </div>
                         </div>
                     </div>
-                    <div class="w_r">
-                        <h4><a href="/aggsite/topdiggs">10天推荐排行</a><span class="more"><a href="/aggsite/topdiggs" class="right_more">»</a></span></h4>
-                        <ul>
-                            <li><a href="https://www.cnblogs.com/wangjiming/p/10098061.html" target="_blank" onmouseover="set_a_title(this);">浅谈SQL Server内部运行机制</a></li>
-                            <li><a href="https://www.cnblogs.com/codelove/p/10100481.html" target="_blank" onmouseover="set_a_title(this);">开源库支付库Magicodes.Pay发布</a></li>
-                            <li><a href="https://www.cnblogs.com/xiandnc/p/10132491.html" target="_blank" onmouseover="set_a_title(this);">dnSpy 强大的.Net反编译软件</a></li>
-                            <li><a href="https://www.cnblogs.com/youzhibing/p/9553752.html" target="_blank" onmouseover="set_a_title(this);">杂谈篇之我是怎么读源码的，授之以渔</a></li>
-                            <li><a href="https://www.cnblogs.com/laozhang-is-phi/p/10139204.html" target="_blank" onmouseover="set_a_title(this);">从壹开始前后端分离[.NetCore] 37 ║JWT完美实现权限与接口的动态分配</a></li>
-                            <li><a href="https://www.cnblogs.com/feiyun0112/p/10129832.html" target="_blank" onmouseover="set_a_title(this);">撒花！中文翻译仓库链接已加入 ML.NET 官方示例网站首页</a></li>
-                            <li><a href="https://www.cnblogs.com/vvjiang/p/10117994.html" target="_blank" onmouseover="set_a_title(this);">实现可调整宽高的DIV（左右拖动和上下拖动）</a></li>
-                            <li><a href="https://www.cnblogs.com/crossoverJie/p/10106154.html" target="_blank" onmouseover="set_a_title(this);">没错，老板让我写个 BUG！</a></li>
-                            <li><a href="https://www.cnblogs.com/crossoverJie/p/10129072.html" target="_blank" onmouseover="set_a_title(this);">一次生产 CPU 100% 排查优化实践</a></li>
-                            <li><a href="https://www.cnblogs.com/codelove/p/10147506.html" target="_blank" onmouseover="set_a_title(this);">开源库Magicodes.Storage正式发布</a></li>
-                        </ul>
+                </div>
+            </div>
+            <div class="item">
+                <div class="layui-fluid">
+                    <div class="layui-row">
+                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                            <div class="img"><img src="../res/img/sy_img5.jpg" alt=""></div>
+                        </div>
+                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
+                            <div class="item-cont">
+                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
+                                <h5>设计文章</h5>
+                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
+                                <a href="details.html" class="go-icon"></a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="w_r">
-                        <h4><a href="/aggsite/headline">编辑推荐</a><span class="more"><a href="/aggsite/headline" class="right_more">»</a></span></h4>
-                        <ul>
-                            <li><a href="https://www.cnblogs.com/DragonStart/p/10136246.html" target="_blank" onmouseover="set_a_title(this);" title="[纯C#实现]基于BP神经网络的中文手写识别算法">[纯C#实现]基于BP神经网络的中文手写识别算法</a></li>
-                            <li><a href="https://www.cnblogs.com/xybaby/p/10124083.html" target="_blank" onmouseover="set_a_title(this);">一文搞懂 Raft 算法</a></li>
-                            <li><a href="https://www.cnblogs.com/smark/p/10131561.html" target="_blank" onmouseover="set_a_title(this);">尴尬的事情又发生：Newtonsoft.Json vs Protobuf.net</a></li>
-                            <li><a href="https://www.cnblogs.com/xiangyuecn/p/10122764.html" target="_blank" onmouseover="set_a_title(this);">从Bug的提交到修复代码成功合并到.NET CoreFX</a></li>
-                            <li><a href="https://www.cnblogs.com/smark/p/10114989.html" target="_blank" onmouseover="set_a_title(this);">在 .NET Core 下去中心化访问 HTTP 服务集群</a></li>
-                            <li><a href="https://www.cnblogs.com/wangjiming/p/10098061.html" target="_blank" onmouseover="set_a_title(this);">浅谈 SQL Server 内部运行机制</a></li>
-                            <li><a href="https://www.cnblogs.com/CKExp/p/9940469.html" target="_blank" onmouseover="set_a_title(this);">约定 Service 构建方式</a></li>
-                            <li><a href="https://www.cnblogs.com/guogangj/p/10093102.html" target="_blank" onmouseover="set_a_title(this);">以 Windows 服务方式运行 .NET Core 程序</a></li>
-                        </ul>
-                    </div>
-                    <div class="w_r">
-                        <h4><a href="https://news.cnblogs.com/n/recommend">推荐新闻</a><span class="more"><a href="https://news.cnblogs.com/n/recommend" class="right_more">»</a></span></h4>
-                        <ul>
-                            <li><a href="https://news.cnblogs.com/n/615395/" target="_blank" onmouseover="set_a_title(this);">ofo不需要拯救：速度滑落始料未及 或只能靠破产重组</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615358/" target="_blank" onmouseover="set_a_title(this);">年终策划｜“逆风”之中 他们等着翻盘</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615319/" target="_blank" onmouseover="set_a_title(this);">谷歌小姐姐搞出魔法画板：你随便画，补不齐算AI输</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615269/" target="_blank" onmouseover="set_a_title(this);">《自然》年度十大人物：天才少年曹原居首，贺建奎成反面</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615258/" target="_blank" onmouseover="set_a_title(this);">应对失业，最该做的事，你可能一直都没做</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615252/" target="_blank" onmouseover="set_a_title(this);">倔强的程序员</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615226/" target="_blank" onmouseover="set_a_title(this);">华为宣布已获25份5G商业合同 营收将突破1000亿美元</a></li>
-                            <li><a href="https://news.cnblogs.com/n/615171/" target="_blank" onmouseover="set_a_title(this);">复旦大学：首次观测到三维量子霍尔效应！</a></li>
-                        </ul>
-                    </div>
-                    <div id="cnblogs_b3" class="sidebar-image"><a href="https://www.yunqi2050.com/" target="_blank"><img width="300" height="250" src="https://img2018.cnblogs.com/blog/35695/201812/35695-20181218220715740-394399760.png" alt="2050团聚@2019" onclick="ga('send', 'event', 'Link', 'click', 'B3');"></a></div>
-                    <div class="w_r">
-                        <h4><a href="https://q.cnblogs.com/">博问已解决问题</a><span class="more"><a href="https://q.cnblogs.com/" class="right_more">»</a></span></h4>
-                        <ul>
-                            <li><a href="https://q.cnblogs.com/q/111987/" target="_blank" onmouseover="set_a_title(this);">canvas 无法转化成Image</a></li>
-                            <li><a href="https://q.cnblogs.com/q/110592/" target="_blank" onmouseover="set_a_title(this);">iis添加asp.net core</a></li>
-                            <li><a href="https://q.cnblogs.com/q/110806/" target="_blank" onmouseover="set_a_title(this);">sql测试连接数；</a></li>
-                            <li><a href="https://q.cnblogs.com/q/110577/" target="_blank" onmouseover="set_a_title(this);">关于Apache在win系统下配置asp.net</a></li>
-                            <li><a href="https://q.cnblogs.com/q/111336/" target="_blank" onmouseover="set_a_title(this);">富文本编辑器ueditor报错Cannot read property 'offsetWidth' of null</a></li>
-                            <li><a href="https://q.cnblogs.com/q/109593/" target="_blank" onmouseover="set_a_title(this);">安装Android Studio3.1后新建项目后出现Gradle project sync failed</a></li>
-                            <li><a href="https://q.cnblogs.com/q/109606/" target="_blank" onmouseover="set_a_title(this);">SSM框架连接数据库出现这种问题</a></li>
-                            <li><a href="https://q.cnblogs.com/q/112017/" target="_blank" onmouseover="set_a_title(this);">求助，c#如何向access数据库批量插入数据？</a></li>
-                        </ul>
-                    </div>
-                    <div class="w_r">
-                        <h4><a href="https://kb.cnblogs.com/">知识库最新文章</a><span class="more"><a href="https://kb.cnblogs.com/" class="right_more">»</a></span></h4>
-                        <ul>
-                            <li><a href="https://kb.cnblogs.com/page/614832/" target="_blank" onmouseover="set_a_title(this);">超级工程师们拯救谷歌</a></li>
-                            <li><a href="https://kb.cnblogs.com/page/611018/" target="_blank" onmouseover="set_a_title(this);">程序员：用代码改变世界</a></li>
-                            <li><a href="https://kb.cnblogs.com/page/609730/" target="_blank" onmouseover="set_a_title(this);">阿里云的这群疯子</a></li>
-                            <li><a href="https://kb.cnblogs.com/page/606682/" target="_blank" onmouseover="set_a_title(this);">为什么说 Java 程序员必须掌握 Spring Boot ？</a></li>
-                            <li><a href="https://kb.cnblogs.com/page/606645/" target="_blank" onmouseover="set_a_title(this);">在学习中，有一个比掌握知识更重要的能力</a></li>
-                            <li><a href="https://kb.cnblogs.com/page/603663/" target="_blank" onmouseover="set_a_title(this);">如何招到一个靠谱的程序员</a></li>
-                            <li><a href="https://kb.cnblogs.com/page/573614/" target="_blank" onmouseover="set_a_title(this);">一个故事看懂“区块链”</a></li>
-                            <li><a href="https://kb.cnblogs.com/page/603697/" target="_blank" onmouseover="set_a_title(this);">被踢出去的用户</a></li>
-                        </ul>
-                    </div>
-                    <div id="cnblogs_b4" class="sidebar-image"><a href="https://ke.qq.com/next_detail/index.html?id=1&amp;from=800002766" target="_blank"><img width="300" height="250" src="https://img2018.cnblogs.com/news/24442/201810/24442-20181031205741246-418032404.jpg" alt="腾讯课堂1101" onclick="ga('send', 'event', 'Link', 'click', 'B4');"></a></div>
                 </div>
             </div>
         </div>
-        <div id="footer">
-            <div class="footer_block">
-                <p class="r_b_3"></p><p class="r_b_2"></p><p class="r_b_1"></p><div id="friend_link">
-                    友情链接：<a href="https://www.aliyun.com" target="_blank">阿里云</a><a href="https://cloud.tencent.com/?fromSource=gwzcw.541531.541531.541531" target="_blank">腾讯云</a><a href="https://www.163yun.com" target="_blank">网易云</a><a href="https://cloud.baidu.com" target="_blank">百度云</a><a href="https://www.jdcloud.com" target="_blank">京东云</a><a href="http://www.hujiang.com" target="_blank">沪江网</a><a href="http://www.chinaz.com/" target="_blank">站长之家</a><a href="http://dev.yesky.com" target="_blank">天极网</a><a href="http://down.admin5.com" target="_blank">A5源码下载</a><a href="http://www.gcpowertools.com.cn" target="_blank">葡萄城控件</a><a href="https://www.upyun.com/?md=cnblogs" target="_blank">又拍云</a><a href="http://zt.cnblogs.com/tingyun/" target="_blank">听云APP</a><a href="http://www.hightopo.com/cn-index.html" target="_blank">图扑软件</a><a href="http://www.cnblogs.com/mipengine/" target="_blank">百度MIP博客</a><a href="http://wetest.qq.com/?from=links_cnblogs" target="_blank">腾讯WeTest</a><a href="http://yaq.qq.com/" target="_blank">腾讯御安全</a><a href="http://www.ucancode.com/index.html" target="_blank">工控组态源码</a><a href="https://163yun.cnblogs.com/" target="_blank">网易云博客</a><a href="https://www.qiniu.com/" target="_blank">七牛云</a><a href="https://www.huanpingge.com/" target="_blank">换屏哥手机维修</a>
-                </div><p class="r_b_1"></p><p class="r_b_2"></p><p class="r_b_3"></p>
-            </div>
-        </div>
-        <div id="footer_bottom">
-            <div><a href="https://about.cnblogs.com/">关于博客园</a><a href="https://about.cnblogs.com/contact">联系我们</a><a href="https://about.cnblogs.com/ad">广告服务</a>©2004-2018<a href="http://www.cnblogs.com/">博客园</a>保留所有权利<a href="http://www.miitbeian.gov.cn" target="_blank">沪ICP备09004260号</a></div>
-            <div><a href="https://ss.knet.cn/verifyseal.dll?sn=e131108110100433392itm000000&amp;ct=df&amp;a=1&amp;pa=0.25787803245785335" rel="nofollow" target="_blank"><img id="cnnic_img" src="//common.cnblogs.com/images/cnnic.png" alt="" width="64" height="23"></a><a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31011502001144" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="//common.cnblogs.com/images/ghs.png" alt=""><span style="float:left;height:20px;line-height:20px;margin: 0 5px 0 5px; color:#939393;">沪公网安备 31011502001144号</span></a></div>
-        </div>
+        <div id="demo" style="text-align: center;"></div>
     </div>
-    <iframe id="google_osd_static_frame_9638585348124" name="google_osd_static_frame" style="display: none; width: 0px; height: 0px;"></iframe>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/angular/angular.min.js"></script>
-    <script>
-        var app = angular.module("myHome", []);
-        app.controller("myRead", function ($scope) {
-            $scope.books = [
-                {
-                    GoodCount: 0,
-                    ReadTitle: "前端入门25-福音 TypeScript",
-                    ReadContent: "声明 本篇内容摘抄自以下来源： 'TypeScript 中文网'只梳理其中部分知识点，更多更详细内容参考官网。 正文 TypeScript 今天来讲讲有 Java 基础转 JavaScript 的福音：TypeScript 为什么学习 TypeScript 如果学习 JavaScript 之前已经 ...",
-                    Author: "请叫我大苏",
-                    SubmitDate: "2018-12-20 18:29",
-                    Comment: 0,
-                    ReadCount: 23
-                },
-                {
-                    GoodCount: 0,
-                    ReadTitle: "前端入门25-福音 TypeScript",
-                    ReadContent: "本文由云+社区发表 本篇文章，小编将和大家一起学习异步编程的未来—— async/await ，它会打破你对上篇文章 Promise 的认知，竟然异步代码还能这么写! 但是别太得意，你需要深入理解 Promise 后，才能更好的的驾驭 async/await ，因为 async/await 是基于  ...",
-                    Author: "腾讯云+社区",
-                    SubmitDate: "2018-12-20 18:29",
-                    Comment: 0,
-                    ReadCount: 20
-                },
-                {
-                    GoodCount: 1,
-                    ReadTitle: "javascript：类数组 -- 对象",
-                    ReadContent: "在javascript中，对象与数组都是这门语言的原生规范中的基本数据类型，处于并列的位置。 类数组:本质是一个对象,只是这个 对象 的属性有点特殊,模拟出数组的一些特性。 一般来说，如果我们有一个对象obj和一个数组a： obj['attr1']; //取obj对象的attr1属性 a[1]; / ...",
-                    Author: "小太阳xdq",
-                    SubmitDate: "2018-12-20 17:26",
-                    Comment: 0,
-                    ReadCount: 53
-                },
-            ]
-        })
-    </script>
-</body>
-</html>
+</div>
+<script src="~/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '../res/js/util/'
+    }).use(['element', 'laypage', 'jquery', 'menu'], function () {
+        element = layui.element, laypage = layui.laypage, $ = layui.$, menu = layui.menu;
+        laypage.render({
+            elem: 'demo'
+            , count: 70 //数据总数，从服务端得到
+        });
+        menu.init();
+    })
+</script>
