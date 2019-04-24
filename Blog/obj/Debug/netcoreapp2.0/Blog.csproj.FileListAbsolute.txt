@@ -99,3 +99,5 @@ D:\学习\Blog\Blog\obj\Debug\netcoreapp2.0\Blog.csproj.CopyComplete
 D:\学习\Blog\Blog\bin\Debug\netcoreapp2.0\nlog.config
 D:\学习\Blog\Blog\bin\Debug\netcoreapp2.0\AOP.dll
 D:\学习\Blog\Blog\bin\Debug\netcoreapp2.0\AOP.pdb
+D:\学习\Blog\Blog\bin\Debug\netcoreapp2.0\CacheFactory.dll
+D:\学习\Blog\Blog\bin\Debug\netcoreapp2.0\CacheFactory.pdb

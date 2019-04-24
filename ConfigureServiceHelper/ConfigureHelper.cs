@@ -1,6 +1,5 @@
 ﻿using CommonHelper;
 using DapperFactory;
-using DBHelper;
 using IDapperFactory;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -30,11 +29,11 @@ namespace ConfigureServiceHelper
             });
         }
 
-        public static IApplicationBuilder UseStaticHttpContext(this IApplicationBuilder app)
-        {
-          var httpContext=app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
-          HttpHelper.Configure()
-        }
+        // public static IApplicationBuilder UseStaticHttpContext(this IApplicationBuilder app)
+        // {
+        //   var httpContext=app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
+        //   HttpHelper.Configure()
+        // }
         /// <summary>
         /// 服务集合
         /// </summary>

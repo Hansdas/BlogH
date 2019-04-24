@@ -26,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CacheFactory\CacheFactory.csproj" />
     <ProjectReference Include="..\CommonHelper\CommonHelper.csproj" />
     <ProjectReference Include="..\DapperFactory\DapperFactory.csproj" />
     <ProjectReference Include="..\DBHelper\DBHelper.csproj" />

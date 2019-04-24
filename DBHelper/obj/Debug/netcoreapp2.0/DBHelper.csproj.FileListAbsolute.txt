@@ -24,3 +24,4 @@ D:\学习\Blog\DBHelper\obj\Debug\netcoreapp2.0\DBHelper.AssemblyInfoInputs.cach
 D:\学习\Blog\DBHelper\obj\Debug\netcoreapp2.0\DBHelper.AssemblyInfo.cs
 D:\学习\Blog\DBHelper\obj\Debug\netcoreapp2.0\DBHelper.dll
 D:\学习\Blog\DBHelper\obj\Debug\netcoreapp2.0\DBHelper.pdb
+D:\学习\Blog\DBHelper\obj\Debug\netcoreapp2.0\DBHelper.csprojAssemblyReference.cache

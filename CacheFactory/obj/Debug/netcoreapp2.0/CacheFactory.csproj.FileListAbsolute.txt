@@ -3,10 +3,8 @@ D:\学习\Blog\CacheFactory\bin\Debug\netcoreapp2.0\CacheFactory.dll
 D:\学习\Blog\CacheFactory\bin\Debug\netcoreapp2.0\CacheFactory.pdb
 D:\学习\Blog\CacheFactory\bin\Debug\netcoreapp2.0\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.dll
 D:\学习\Blog\CacheFactory\bin\Debug\netcoreapp2.0\Microsoft.Extensions.Caching.Memory.dll
-D:\学习\Blog\CacheFactory\bin\Debug\netcoreapp2.0\Newtonsoft.Json.dll
 D:\学习\Blog\CacheFactory\bin\Debug\netcoreapp2.0\Microsoft.AspNetCore.Server.Kestrel.Transport.Libuv.xml
 D:\学习\Blog\CacheFactory\bin\Debug\netcoreapp2.0\Microsoft.Extensions.Caching.Memory.xml
-D:\学习\Blog\CacheFactory\bin\Debug\netcoreapp2.0\Newtonsoft.Json.xml
 D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.csproj.CoreCompileInputs.cache
 D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.AssemblyInfoInputs.cache
 D:\学习\Blog\CacheFactory\obj\Debug\netcoreapp2.0\CacheFactory.AssemblyInfo.cs

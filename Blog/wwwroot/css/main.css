@@ -136,6 +136,7 @@ form input[type=checkbox] {
 .whisper-content .cont .whisper-list .whisper-title i{position: relative; top: 1px; margin-right: 5px;}
 .whisper-content .cont .whisper-list .whisper-title span{color: #ff7f21;}
 .whisper-content .cont .whisper-list .whisper-title span.hour{margin-right: 20px;}
+.whisper-content .cont .whisper-list .whisper-title span.author { margin-right: 20px;}
 .whisper-content .whisper-list .text-cont{line-height: 24px; margin-bottom: 28px;}
 .whisper-content .whisper-list .op-list{margin-top: 30px; overflow: hidden;}
 .whisper-content .whisper-list .op-list .like{ -webkit-user-select: none;

@@ -1,0 +1,114 @@
+﻿@{
+    Layout = "../Shared/_Layout.cshtml";
+}
+<div class="content whisper-content">
+    <div class="cont">
+        <div class="whisper-list" id="whisper-list-id">
+            <script type="text/html" id="whisper-item">
+                {{# layui.each(d.list,function(index,item){}}
+                <div class="item-box" style="margin-bottom:20px">
+                    <div class="item">
+                        <div class="whisper-title">
+                            <i class="layui-icon layui-icon-username"></i> <span class="author">{{item.Author}}</span><i class="layui-icon layui-icon-date"></i><span class="hour">{{item.date}}</span>
+                        </div>
+                        <p class="text-cont">
+                            {{item.Article}}
+                        </p>
+                        <div class="img-box">
+                            @*<img src="../res/img/wy_img1.jpg">*@
+                            {{item.PhotoPath}}
+                        </div>
+                        <div class="op-list">
+                            <p class="like"><i class="layui-icon layui-icon-praise"></i><span>{{item.Praise}}</span></p>
+                            <p class="edit"><i class="layui-icon layui-icon-reply-fill"></i><span>{{item.Reply}}</span></p>
+                            <p class="off"><span>展开</span><i class="layui-icon layui-icon-down"></i></p>
+                        </div>
+                    </div>
+                    <div class="review-version layui-hide">
+                        <div class="form">
+                            <img src="~/img/header2.png">
+                            <form class="layui-form" action="">
+                                <div class="layui-form-item layui-form-text">
+                                    <div class="layui-input-block">
+                                        <textarea name="desc" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block" style="text-align: right;">
+                                        <button class="layui-btn definite">確定</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        {{# layui.each(item.commentdatas,function(i,commentdata){}}
+                        <div class="list-cont">
+                            <div class="cont">
+                                <div class="img">
+                                    {{commentdata.UserPhotoPath}}
+                                </div>
+                                <div class="text">
+                                    <p class="tit"><span class="name">{{commentdata.CommentUser}}</span><span class="data">{{commentdata.CommentDate}}</span></p>
+                                    <p class="ct">{{commentdata.CommentContent}}</p>
+                                </div>
+                            </div>
+                            {{# }); }}
+                        </div>
+                    </div>
+                </div>
+                {{# }); }}
+            </script>
+        </div>
+        <div id="demo" style="text-align: center;"></div>
+    </div>
+</div>
+<script type="text/html" id="laytplCont">
+    <div class="cont">
+        <div class="img">
+            <img src="{{d.avatar}}" alt="">
+        </div>
+        <div class="text">
+            <p class="tit"><span class="name">{{d.name}}</span><span class="data">2018/06/06</span></p>
+            <p class="ct">{{d.cont}}</p>
+        </div>
+    </div>
+</script>
+<script src="~/layui/layui.js"></script>
+<script type="text/javascript">
+    layui.config({
+        base: '/js/'
+    }).use(['element', 'laypage', 'form', 'menu', 'laytpl'], function () {
+        element = layui.element, laypage = layui.laypage, form = layui.form, menu = layui.menu, laytpl = layui.laytpl;
+        laypage.render({
+            elem: 'demo'
+            , count: 70 //数据总数，从服务端得到
+        });
+        var data = {
+            "list": [
+                {
+                    Author: "admin", Article: "一直听说牛油果吃起来像肥皂、肥肉，虽然很难吃，但是价格却很贵，我还是想尝试一下。今天公司新到了新西兰牛油果，这是新西兰牛油果是第一次在中国上市，个头比普通牛油果大了一倍，被誉为“超牛果”。好奇心驱使我尝了一颗，第一次吃牛油果没有见识，切开牛油果费了好大劲，切成了这样。", PhotoPath: "", date: "2019/4/21 1636", Praise: 12, Reply: 1,
+                    commentdatas: [
+                        { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", },
+                        { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", }
+                    ]
+                },
+                {
+                    Author: "admin", Article: "一直听说牛油果吃起来像肥皂、肥肉，虽然很难吃，但是价格却很贵，我还是想尝试一下。今天公司新到了新西兰牛油果，这是新西兰牛油果是第一次在中国上市，个头比普通牛油果大了一倍，被誉为“超牛果”。好奇心驱使我尝了一颗，第一次吃牛油果没有见识，切开牛油果费了好大劲，切成了这样。", PhotoPath: "", date: "2019/4/21 1636", Praise: 12, Reply: 2,
+                    commentdatas: [
+                        { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", },
+                        { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:15", }
+                    ]
+                }
+            ]
+        };
+        var whisper = document.getElementById("whisper-item").innerHTML,
+            whisperview = document.getElementById("whisper-list-id");
+        laytpl(whisper).render(data, function (html) {
+            whisperview.innerHTML = html;
+        });
+        element.init();
+        menu.init();
+        menu.off();
+        menu.submit();
+
+    })
+</script>

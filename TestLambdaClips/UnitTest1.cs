@@ -1,6 +1,7 @@
 using DapperFactory;
 using Domain;
 using IDapperFactory;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace TestLambdaClips
@@ -8,21 +9,17 @@ namespace TestLambdaClips
     [TestClass]
     public class UnitTest1
     {
-        //protected IQuerySelect _querySelect;
-        //public UnitTest1(IQuerySelect querySelect)
-        //{
-        //    _querySelect = querySelect;
-        //}
+
+        protected IDistributedCache _distributedCache;
+        public UnitTest1(IDistributedCache distributedCache)
+        {
+            _distributedCache = distributedCache;
+
+        }
         [TestMethod]
         public void TestMethod1()
         {
-            IQuerySelect querySelect = new QuerySelect();
-            //Tuple<string, DynamicParameters> tuple=OrmBase.LambdaAnalysis<User>(s=>s.Username == "admin" && s.Password == "admin" && s.Sex == Sex.ÄÐ);
-            string account = "1";
-            string password = "111";
-            Sex sex = Sex.ÄÐ;
-            User User = querySelect.SelectSingle<User>(s =>s
-            .Sex== sex);
+          var v=  _distributedCache.GetString("1");
         }
     }
 }

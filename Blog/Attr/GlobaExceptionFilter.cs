@@ -9,7 +9,7 @@ namespace Blog
     /// <summary>
     /// 全局异常过滤器
     /// </summary>
-    public class GlobaExceptionFilter : IExceptionFilter
+    public class GlobaExceptionFilterAttribute : ExceptionFilterAttribute
     {
         //protected ILog _log;
         //public GlobaExceptionFilter(ILog log)
@@ -17,11 +17,11 @@ namespace Blog
         //    _log = log;
         //}
         private readonly NLog.ILogger _logger;
-        public GlobaExceptionFilter()
+        public GlobaExceptionFilterAttribute()
         {
             _logger = LogManager.GetCurrentClassLogger(); 
         }
-        public void OnException(ExceptionContext context)
+        public override void OnException(ExceptionContext context)
         {
             LogEventInfo lei = new LogEventInfo();
             //lei.Properties["Account"] = "1";

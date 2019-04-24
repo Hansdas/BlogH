@@ -4,10 +4,10 @@
 <head>
     <meta name="viewport" content="width = device-width" />
     <link href="~/layui/css/layui.css" rel="stylesheet" />
-    <link href="~/css/main.css?v=20192221" rel="stylesheet" />
+    <link href="~/css/main.css?v=20192225" rel="stylesheet" />
 </head>
 @model Domain.User
-@using Blog.Auth
+@using Blog
 @{ 
     Domain.User user = Auth.GetLoginUser();
 }
@@ -22,10 +22,10 @@
             </a>
         </h1>
         <div class="nav">
-            <a href="index.html">文章</a>
-            <a href="whisper.html">微语</a>
+            <a href="index.html"  class="active">文章</a>
+            <a href="../Whisper/Index">微语</a>
             <a href="leacots.html">留言</a>
-            <a href="album.html" class="active">相册</a>
+            <a href="album.html">相册</a>
             <a href="about.html">关于</a>
         </div>
         <ul class="layui-nav header-down-nav">
@@ -42,7 +42,7 @@
             }
             else
             {
-                <span class="name">欢迎来到小明的博客 ~</span>
+                <span class="name">欢迎来到 @user.Username 的博客 ~</span>
             }
         </p>
     </div>
