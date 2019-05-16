@@ -1,10 +1,10 @@
 ﻿using Dapper;
 using Domain;
 using IDapperFactory;
-using ServiceSvc.IService;
+using IServiceSvc;
 using System;
 
-namespace ServiceSvc.Service
+namespace ServiceSvc
 {
     public class UserServiceSvc : IUserServiceSvc
     {

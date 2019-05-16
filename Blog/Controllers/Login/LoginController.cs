@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using CacheFactory;
 using CacheFactory.Provider;
 using Domain;
+using IServiceSvc;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
-using ServiceSvc.IService;
 
 namespace Blog.Controllers
 {

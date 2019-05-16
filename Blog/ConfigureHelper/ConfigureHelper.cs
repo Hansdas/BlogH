@@ -2,12 +2,12 @@
 using CacheFactory;
 using DapperFactory;
 using IDapperFactory;
+using IServiceSvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using ServiceSvc.IService;
-using ServiceSvc.Service;
+using ServiceSvc;
 
 namespace CommonHelper
 {

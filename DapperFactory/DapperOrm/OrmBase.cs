@@ -18,7 +18,7 @@ namespace DapperFactory
         /// <summary>
         /// sql语句
         /// </summary>
-        private string sql;
+        private string sqlWhere;
         /// <summary>
         /// sql条件参数
         /// </summary>
@@ -37,7 +37,7 @@ namespace DapperFactory
             string sql = string.Empty;
             BinaryExpression binaryExpression = expression.Body as BinaryExpression;
             tuple = Where(binaryExpression.Left, binaryExpression.Right, binaryExpression.NodeType);
-            sql = string.Format("{0} where {1} ", CreateSelectSql(typeof(T)), tuple.Item1);
+            sql = string.Format("where {0} ", tuple.Item1);
             DynamicParameters = tuple.Item2;
         }
         /// <summary>
@@ -187,7 +187,7 @@ namespace DapperFactory
         /// <param name="t"></param>
         /// <param name="fieldNameBegin">字段名前缀</param>
         /// <returns></returns>
-        private static string InsertSqlExpress<T>(string fieldNameBegin)
+        private static string CreateInsertSql<T>(string fieldNameBegin)
         {
             Tuple<string, PropertyInfo[]> tuple = GetPropertyInfos<T>();
             StringBuilder sb = new StringBuilder();
@@ -223,6 +223,7 @@ namespace DapperFactory
         {
                 LambdaAnalysis(expression);
                 T t = default(T);
+                string sql = CreateSelectSql(typeof(T)) + sqlWhere;
                 t = mySqlConnection.QueryFirstOrDefault<T>(sql, DynamicParameters);
                 return t;
         }
@@ -237,8 +238,8 @@ namespace DapperFactory
         {
             LambdaAnalysis<T>(expression);
             string tableName = typeof(T).Name;
-            string selectSql = $"select count(*) from {tableName}" + sql;
-            int count=mySqlConnection.Query(selectSql, DynamicParameters).Count();
+            string sql = $"select count(*) from {tableName}" + sqlWhere;
+            int count=mySqlConnection.Query(sql, DynamicParameters).Count();
             return count;
         }
         #endregion
