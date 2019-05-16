@@ -276,7 +276,7 @@ namespace DapperFactory
         }
         public virtual async Task<T> Insert<T>(T t)
         {
-            string sql = GetInsertSql(typeof(T));
+            string sql = CreateInsertSql(typeof(T));
             T entity = await mySqlConnection.ExecuteScalarAsync<T>(sql, t);
             return entity;
         }
