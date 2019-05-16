@@ -81,3 +81,21 @@ ModelManifest.xml
 
 #zzzili
 v15/
+/ServiceSvc/bin
+/ServiceSvc/obj
+/IServiceSvc/bin
+/IServiceSvc/obj
+/IDapperFactory/bin
+/IDapperFactory/obj
+/Domain/bin
+/Domain/obj
+/DBHelper/bin
+/DBHelper/obj
+/DapperFactory/bin
+/DapperFactory/obj
+/CommonHelper/bin
+/CommonHelper/obj
+/CacheFactory/bin
+/CacheFactory/obj
+/AOP/bin
+/AOP/obj
