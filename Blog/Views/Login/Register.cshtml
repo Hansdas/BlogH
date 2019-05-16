@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width = device-width" />
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/css/main.css?v=27" rel="stylesheet" />
+</head>
+<body>
+    <div class="login" style="margin-top:50px">
+        <form method="post" class="layui-form" style="margin-left:200px" >
+            <ul>
+                <li>
+                    <input type="text" name="account" lay-verify="required|nochinsese" placeholder="账号" class="layui-input">
+                </li>
+                <li>
+                    <input type="text" name="username" lay-verify="required|namelength"  placeholder="昵称" class="layui-input">
+                </li>
+                <li>
+                    <input type="password" name="password" lay-verify="required|passwordlength"  placeholder="密码" class="layui-input">
+                </li>
+                 <li>
+                    <input type="password" name="confirmpassword" lay-verify="required|confirmpassword"  placeholder="确认密码" class="layui-input">
+                </li>
+            </ul>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="Register">注册</button>
+        </form>
+    </div>
+    <script src="~/js/jquery.js"></script>
+    <script src="~/layui/layui.js"></script>
+    <script>
+        layui.use(["form"], function () {
+            var form = layui.form;
+            var layer = layui.layer;
+            form.verify({
+                nochinsese:[ /^[a-zA-Z0-9]{5,10}$/,"只账号能输入长度为5到10的纯英文和数字组合"],
+                namelength:[ /^[\S]{1,20}$/,"昵称不能多余20个字符"],
+                passwordlength:[/^[\S]{1,10}$/,"密码不能多余10个字符"],
+                confirmpassword:function(value)
+                {
+                    var password=$("input[name='password']").val();
+                    if(password!=value)
+                    {
+                        return "两次输入密码不一致";
+                    }
+                }
+            });
+            form.on("submit(Register)", function (data) {
+                var RegisterData = data.field;
+                var index = layer.load(2)
+                $.ajax({
+                    url: "/Login/Logon",
+                    type: "post",
+                    data: {
+                        "account":RegisterData.account,
+                        "username": RegisterData.username,
+                        "password": RegisterData.password
+                    },
+                    success: function (response) {
+                        if (response.message == "OK") {
+                            window.location.href = "../Home/Index";
+
+                        }
+                        else {
+                            layer.close(index)
+                            layer.msg(response.message, { icon: 4 });
+                        }
+                    },
+                    error: function (response) {
+                        layer.close(index)
+                        layer.msg("响应服务器失败", { icon: 7 });
+                    }
+                });
+                return false;
+            })
+        })
+    </script>
+</body>
+</html>

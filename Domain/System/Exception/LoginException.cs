@@ -7,24 +7,24 @@ namespace Domain
     /// <summary>
     /// 登录异常
     /// </summary>
-   public class LoginException:Exception
+   public class ValidationException:Exception
     {
         /// <summary>
         /// 构造函数
         /// </summary>
-        public LoginException() { }
+        public ValidationException() { }
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="message"></param>
-        public LoginException(string message) : base(message) { }
+        public ValidationException(string message) : base(message) { }
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public LoginException(string message, Exception innerException) : base(message, innerException) { }
+        public ValidationException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

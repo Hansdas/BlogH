@@ -35,5 +35,17 @@ namespace Blog
         {
            Http.SetSession(user.Account, user);
         }
+         /// <summary>
+        /// 退出操作
+        /// </summary>
+        public static void LoginOut()
+        {
+             string userName = "";
+            if(Http.httpContext.User.Identity.IsAuthenticated)
+            {
+                userName = Http.httpContext.User.Claims.First().Value;
+            }
+            Http.ClearSession(userName);
+        }
     }
 }

@@ -60,27 +60,12 @@ namespace Blog
             T t = JsonHelper.DeserializeObject<T>(jsonValue);
             return t;
         }
-        public static void SetCookie(string key,string value,CookieOptions cookieOptions=null)
+        /// <summary>
+        /// 清楚指定session
+        /// </summary>
+        public static void ClearSession(string key)
         {
-            if(cookieOptions!=null)
-            {
-                httpContext.Response.Cookies.Append(key, value,cookieOptions);
-            }
-            else
-            {
-                httpContext.Response.Cookies.Append(key, value);
-            }
-        }
-        public static string GetCookie(string key)
-        {
-            string value;
-            httpContext.Request.Cookies.TryGetValue(key,out value);
-            return value;
-        }
-        public async  static Task<string> AuthenticateAsync(string key)
-        {
-            var auth = await  httpContext.AuthenticateAsync(key);
-            return auth.Principal.Identity.Name;
+            httpContext.Session.Remove(key);
         }
     }
 }

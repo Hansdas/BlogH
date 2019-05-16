@@ -65,3 +65,4 @@ D:\学习\Blog\Domain\obj\Debug\netcoreapp2.0\Domain.AssemblyInfo.cs
 D:\学习\Blog\Domain\obj\Debug\netcoreapp2.0\Domain.csproj.CopyComplete
 D:\学习\Blog\Domain\obj\Debug\netcoreapp2.0\Domain.dll
 D:\学习\Blog\Domain\obj\Debug\netcoreapp2.0\Domain.pdb
+D:\学习\Blog\Domain\obj\Debug\netcoreapp2.0\Domain.csprojAssemblyReference.cache

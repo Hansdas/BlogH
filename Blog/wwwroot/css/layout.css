@@ -1,0 +1,14 @@
+ .layui-nav{
+    background: white ;
+    float: right;
+}
+.layui-nav .layui-nav-item a {
+    
+    color: black
+}
+.layui-nav-item{
+    color: darkviolet
+}
+.user{
+    cursor:pointer;
+}

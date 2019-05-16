@@ -6,7 +6,7 @@ using System;
 
 namespace ServiceSvc.Service
 {
-    public class UserServiceSvc:IUserServiceSvc
+    public class UserServiceSvc : IUserServiceSvc
     {
         protected IQuerySelect _querySelect;
         protected IQueryInsert _queryInsert;
@@ -25,8 +25,8 @@ namespace ServiceSvc.Service
         /// <returns></returns>
         public User GetSingleUser(string Account, string Password, out string message)
         {
-            User user = new User();             
-            user = _querySelect.SelectSingle<User>(s=>s.Account==Account&&s.Password==Password);
+            User user = new User();
+            user = _querySelect.SelectSingle<User>(s => s.Account == Account && s.Password == Password);
             if (user == null)
             {
                 message = "账号不存在";
@@ -49,46 +49,16 @@ namespace ServiceSvc.Service
             return user;
         }
 
-        public User RegisterUser(string Account, string Password, out string message)
+        public void RegisterUser(User user)
         {
-           lock(_lock)
+            string message = null;
+            int count = _querySelect.SelectCount<User>(s => s.Account == user.Account);
+            if (count > 0)
             {
-                User user = new User
-                {
-                    Account = Account,
-                    Password = Password,
-                    CreateTime = DateTime.Now
-                };
-                try
-                {
-                    int count = _querySelect.SelectCount<User>(s=>s.Account==Account);
-                    if (count > 0)
-                    {
-                        message = string.Format("'{0}'账号已存在", user.Account);
-                        return user;
-                    }
-                    else
-                    {
-                        user = _queryInsert.InsertSingle<User>(user);
-                        if (user!=null)
-                        {
-                            message = "";
-                            return user;
-                        }
-                        else
-                        {
-                            message = string.Format("'{0}'账号注册失败", user.Account);
-                            return user;
-                        }
-                    }
-                }
-                catch (System.Exception e)
-                {
-                    message = e.Message;
-                    return user;
-                }
-
+                message = string.Format("'{0}'账号已存在", user.Account);
+                throw new ValidationException(message);
             }
+            user = _queryInsert.InsertSingle<User>(user);
         }
     }
 }

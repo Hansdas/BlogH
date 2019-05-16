@@ -25,6 +25,10 @@ namespace Blog.Controllers
         {
             return View();
         }
+        public IActionResult Register()
+        {
+            return View();
+        }
         [HttpPost]
         public  ActionResult LoginIn()
         {
@@ -65,13 +69,32 @@ namespace Blog.Controllers
         }
 
         [HttpPost]
-        public IActionResult Register(string username, string password)
+        public IActionResult Logon()
         {
             string message = string.Empty;
-            Domain.User user = _userServiceSvc.RegisterUser(username, password, out message);
+            string account = Request.Form["account"];
+            string passWord = Request.Form["password"];
+            string userName = Request.Form["username"];
+            Domain.User user = new Domain.User(){
+                  Account=account,
+                  Password=passWord,
+                  Username=userName
+              };
+              try {
+                  _userServiceSvc.RegisterUser(user);
+              }
+              catch(ValidationException e){
+                  message=e.Message;
+              }
+
             if (!string.IsNullOrEmpty(message))
                 return Json(new ReturnResult() { Code = "500", Message = message });
             return Json(new ReturnResult() { Code = "200", Message = "注册成功" });
+        }
+        public IActionResult LoginOut()
+        {
+            Auth.LoginOut();
+            return RedirectToAction("login","login");
         }
     }
 }

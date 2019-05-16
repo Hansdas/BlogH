@@ -24,6 +24,6 @@ namespace ServiceSvc.IService
         /// <param name="Password"></param>
         /// <param name="message"></param>
         /// <returns></returns>
-        User RegisterUser(string Account,string Password, out string message);
+        void RegisterUser(User User);
     }
 }

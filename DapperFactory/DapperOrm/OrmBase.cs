@@ -14,12 +14,11 @@ namespace DapperFactory
 {
     public abstract class OrmBase
     {
-        private static readonly object obj = new object();
         protected static MySqlConnection mySqlConnection = ConnectionProvider.connection;
         /// <summary>
         /// sql语句
         /// </summary>
-        private string Sql;
+        private string sql;
         /// <summary>
         /// sql条件参数
         /// </summary>
@@ -34,17 +33,11 @@ namespace DapperFactory
         public void LambdaAnalysis<T>(Expression<Func<T, bool>> expression)
         {
             Tuple<string, DynamicParameters> tuple =null;
-            string className = expression.Body.GetType().Name;
+            ExpressionType expressionType = expression.Body.NodeType;
             string sql = string.Empty;
-            switch (className)
-            {
-                case "LogicalBinaryExpression":
-                case "BinaryExpression":
-                    BinaryExpression binaryExpression = expression.Body as BinaryExpression;
-                    tuple = Where(binaryExpression.Left, binaryExpression.Right, binaryExpression.NodeType);
-                    break;
-            }
-            Sql = string.Format("{0} where {1} ", GetSqlLeft(typeof(T)), tuple.Item1);
+            BinaryExpression binaryExpression = expression.Body as BinaryExpression;
+            tuple = Where(binaryExpression.Left, binaryExpression.Right, binaryExpression.NodeType);
+            sql = string.Format("{0} where {1} ", CreateSelectSql(typeof(T)), tuple.Item1);
             DynamicParameters = tuple.Item2;
         }
         /// <summary>
@@ -62,16 +55,16 @@ namespace DapperFactory
             StringBuilder stringBuilder = new StringBuilder();
             if(dynamicParameters==null)
                 dynamicParameters = new DynamicParameters();
-            //获取左边条件字段
-            string sqlByLeft = SqlFragment(left, dynamicParameters, paraName).Item1;
+            //通过表达式左边条件字段
+            string sqlField = CreateCondition(left, dynamicParameters, paraName).Item1;
             //获取条件符号
             string typeCast = ExpressionTypeCast(expressionType);
             //获取右边参数化的条件@para
-            string sqlByRight = SqlFragment(right, dynamicParameters, sqlByLeft).Item1;
+            string sqlValue = CreateCondition(right, dynamicParameters, sqlField).Item1;
             // DynamicParameters参数类型
-            stringBuilder.Append(sqlByLeft);
+            stringBuilder.Append(sqlField);
             stringBuilder.Append(typeCast);
-            stringBuilder.Append(sqlByRight + " ");
+            stringBuilder.Append(sqlValue + " ");
             Tuple<string, DynamicParameters> resultMap =
                 new Tuple<string, DynamicParameters>(stringBuilder.ToString(), dynamicParameters);
             return resultMap;
@@ -87,70 +80,59 @@ namespace DapperFactory
         /// 该条件不会被初始化
         /// </param>
         /// <returns></returns>
-        public static Tuple<string, DynamicParameters> SqlFragment(Expression expression,DynamicParameters dynamicParameters, string paraName = null)
+        public static Tuple<string, DynamicParameters> CreateCondition(Expression expression,DynamicParameters dynamicParameters, string paraName = null)
         {            
             if (dynamicParameters == null)
                 dynamicParameters = new DynamicParameters();
             string sqlChip = string.Empty;
             //sql参数元祖
             Tuple<string, DynamicParameters> tupleParameters = null;
-            string expName = expression.GetType().Name;
-            switch (expName)
+            ExpressionType expressionType = expression.NodeType;
+            switch (expressionType)
             {
-
-                //递归解析表达式的body，直至最小单元
-                case "LogicalBinaryExpression":
-                case "BinaryExpression":
-                case "MethodBinaryExpression":
-                    BinaryExpression binaryExpression = expression as BinaryExpression; 
-                    tupleParameters=Where(binaryExpression.Left, binaryExpression.Right, binaryExpression.NodeType, dynamicParameters, paraName);
-                    break;
-                //一组表达式的左节点为PropertyExpression;如：Username=="admin"，通过解析表达式后Username属于PropertyExpression
-                case "PropertyExpression":
-                    MemberExpression memberExpression = expression as MemberExpression;
+                case ExpressionType.MemberAccess:              
+                    MemberExpression memberExpression = expression as MemberExpression;//表达式类型，如s=>s.Account==user.Account的user.Account的Expression
+                    PropertyInfo propertyInfo = memberExpression.Member as PropertyInfo;
+                    MemberExpression subExpression = memberExpression.Expression as MemberExpression;
                     sqlChip = memberExpression.Member.Name;
-                    //返回DynamicParameters到Where方法中，否者会出异常
                     tupleParameters = new Tuple<string, DynamicParameters>(sqlChip, dynamicParameters);
-                    break;
-                // 一组表达式的左节点为PropertyExpression; 如：Username == "admin"，通过解析表达式后Username属于PropertyExpression
-                case "ConstantExpression":
-                    ConstantExpression constantExpression = expression as ConstantExpression;
+                    if (subExpression == null)//不为null代表为表达式右部分，
+                        return tupleParameters;
+                    var member = Expression.Convert(expression, typeof(object));
+                    var lambda = Expression.Lambda<Func<object>>(member);
+                    var getter = lambda.Compile().Invoke();
+                    dynamicParameters.Add(memberExpression.Member.Name, getter);
+                    tupleParameters = new Tuple<string, DynamicParameters>($"@{memberExpression.Member.Name}", dynamicParameters);
+                    return tupleParameters;
+                case ExpressionType.Equal:
+                    BinaryExpression binaryExpression = expression as BinaryExpression;
+                    tupleParameters=Where(binaryExpression.Left, binaryExpression.Right, binaryExpression.NodeType, dynamicParameters, paraName);
+                    return tupleParameters;
+                case ExpressionType.Convert://表达式包含枚举或者其它的一元操作符操作，如s.Sex==Sex.男，此处解析s.Sex表达式
+                    UnaryExpression unaryExpression = expression as UnaryExpression;
+                    tupleParameters = CreateCondition(unaryExpression.Operand, dynamicParameters);
+                    return tupleParameters;
+                case ExpressionType.Constant://枚举值或者其它值的一元操作符操作，Sex.男
+                    ConstantExpression constantExpression1 = expression as ConstantExpression;
                     if (!string.IsNullOrEmpty(paraName))
                     {
                         sqlChip = $"@{paraName}";
-                        object value = constantExpression.Value;
-                        //dynamicParameters.AddDynamicParams(new { paraName = value });
-                        //AddDynamicParams添加匿名类型，匿名类型无法通过参数命名，
-                        //因为最后会变成paraName ="admin"而不是Username="admin";
-                        var type = constantExpression.Type.Name;
-                        switch(type)
+                        object value1 = constantExpression1.Value;
+                        var type = constantExpression1.Type.Name;
+                        switch (type)
                         {
                             case "String":
-                                dynamicParameters.Add(paraName, value, DbType.String);
+                                dynamicParameters.Add(sqlChip, value1, DbType.String);
                                 break;
                             case "Int32":
-                                dynamicParameters.Add(paraName, value, DbType.Int32);
+                                dynamicParameters.Add(sqlChip, value1, DbType.Int32);
                                 break;
                             default:
                                 break;
                         }
                         tupleParameters = new Tuple<string, DynamicParameters>(sqlChip, dynamicParameters);
                     }
-                    break;
-                //一元运算符，为枚举条件时会执行该处
-                //
-                case "UnaryExpression":
-                    UnaryExpression unaryExpression = expression as UnaryExpression;
-                    tupleParameters = SqlFragment(unaryExpression.Operand, dynamicParameters);
-                    break;
-                case "FieldExpression":
-                    MemberExpression mExp = expression as MemberExpression;
-                    var member = Expression.Convert(expression, typeof(object));
-                    var lambda = Expression.Lambda<Func<object>>(member);
-                    var getter = lambda.Compile().Invoke();
-                    dynamicParameters.Add(mExp.Member.Name, getter);
-                    tupleParameters = new Tuple<string, DynamicParameters>($"@{mExp.Member.Name}", dynamicParameters);
-                    break;
+                    return tupleParameters;
             }
             return tupleParameters;
         }
@@ -170,12 +152,12 @@ namespace DapperFactory
 
         #region 查询
         /// <summary>
-        /// 获取查询语句条件左部分
+        /// 获取查询语句,不带查询条件
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static string GetSqlLeft(Type type)
+        public static string CreateSelectSql(Type type)
         {
             string tableName ="t_"+type.Name.ToLower();
             PropertyInfo[] propertys = type.GetProperties();
@@ -241,7 +223,7 @@ namespace DapperFactory
         {
                 LambdaAnalysis(expression);
                 T t = default(T);
-                t = mySqlConnection.QueryFirstOrDefault<T>(Sql, DynamicParameters);
+                t = mySqlConnection.QueryFirstOrDefault<T>(sql, DynamicParameters);
                 return t;
         }
 
@@ -255,8 +237,8 @@ namespace DapperFactory
         {
             LambdaAnalysis<T>(expression);
             string tableName = typeof(T).Name;
-            string sql = $"select count(*) from {tableName}" + Sql;
-            int count=mySqlConnection.Query(sql, DynamicParameters).Count();
+            string selectSql = $"select count(*) from {tableName}" + sql;
+            int count=mySqlConnection.Query(selectSql, DynamicParameters).Count();
             return count;
         }
         #endregion
@@ -267,7 +249,7 @@ namespace DapperFactory
         /// </summary>
         /// <param name="type">实体类型</param>
         /// <returns></returns>
-        public static string GetInsertSql(Type type)
+        public static string CreateInsertSql(Type type)
         {
             string tableName = type.Name;
             PropertyInfo[] propertys = type.GetProperties();
