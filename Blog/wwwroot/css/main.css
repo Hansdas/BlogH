@@ -15,11 +15,12 @@ body{font: 14px 宋体 Helvetica Neue,Helvetica,PingFang SC,Tahoma,Arial,sans-se
 .w1000{max-width: 1000px!important; margin:0 auto;}
 .header{height: 120px; line-height: 120px; position: relative; font-size: 16px;}
 .header .logo,.header .welcome-text,.header .nav{position: absolute; top: 0;}
-.header .logo{left: 65px;}
+.header .logo{left: 150px;}
 .header .logo span{display: none;}
-.header .nav{left: 250px;}
+.header .nav{left: 300px;}
 .header .nav a{color: #3f2863; margin:0 40px;}
 .header .nav a.active{color: #ff7f21;}
+.header .btn {left: 1300px;position:absolute;top:0}
 .header .welcome-text{right: 50px;}
 .header .header-down-nav{display: none;}
 

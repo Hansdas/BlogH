@@ -1,4 +1,4 @@
- .layui-nav{
+ /*.layui-nav{
     background: white ;
     float: right;
 }
@@ -11,4 +11,8 @@
 }
 .user{
     cursor:pointer;
+}*/
+.nav-right{
+    position:absolute;
+    right:135px;
 }
