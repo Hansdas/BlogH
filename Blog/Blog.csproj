@@ -31,7 +31,6 @@
     <ProjectReference Include="..\DapperFactory\DapperFactory.csproj" />
     <ProjectReference Include="..\DBHelper\DBHelper.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\IDapperFactory\IDapperFactory.csproj" />
     <ProjectReference Include="..\IServiceSvc\IServiceSvc.csproj" />
     <ProjectReference Include="..\ServiceSvc\ServiceSvc.csproj" />
   </ItemGroup>

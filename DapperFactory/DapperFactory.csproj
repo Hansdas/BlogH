@@ -16,7 +16,6 @@
     <ProjectReference Include="..\CommonHelper\CommonHelper.csproj" />
     <ProjectReference Include="..\DBHelper\DBHelper.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\IDapperFactory\IDapperFactory.csproj" />
   </ItemGroup>
 
 </Project>

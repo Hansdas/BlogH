@@ -1,6 +1,6 @@
 ﻿using Dapper;
+using DapperFactory;
 using Domain;
-using IDapperFactory;
 using IServiceSvc;
 using System;
 
@@ -8,13 +8,11 @@ namespace ServiceSvc
 {
     public class UserServiceSvc : IUserServiceSvc
     {
-        protected IQuerySelect _querySelect;
-        protected IQueryInsert _queryInsert;
+        protected IQueryDapper _queryDapper;
         private static object _lock = new object();
-        public UserServiceSvc(IQuerySelect querySelect, IQueryInsert queryInsert)
+        public UserServiceSvc(IQueryDapper queryDapper)
         {
-            _querySelect = querySelect;
-            _queryInsert = queryInsert;
+            _queryDapper = queryDapper;
         }
         /// <summary>
         /// 查询单个用户
@@ -26,7 +24,7 @@ namespace ServiceSvc
         public User GetSingleUser(string Account, string Password, out string message)
         {
             User user = new User();
-            user = _querySelect.SelectSingle<User>(s => s.Account == Account && s.Password == Password);
+            user = _queryDapper.SelectSingle<User>(s => s.Account == Account && s.Password == Password);
             if (user == null)
             {
                 message = "账号不存在";
@@ -52,13 +50,13 @@ namespace ServiceSvc
         public void RegisterUser(User user)
         {
             string message = null;
-            int count = _querySelect.SelectCount<User>(s => s.Account == user.Account);
+            int count = _queryDapper.SelectCount<User>(s => s.Account == user.Account);
             if (count > 0)
             {
                 message = string.Format("'{0}'账号已存在", user.Account);
                 throw new ValidationException(message);
             }
-            user = _queryInsert.InsertSingle<User>(user);
+            user = _queryDapper.InsertSingle<User>(user);
         }
     }
 }

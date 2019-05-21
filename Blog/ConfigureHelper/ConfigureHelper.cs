@@ -1,7 +1,6 @@
 ﻿using Blog;
 using CacheFactory;
 using DapperFactory;
-using IDapperFactory;
 using IServiceSvc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -19,8 +18,7 @@ namespace CommonHelper
         /// <param name="services"></param>
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
         {            
-            services.AddTransient<IQuerySelect, QuerySelect>();
-            services.AddTransient<IQueryInsert, QueryInsert>();
+            services.AddTransient<IQueryDapper, QueryDapper>();
             services.AddTransient<IUserServiceSvc, UserServiceSvc>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(new ServiceDescriptor(typeof(ConnectionProvider), new ConnectionProvider(configuration.GetConnectionString("MySqlConnection"))));

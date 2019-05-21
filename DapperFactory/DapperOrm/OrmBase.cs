@@ -12,7 +12,10 @@ using System.Threading.Tasks;
 
 namespace DapperFactory
 {
-    public abstract class OrmBase
+    /// <summary>
+    /// 解析lambda表达式
+    /// </summary>
+    public abstract class ExpressionFunc
     {
         protected static MySqlConnection mySqlConnection = ConnectionProvider.connection;
         /// <summary>
@@ -34,10 +37,9 @@ namespace DapperFactory
         {
             Tuple<string, DynamicParameters> tuple =null;
             ExpressionType expressionType = expression.Body.NodeType;
-            string sql = string.Empty;
             BinaryExpression binaryExpression = expression.Body as BinaryExpression;
             tuple = Where(binaryExpression.Left, binaryExpression.Right, binaryExpression.NodeType);
-            sql = string.Format("where {0} ", tuple.Item1);
+            sqlWhere = string.Format("where {0} ", tuple.Item1);
             DynamicParameters = tuple.Item2;
         }
         /// <summary>
@@ -150,7 +152,7 @@ namespace DapperFactory
         }
         #endregion
 
-        #region 查询
+        #region 创建sql
         /// <summary>
         /// 获取查询语句,不带查询条件
         /// </summary>
@@ -213,6 +215,9 @@ namespace DapperFactory
             string sql = sb.ToString();
             return sql;
         }
+        #endregion
+
+        #region 查询
         /// <summary>
         /// 查询单个实体
         /// </summary>
@@ -237,8 +242,8 @@ namespace DapperFactory
         public virtual int Count<T>(Expression<Func<T, bool>> expression)
         {
             LambdaAnalysis<T>(expression);
-            string tableName = typeof(T).Name;
-            string sql = $"select count(*) from {tableName}" + sqlWhere;
+            string tableName = typeof(T).GetTableName();
+            string sql = string.Format("select count(*) from {0} {1}", tableName, sqlWhere);
             int count=mySqlConnection.Query(sql, DynamicParameters).Count();
             return count;
         }

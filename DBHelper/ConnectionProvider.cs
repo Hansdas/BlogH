@@ -9,7 +9,7 @@ namespace DapperFactory
   public  class ConnectionProvider
     {
         private string _MySqlConnection;
-        public static MySqlConnection connection;
+        public static MySqlConnection connection=null;
         /// <summary>
         /// Startup类传入连接字符串
         /// </summary>
@@ -17,7 +17,8 @@ namespace DapperFactory
         public ConnectionProvider(string conn)
         {
             _MySqlConnection = conn;
-            connection = GetConnection();
+            if(connection==null)
+                connection = GetConnection();
         }
         private ConnectionProvider()
         {

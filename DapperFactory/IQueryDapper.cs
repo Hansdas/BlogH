@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace IDapperFactory
+namespace DapperFactory
 {
-   public interface IQuerySelect
+   public interface IQueryDapper
     {
+        #region  Select
         /// <summary>
         /// 查询单条信息
         /// </summary>
@@ -23,5 +25,21 @@ namespace IDapperFactory
         T SelectSingle<T>(Expression<Func<T, bool>> expression);
         int SelectCount<T>(Expression<Func<T, bool>> expression);
         int SelectCount<T>(string sql, object paras = null);
+        #endregion
+
+        #region Insert
+        /// <summary>
+        /// 插入单条数据
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        T InsertSingle<T>(T t);
+        /// <summary>
+        /// 插入单条数据
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        Task<T> InsertSingle<T>(string sql, T t);
+        #endregion
     }
 }
