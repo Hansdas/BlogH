@@ -1,5 +1,8 @@
-﻿namespace Domain
+﻿using Domain.Attr;
+
+namespace Domain
 {
+    [Table("t_user")]
     public  class User: DomainBase
     {
         /// <summary>

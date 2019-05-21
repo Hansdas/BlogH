@@ -46,17 +46,23 @@ namespace DapperFactory
         }
         #endregion
 
-
-
+        #region Insert
+        /// <summary>
+        /// 插入单条数据
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
         public T InsertSingle<T>(T t)
         {
-            return base.Insert(t).Result;
+            return base.Insert(t);
         }
-        public async Task<T> InsertSingle<T>(string sql,T t)
+        public async Task<T> InsertSingle<T>(string sql, T t)
         {
             T entity = await mySqlConnection.ExecuteScalarAsync<T>(sql, t);
             return entity;
         }
+        #endregion
+
 
     }
 }

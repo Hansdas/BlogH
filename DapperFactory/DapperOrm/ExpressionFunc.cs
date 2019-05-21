@@ -90,22 +90,54 @@ namespace DapperFactory
             //sql参数元祖
             Tuple<string, DynamicParameters> tupleParameters = null;
             ExpressionType expressionType = expression.NodeType;
+            ConstantExpression constantExpression = null;
             switch (expressionType)
             {
                 case ExpressionType.MemberAccess:              
                     MemberExpression memberExpression = expression as MemberExpression;//表达式类型，如s=>s.Account==user.Account的user.Account的Expression
                     PropertyInfo propertyInfo = memberExpression.Member as PropertyInfo;
-                    MemberExpression subExpression = memberExpression.Expression as MemberExpression;
-                    sqlChip = memberExpression.Member.Name;
-                    tupleParameters = new Tuple<string, DynamicParameters>(sqlChip, dynamicParameters);
-                    if (subExpression == null)//不为null代表为表达式右部分，
-                        return tupleParameters;
-                    var member = Expression.Convert(expression, typeof(object));
-                    var lambda = Expression.Lambda<Func<object>>(member);
-                    var getter = lambda.Compile().Invoke();
-                    dynamicParameters.Add(memberExpression.Member.Name, getter);
-                    tupleParameters = new Tuple<string, DynamicParameters>($"@{memberExpression.Member.Name}", dynamicParameters);
-                    return tupleParameters;
+                    switch(memberExpression.Expression.NodeType)
+                    {
+                        case ExpressionType.Constant:
+                            constantExpression = memberExpression.Expression as ConstantExpression;
+                            if (!string.IsNullOrEmpty(paraName))
+                            {
+                                sqlChip = $"@{paraName}";
+                                object value = constantExpression.Value;
+                                var type = constantExpression.Type.Name;
+                                switch (type)
+                                {
+                                    case "String":
+                                        dynamicParameters.Add(sqlChip, value, DbType.String);
+                                        break;
+                                    case "Int32":
+                                        dynamicParameters.Add(sqlChip, value, DbType.Int32);
+                                        break;
+                                    default:
+                                        if (memberExpression.Member is FieldInfo)
+                                        {
+                                            value = ((FieldInfo)memberExpression.Member).GetValue(value);
+                                            dynamicParameters.Add(sqlChip, value, DbType.String);
+                                        }
+                                        break;
+                                }
+                                tupleParameters = new Tuple<string, DynamicParameters>(sqlChip, dynamicParameters);
+                            }
+                            return tupleParameters;
+                        case ExpressionType.MemberAccess:
+                            var member = Expression.Convert(expression, typeof(object));
+                            var lambda = Expression.Lambda<Func<object>>(member);
+                            var getter = lambda.Compile().Invoke();
+                            dynamicParameters.Add(memberExpression.Member.Name, getter);
+                            tupleParameters = new Tuple<string, DynamicParameters>($"@{memberExpression.Member.Name}", dynamicParameters);
+                            return tupleParameters;
+                        default:
+                            sqlChip = memberExpression.Member.Name;
+                            tupleParameters = new Tuple<string, DynamicParameters>(sqlChip, dynamicParameters);
+                            return tupleParameters;
+
+                    }
+                   
                 case ExpressionType.Equal:
                     BinaryExpression binaryExpression = expression as BinaryExpression;
                     tupleParameters=Where(binaryExpression.Left, binaryExpression.Right, binaryExpression.NodeType, dynamicParameters, paraName);
@@ -115,19 +147,19 @@ namespace DapperFactory
                     tupleParameters = CreateCondition(unaryExpression.Operand, dynamicParameters);
                     return tupleParameters;
                 case ExpressionType.Constant://枚举值或者其它值的一元操作符操作，Sex.男
-                    ConstantExpression constantExpression1 = expression as ConstantExpression;
+                    constantExpression = expression as ConstantExpression;
                     if (!string.IsNullOrEmpty(paraName))
                     {
                         sqlChip = $"@{paraName}";
-                        object value1 = constantExpression1.Value;
-                        var type = constantExpression1.Type.Name;
+                        object value = constantExpression.Value;
+                        var type = constantExpression.Type.Name;
                         switch (type)
                         {
                             case "String":
-                                dynamicParameters.Add(sqlChip, value1, DbType.String);
+                                dynamicParameters.Add(sqlChip, value, DbType.String);
                                 break;
                             case "Int32":
-                                dynamicParameters.Add(sqlChip, value1, DbType.Int32);
+                                dynamicParameters.Add(sqlChip, value, DbType.Int32);
                                 break;
                             default:
                                 break;
@@ -161,7 +193,7 @@ namespace DapperFactory
         /// <returns></returns>
         public static string CreateSelectSql(Type type)
         {
-            string tableName ="t_"+type.Name.ToLower();
+            string tableName =type.GetTableName();
             PropertyInfo[] propertys = type.GetProperties();
             List<string> fieldList = new List<string>();
             foreach (PropertyInfo item in propertys)
@@ -170,50 +202,34 @@ namespace DapperFactory
             return string.Format("select {0} from {1} ", string.Join(',', fieldList), tableName);
         }
         /// <summary>
-        /// 返回类型名字和属性数组
+        /// insert
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <param name="type">实体类型</param>
         /// <returns></returns>
-        private static Tuple<string, PropertyInfo[]> GetPropertyInfos<T>()
+        public static string CreateInsertSql<T>(T t)
         {
-            var type = typeof(T);
-            string tableName = type.Name;
-            PropertyInfo[] propertys = type.GetProperties();
-            Tuple<string, PropertyInfo[]> tuple = new Tuple<string, PropertyInfo[]>(tableName, propertys);
-            return tuple;
-        }
-        /// <summary>
-        /// 返回insert语句
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="t"></param>
-        /// <param name="fieldNameBegin">字段名前缀</param>
-        /// <returns></returns>
-        private static string CreateInsertSql<T>(string fieldNameBegin)
-        {
-            Tuple<string, PropertyInfo[]> tuple = GetPropertyInfos<T>();
-            StringBuilder sb = new StringBuilder();
-            sb.Append("insert into ");
-            sb.Append(typeof(T).GetTableName());
-            sb.Append(tuple.Item1);
-            PropertyInfo propertyInfo;
-            List<string> tableNames = new List<string>();
+            Type type = typeof(T);
+            StringBuilder sbInsert = new StringBuilder();
+            sbInsert.Append("insert into ");
+            sbInsert.Append(typeof(T).GetTableName());
+            List<string> fileds = new List<string>();
             List<string> values = new List<string>();
-            for (int i = 0; i < tuple.Item2.Length; i++)
+            PropertyInfo[] propertys = type.GetProperties(); ;
+            for (int i = 0; i < propertys.Length; i++)
             {
-                propertyInfo = tuple.Item2[i];
+                PropertyInfo propertyInfo = propertys[i];
                 if (propertyInfo.Name == "Id")
                     continue;
-                tableNames.Add(fieldNameBegin + "_" + propertyInfo.Name);
+                fileds.Add(propertyInfo.Name);
+                values.Add("@" + propertyInfo.Name);
             }
-            sb.Append("(");
-            sb.Append(string.Join(",", tableNames));
-            sb.Append(") ");
-            sb.Append("values (");
-            sb.Append(string.Join(",", values));
-            sb.Append(")");
-            string sql = sb.ToString();
-            return sql;
+            sbInsert.Append("(");
+            sbInsert.Append(string.Join(",", fileds));
+            sbInsert.Append(") ");
+            sbInsert.Append("values (");
+            sbInsert.Append(string.Join(",", values));
+            sbInsert.Append(")");
+            return sbInsert.ToString();
         }
         #endregion
 
@@ -244,46 +260,16 @@ namespace DapperFactory
             LambdaAnalysis<T>(expression);
             string tableName = typeof(T).GetTableName();
             string sql = string.Format("select count(*) from {0} {1}", tableName, sqlWhere);
-            int count=mySqlConnection.Query(sql, DynamicParameters).Count();
+            int count=mySqlConnection.ExecuteScalar<int>(sql, DynamicParameters);
             return count;
         }
         #endregion
 
         #region 新增
-        /// <summary>
-        /// insert
-        /// </summary>
-        /// <param name="type">实体类型</param>
-        /// <returns></returns>
-        public static string CreateInsertSql(Type type)
+        public virtual T Insert<T>(T t)
         {
-            string tableName = type.Name;
-            PropertyInfo[] propertys = type.GetProperties();
-            StringBuilder sbInsert = new StringBuilder();
-            sbInsert.Append("insert into t_");
-            sbInsert.Append(tableName);
-            List<string> fileds = new List<string>();
-            List<string> values = new List<string>();
-            for (int i = 0; i < propertys.Length; i++)
-            {
-                PropertyInfo propertyInfo = propertys[i];
-                if (propertyInfo.Name == "Id")
-                    continue;
-                fileds.Add(propertyInfo.Name);
-                values.Add("@" + propertyInfo.Name);
-            }
-            sbInsert.Append("(");
-            sbInsert.Append(string.Join(",", fileds));
-            sbInsert.Append(") ");
-            sbInsert.Append("values (");
-            sbInsert.Append(string.Join(",", values));
-            sbInsert.Append(")");
-            return sbInsert.ToString();
-        }
-        public virtual async Task<T> Insert<T>(T t)
-        {
-            string sql = CreateInsertSql(typeof(T));
-            T entity = await mySqlConnection.ExecuteScalarAsync<T>(sql, t);
+            string sql = CreateInsertSql(t);
+            T entity =mySqlConnection.ExecuteScalar<T>(sql, t);
             return entity;
         }
         #endregion

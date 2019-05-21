@@ -25,21 +25,41 @@
     Domain.User user = Auth.GetLoginUser();
 }
 <body>
+    <div>
+        <ul class="layui-nav" style="float:none !important;background-color:#393D49 !important">
+            <li class="layui-nav-item" >
+                <a href="" style="color:white !important">控制台<span class="layui-badge">9</span></a>
+            </li>
+            <li class="layui-nav-item" >
+                <a href="" style="color:white !important">个人中心<span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item" lay-unselect="">
+                <a href="javascript:;"><img src="//t.cn/RCzsdCq" class="layui-nav-img"  style="color:white !important">我</a>
+                <dl class="layui-nav-child" style="color:white !important">
+                    <dd><a href="javascript:;">修改信息</a></dd>
+                    <dd><a href="javascript:;">安全管理</a></dd>
+                    <dd><a href="javascript:;">退了</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
     <div class="header">
         <div class="menu-btn">
             <div class="menu"></div>
         </div>
+
         <h1 class="logo">
             <a href="index.html">
                 <img src="~/img/logo.png">
             </a>
         </h1>
         <div class="nav">
-            <a href="index.html"  class="active">文章</a>
-            <a href="javascript:;" >微语</a>
+            <a href="index.html" class="active">文章</a>
+            <a href="javascript:;">微语</a>
             <a href="leacots.html">留言</a>
             <a href="album.html">相册</a>
             <a href="about.html">关于</a>
+            <button class="layui-btn layui-btn-normal">发表</button>
         </div>
         <p class="welcome-text">
             @if (user == null)
@@ -49,16 +69,16 @@
             else
             {
                 <div class="user">
-                <ul class="layui-nav">
-                  <li class="layui-nav-item">
-                          <a href="">欢迎来到 @user.Username 的博客  </a>  
-                          <dl class="layui-nav-child">
-                               <dd><a href="javascript:;">修改信息</a></dd>
-                               <dd><a href="javascript:;">安全管理</a></dd>
-                               <dd><a href="../Login/LoginOut">退了</a></dd>
-                         </dl>
-                     </li>
-                </ul>
+                    <ul class="layui-nav">
+                        <li class="layui-nav-item">
+                            <a href=""><img src="//t.cn/RCzsdCq" class="layui-nav-img" />@user.Username</a>
+                            <dl class="layui-nav-child">
+                                <dd><a href="javascript:;">修改信息</a></dd>
+                                <dd><a href="javascript:;">安全管理</a></dd>
+                                <dd><a href="../Login/LoginOut">退了</a></dd>
+                            </dl>
+                        </li>
+                    </ul>
                 </div>
             }
         </p>
