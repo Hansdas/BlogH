@@ -43,7 +43,7 @@ namespace Blog.Controllers
                 {
                     return new JsonResult(new ReturnResult() { Code = "200", Message = message });
                 }
-                Auth.Login(user);
+                HttpContext.Login(user);
             }
             catch (Exception e)
             {

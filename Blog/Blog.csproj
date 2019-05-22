@@ -39,6 +39,11 @@
     <None Include="nlog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="wwwroot\js\mods\case.js" />
+    <None Include="wwwroot\js\mods\face.js" />
+    <None Include="wwwroot\js\mods\index.js" />
+    <None Include="wwwroot\js\mods\jie.js" />
+    <None Include="wwwroot\js\mods\user.js" />
     <None Include="wwwroot\layuiSimpleBlog-v1.0.0\res\js\util\menu.js" />
     <None Include="wwwroot\layuiSimpleBlog-v1.0.0\res\js\util\mm.js" />
     <None Include="wwwroot\layuiSimpleBlog-v1.0.0\res\layui\font\iconfont.svg" />

@@ -1,6 +1,7 @@
 ﻿using CommonHelper;
 using Domain;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,9 +32,10 @@ namespace Blog
         /// <summary>
         /// 用户登录
         /// </summary>
-        public  static void Login(User user)
+        public  static void Login(this HttpContext httpContext, User user)
         {
-           Http.SetSession(user.Account, user);
+            //Http.SetSession(user.Account, user);
+            httpContext.Session.SetString(user.Account, JsonHelper.Serialize(user));
         }
          /// <summary>
         /// 退出操作

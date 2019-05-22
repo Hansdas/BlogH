@@ -22,10 +22,10 @@ namespace CommonHelper
             services.AddTransient<IUserServiceSvc, UserServiceSvc>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(new ServiceDescriptor(typeof(ConnectionProvider), new ConnectionProvider(configuration.GetConnectionString("MySqlConnection"))));
-            services.AddDistributedRedisCache(s => {
-                s.Configuration = configuration.GetConnectionString("RedisConnection"); //多个redis服务器：s.Configuration="地址1:端口,地址2:端口"
-                s.InstanceName = "RedisDistributedCache";
-            });
+            //services.AddDistributedRedisCache(s => {
+            //    s.Configuration = configuration.GetConnectionString("RedisConnection"); //多个redis服务器：s.Configuration="地址1:端口,地址2:端口"
+            //    s.InstanceName = "RedisDistributedCache";
+            //});
         }
         /// <summary>
         /// 添加对HttpContext的扩展支持

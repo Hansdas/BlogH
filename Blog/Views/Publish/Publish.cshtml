@@ -6,13 +6,43 @@
     <link href="~/layui/css/layui.css" rel="stylesheet" />
     <link href="~/css/main.css?v=201922261" rel="stylesheet" />
     <link href="~/css/layout.css?v=121" rel="stylesheet" />
+    <link href="~/css/global.css?v=1" rel="stylesheet" />
     <script src="~/js/jquery.js"></script>
     <script src="~/layui/layui.js"></script>
     <script src="~/js/layout.js?v=5"></script>
     <script>
-        layui.use('form', function () {
+        layui.use(['upload', 'form'], function () {
             var form = layui.form; //只有执行了这一步，部分表单元素才会自动修饰成功
+            var upload = layui.upload;
             form.render();
+            //layui.cache.page = 'jie';
+            //layui.cache.user = {
+            //    username: '游客'
+            //    , uid: -1
+            //    , avatar: '../../res/images/avatar/00.jpg'
+            //    , experience: 83
+            //    , sex: '男'
+            //};
+            //多图片上传
+            upload.render({
+                elem: '#test2'
+                , url: '/upload/'
+                , multiple: true
+                , before: function (obj) {
+                    //预读本地文件示例，不支持ie8
+                    obj.preview(function (index, file, result) {
+                        $('#imgbox').append('<img style="height:200px;width:300px"  src="' + result + '" alt="' + file.name + '" class="layui-upload-img">')
+                    });
+                }
+                , done: function (res) {
+                    //上传完毕
+                }
+            });
+            layui.config({
+                base: '/js/mods/'
+            }).extend({
+                fly: 'index'
+            }).use('fly');
         });
     </script>
 </head>
@@ -22,7 +52,7 @@
     Domain.User user = Auth.GetLoginUser();
 }
 <body>
-    <div class="layui-layout layui-layout-admin">
+    <div class="fly-header layui-bg-black">
         <div class="layui-header">
             <ul class="layui-nav layui-layout-right nav-right">
                 <li class="layui-nav-item">
@@ -42,62 +72,57 @@
             </ul>
         </div>
     </div>
-
-    <div style="padding: 20px; background-color: #F2F2F2;">
-        <div class="layui-row layui-col-space15">
-            <div class="layui-col-md12" style="width:1370px;padding-left:115px">
-                <div class="layui-card">
-                    <div class="layui-card-body">
-                        <div pad20 style="padding-top: 5px;">
-                            <div class="layui-form layui-form-pane">
-                                <div class="layui-tab layui-tab-brief" lay-filter="user">
-                                    <ul class="layui-tab-title">
-                                        <li class="layui-this">
-                                            发表内容
-                                        </li>
-                                    </ul>
-                                    <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
-                                        <div class="layui-tab-item layui-show">
-                                            <form>
-                                                <div class="layui-row layui-col-space15 layui-form-item" style="margin-top:-215px">
-                                                    <div class="layui-col-md3">
-                                                        <label class="layui-form-label">所在专栏</label>
-                                                        <div class="layui-input-block">
-                                                            <select lay-verify="required" name="class" lay-filter="column">
-                                                                <option></option>
-                                                                <option value="0">提问</option>
-                                                                <option value="99">分享</option>
-                                                                <option value="100">讨论</option>
-                                                                <option value="101">建议</option>
-                                                            </select>
-                                                            <div class="layui-unselect layui-form-select">
-                                                                <div class="layui-select-title">
-                                                                    <input type="text" placeholder="请选择" value="" readonly="" class="layui-input layui-unselect">
-                                                                    <i class="layui-edge"></i>
-                                                                </div>
-                                                                <dl class="layui-anim layui-anim-upbit">
-                                                                    <dd lay-value="" class="layui-select-tips">请选择</dd>
-                                                                    <dd lay-value="0" class="">提问</dd>
-                                                                    <dd lay-value="99" class="">分享</dd>
-                                                                    <dd lay-value="100" class="">讨论</dd>
-                                                                    <dd lay-value="101" class="">建议</dd>
-                                                                </dl>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="layui-col-md9">
-                                                        <label for="L_title" class="layui-form-label">标题</label>
-                                                        <div class="layui-input-block">
-                                                            <input type="text" id="L_title" name="title" required="" lay-verify="required" autocomplete="off" class="layui-input">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </form>
+    <div class="layui-container fly-marginTop">
+        <div class="fly-panel" pad20 style="padding-top: 5px;">
+            <!--<div class="fly-none">没有权限</div>-->
+            <div class="layui-form layui-form-pane">
+                <div class="layui-tab layui-tab-brief" lay-filter="user">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">发表新帖<!-- 编辑帖子 --></li>
+                    </ul>
+                    <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+                        <div class="layui-tab-item layui-show">
+                            <form action="" method="post">
+                                <div class="layui-row layui-col-space15 layui-form-item" style="margin-top:-214px">
+                                    <div class="layui-col-md3">
+                                        <label class="layui-form-label">所在专栏</label>
+                                        <div class="layui-input-block">
+                                            <select lay-verify="required" name="class" lay-filter="column">
+                                                <option></option>
+                                                <option value="0">文章</option>
+                                                <option value="99">微语</option>
+                                            </select>
                                         </div>
-
+                                    </div>
+                                    <div class="layui-col-md9">
+                                        <label for="L_title" class="layui-form-label">标题</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" id="L_title" name="title" required lay-verify="required" autocomplete="off" class="layui-input">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                                <div class="layui-upload">
+                                    <button type="button" class="layui-btn" id="test2">多图片上传</button>
+                                    @*<blockquote class="layui-elem-quote layui-quote-nm" style="margin-top: 10px;">*@
+                                        @*<div class="content whisper-content">
+                                            <div class="whisper-list">*@
+                                    <div>
+                                        <div class="img-box" id="imgbox">
+                                        </div>
+                                    </div>
+                                            @*</div>
+                                        </div>*@
+                                    @*</blockquote>*@
+                                </div>
+                                <div class="layui-form-item layui-form-text">
+                                    <div class="layui-input-block">
+                                        <textarea id="L_content" name="content" required lay-verify="required" placeholder="请输入内容" class="layui-textarea fly-editor" style="height: 260px;"></textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
