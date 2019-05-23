@@ -9,10 +9,6 @@ namespace Blog.Controllers
     [GlobaExceptionFilter]
     public class BaseController : Controller
     {
-        public IActionResult Index()
-        {
-
-            return View();
-        }
+      
     }
 }

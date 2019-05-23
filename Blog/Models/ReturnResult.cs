@@ -2,12 +2,25 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain
+namespace Blog
 {      /// <summary>
        /// 控制器返回前端结果
        /// </summary>
     public class ReturnResult
     {
+        public ReturnResult()
+        {
+
+        }
+        public ReturnResult(string code,string message)
+        {
+            Code = code;
+            Message = message;
+        }
+        public ReturnResult(string code, string message,string data):this(code,message)
+        {
+            Data = data;
+        }
         /// <summary>
         /// 提示文本
         /// </summary>
@@ -16,6 +29,10 @@ namespace Domain
         /// 状态结果
         /// </summary>
         public string Code { get; set; }
+        /// <summary>
+        /// 返回数据
+        /// </summary>
+        public string Data { get; set; }
 
     }
     /// <summary>

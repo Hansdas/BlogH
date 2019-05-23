@@ -28,12 +28,12 @@ namespace Blog.Controllers.User
             string fileName=photoImage.FileName.Trim();
             try
             {                
-                string path = DirectoryHelper.CreateDirectory() + fileName;
-                using (Stream stream=System.IO.File.Create(path))
-                {
-                    photoImage.CopyToAsync(stream);                    
-                    stream.Flush();
-                }
+                //string path = DirectoryHelper.CreateDirectory() + fileName;
+                //using (Stream stream=System.IO.File.Create(path))
+                //{
+                //    photoImage.CopyToAsync(stream);                    
+                //    stream.Flush();
+                //}
                 Domain.User user = new Domain.User();
             }
             catch (Exception e)

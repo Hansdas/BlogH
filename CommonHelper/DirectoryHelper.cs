@@ -12,28 +12,25 @@ namespace FileHelper
     public static class DirectoryHelper
     {
         /// <summary>
-        /// 判断是否存在指定目录
+        /// 返回指定目录集合
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static bool IsExists(string path)
+        public static IEnumerable<string> IsExists(string path)
         {
-            return Directory.EnumerateDirectories(path, "*", SearchOption.AllDirectories).Any();
+            return Directory.EnumerateDirectories(path, "*", SearchOption.AllDirectories);
         }
         /// <summary>
         /// 创建目录,返回路径
         /// </summary>
         /// <param name="path"></param>
-        /// 
-        public static string CreateDirectory()
-        {
-            string time = DateTime.Now.ToString("yyyyMMdd");
-            string savePath = @"D:\Blog\admin\" + time + @"\";
-            if (!Directory.Exists(savePath))
+        public static string CreateDirectory(string path)
+        { 
+            if (!Directory.Exists(path))
             {
-                Directory.CreateDirectory(savePath);
+                Directory.CreateDirectory(path);
             }
-            return savePath;
+            return path;
         }
     }
 }

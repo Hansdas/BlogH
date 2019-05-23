@@ -1,0 +1,23 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width = device-width" />
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/css/main.css" rel="stylesheet" />
+    <link href="~/css/layout.css" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/layui/layui.js"></script>
+    <script src="~/js/layout.js"></script>
+
+    <script>
+        layui.use('element', function () {
+            var element = layui.element;
+        });
+    </script>
+</head>
+<body>
+    @RenderSection("header", false)
+</body>
+
+</html>

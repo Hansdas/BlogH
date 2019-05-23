@@ -79,6 +79,11 @@ form input[type=checkbox] {
 .content {
     padding: 100px 0 160px 0;
 }
+.layui-upload-img {
+    width: 92px;
+    height: 92px;
+    margin: 0 10px 10px 0;
+}
 .content .cont .title{margin-bottom: 60px;}
 .content .cont .title a{font-size: 16px; color: #000!important;}
 .content .cont .title .layui-breadcrumb span{position: relative; top: -1px; margin:0 16px;}

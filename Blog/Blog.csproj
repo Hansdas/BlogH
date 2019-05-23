@@ -72,6 +72,7 @@
 
   <ItemGroup>
     <Folder Include="Views\User\" />
+    <Folder Include="TemporaryFile\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>

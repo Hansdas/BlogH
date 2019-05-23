@@ -5,8 +5,12 @@ $(function () {
 		$(".nav a").each(function (index) {
 			$(this).removeClass("active");
 		});
+		var thisItem = $(this)[0];
 		$(this).addClass("active");
-		$("#console").attr("src", "../Whisper/Index");
+		if (thisItem.innerText == "微语") {
+			$("#console").attr("src", "../Whisper/Index");
+			$(".header .btn").append('<a href="../Whisper/AddWhisper" class="layui-btn layui-btn-normal">发表微语</a>')
+		}
 	});
 	//iframe自适应内容高度
 	$("#console").each(function (index) {

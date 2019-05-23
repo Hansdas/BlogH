@@ -101,7 +101,7 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
         ,'<span type="href" title="超链接格式：a(href)[text]"><i class="iconfont icon-lianjie"></i></span>'
         ,'<span type="code" title="插入代码或引用"><i class="iconfont icon-emwdaima" style="top: 1px;"></i></span>'
         ,'<span type="hr" title="插入水平线">hr</span>'
-        ,'<span type="yulan" title="预览"><i class="iconfont icon-yulan1"></i></span>'
+        //,'<span type="yulan" title="预览"><i class="iconfont icon-yulan1"></i></span>'
       ,'</div>'].join('');
 
       var log = {}, mod = {
@@ -211,22 +211,22 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
         ,hr: function(editor){ //插入水平分割线
           layui.focusInsert(editor[0], '[hr]');
         }
-        ,yulan: function(editor){ //预览
-          var content = editor.val();
+        //,yulan: function(editor){ //预览
+        //  var content = editor.val();
           
-          content = /^\{html\}/.test(content) 
-            ? content.replace(/^\{html\}/, '')
-          : fly.content(content);
+        //  content = /^\{html\}/.test(content) 
+        //    ? content.replace(/^\{html\}/, '')
+        //  : fly.content(content);
 
-          layer.open({
-            type: 1
-            ,title: '预览'
-            ,shade: false
-            ,area: ['100%', '100%']
-            ,scrollbar: false
-            ,content: '<div class="detail-body" style="margin:20px;">'+ content +'</div>'
-          });
-        }
+        //  layer.open({
+        //    type: 1
+        //    ,title: '预览'
+        //    ,shade: false
+        //    ,area: ['100%', '100%']
+        //    ,scrollbar: false
+        //    ,content: '<div class="detail-body" style="margin:20px;">'+ content +'</div>'
+        //  });
+        //}
       };
       
       layui.use('face', function(face){
