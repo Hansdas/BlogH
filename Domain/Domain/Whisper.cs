@@ -29,7 +29,7 @@ namespace Domain.Domain
                }
             set
             {
-                PhotoIds = value.ConvertTostring(",");
+                PhotoIds = string.Join( ",", value);
             }
         }
     }
