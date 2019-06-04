@@ -32,7 +32,7 @@ namespace Blog
         /// <summary>
         /// 返回数据
         /// </summary>
-        public string Data { get; set; }
+        public dynamic Data { get; set; }
 
     }
     /// <summary>
@@ -44,9 +44,5 @@ namespace Blog
         /// 结果数量
         /// </summary>
         public int Count { get; set; }
-        /// <summary>
-        /// 数据结果
-        /// </summary>
-        public dynamic Data { get; set; }
     }
 }

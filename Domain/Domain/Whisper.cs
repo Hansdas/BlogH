@@ -19,8 +19,13 @@ namespace Domain.Domain
         /// 内容
         /// </summary>
         public string Content { get; set; }
-
-        public string PhotoIds { get; set; }
+        /// <summary>
+        /// 图片ids,仅用来操作数据库
+        /// </summary>
+        private string PhotoIds { get; set; }
+        /// <summary>
+        /// 图片ids
+        /// </summary>
         public IList<int> PhotoIdList
         {
             get { if (string.IsNullOrEmpty(PhotoIds))
