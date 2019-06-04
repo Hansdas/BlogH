@@ -25,6 +25,7 @@ namespace Domain
         /// 是否冻结
         /// </summary>
         public bool IsValid { get; set; }
+
     }
 
 }

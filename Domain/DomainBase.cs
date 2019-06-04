@@ -4,12 +4,8 @@ using System.Text;
 
 namespace Domain
 {
-    public class DomainBase
-    {
-        /// <summary>
-        /// 自增id
-        /// </summary>
-        public int Id { get; set; }
+    public class DomainBase:Entity.Entity
+    {      
         private DateTime? _CreateTime;
         /// <summary>
         /// 数据添加时间
