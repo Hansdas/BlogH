@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Domain.AggregateRoot
 {
-  public abstract  class AggregateRoot
+    public abstract class AggregateRoot
     {
     }
 }
