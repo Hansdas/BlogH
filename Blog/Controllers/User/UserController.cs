@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
-using Domain;
 using FileHelper;
 using Microsoft.AspNetCore.Mvc;
-
+using Blog.Domain;
+                             
 namespace Blog.Controllers.User
 {
     public class UserController : Controller
@@ -28,13 +28,13 @@ namespace Blog.Controllers.User
             string fileName=photoImage.FileName.Trim();
             try
             {                
-                //string path = DirectoryHelper.CreateDirectory() + fileName;
-                //using (Stream stream=System.IO.File.Create(path))
-                //{
-                //    photoImage.CopyToAsync(stream);                    
-                //    stream.Flush();
-                //}
-                Domain.User user = new Domain.User();
+               // //string path = DirectoryHelper.CreateDirectory() + fileName;
+               // //using (Stream stream=System.IO.File.Create(path))
+               // //{
+               // //    photoImage.CopyToAsync(stream);                    
+               // //    stream.Flush();
+               // //}
+               //User user = new User();
             }
             catch (Exception e)
             {

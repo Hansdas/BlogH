@@ -14,9 +14,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Chloe" Version="3.9.0" />
+    <PackageReference Include="Chloe.MySql" Version="3.9.0" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.4" />
     <PackageReference Include="MSTest.TestFramework" Version="1.2.0" />
     <PackageReference Include="NLog.Web.AspNetCore" Version="4.5.4" />
   </ItemGroup>
@@ -26,13 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CacheFactory\CacheFactory.csproj" />
-    <ProjectReference Include="..\CommonHelper\CommonHelper.csproj" />
-    <ProjectReference Include="..\DapperFactory\DapperFactory.csproj" />
-    <ProjectReference Include="..\DBHelper\DBHelper.csproj" />
-    <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\IServiceSvc\IServiceSvc.csproj" />
-    <ProjectReference Include="..\ServiceSvc\ServiceSvc.csproj" />
+    <ProjectReference Include="..\Blog.Application\Blog.Application.csproj" />
+    <ProjectReference Include="..\Blog.Common\Blog.Common.csproj" />
+    <ProjectReference Include="..\Blog.Infrastruct\Blog.Infrastruct.csproj" />
+    <ProjectReference Include="..\Domain\Blog.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

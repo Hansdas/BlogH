@@ -2,7 +2,7 @@
 
 namespace Domain.Log
 {
-    public class LoginLog: DomainBase
+    public class LoginLog
     {
         /// <summary>
         /// 用户Id

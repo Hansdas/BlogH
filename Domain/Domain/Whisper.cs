@@ -1,4 +1,4 @@
-﻿using CommonHelper;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace Domain.Domain
     /// <summary>
     /// 微语实体
     /// </summary>
-   public class Whisper:DomainBase
+   public class Whisper
     {
         /// <summary>
         /// 作者

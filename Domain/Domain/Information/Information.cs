@@ -2,7 +2,7 @@
 
 namespace Domain
 {
-    public class Information : DomainBase
+    public class Information 
     {
         /// <summary>
         /// 用户
@@ -23,7 +23,7 @@ namespace Domain
         /// <summary>
         /// 信息类型
         /// </summary>
-        public NewsType NewsType { get; set; }
+        //public NewsType NewsType { get; set; }
         /// <summary>
         /// 评论
         /// </summary>

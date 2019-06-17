@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using CacheFactory;
-using CacheFactory.Provider;
-using Domain;
-using IServiceSvc;
+using Blog.Application;
+using Blog.Domain.Core;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -16,10 +14,10 @@ namespace Blog.Controllers
 {
     public class LoginController : Controller
     {
-        protected IUserServiceSvc _userServiceSvc;
-        public LoginController(IUserServiceSvc userServiceSvc, IDistributedCache distributedCache)
+        protected IUserService _userService;
+        public LoginController(IUserService userService)
         {
-            _userServiceSvc = userServiceSvc;
+            _userService = userService;
         }
         public IActionResult Login()
         {
@@ -32,39 +30,33 @@ namespace Blog.Controllers
         [HttpPost]
         public  ActionResult LoginIn()
         {
-            string message = string.Empty;
             string userName = Request.Form["Username"];
             string passWord = Request.Form["Password"];
-            Domain.User user = new Domain.User();
             try
             {
-                user = _userServiceSvc.GetSingleUser(userName, passWord, out message);
+                 Domain.User  user = _userService.SelectSingle(s=>s.Username==userName&&s.Password==passWord);
                 if (user == null)
                 {
-                    return new JsonResult(new ReturnResult() { Code = "200", Message = message });
+                    return new JsonResult(new ReturnResult() { Code = "200", Message = "用户名或密码错我" });
                 }
                 HttpContext.Login(user);
+                IList<Claim> claims = new List<Claim>()
+                {
+                    new Claim("userName", user.Account)
+                };
+                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+                Task.Run(() => {
+                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
+                    {
+                        ExpiresUtc = DateTimeOffset.Now.AddDays(30)
+                    });
+                });
             }
             catch (Exception e)
             {
-                message = e.Message;
+                return new JsonResult(new ReturnResult() { Code = "200", Message = e.Message});
             }
-            if (!string.IsNullOrEmpty(message))
-            {
-                return new JsonResult(new ReturnResult() { Code = "500", Message = message });
-            }
-            IList<Claim> claims = new List<Claim>()
-                {
-                    new Claim("UserName", user.Account)
-                };
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            Task.Run(() => {
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
-                {
-                    ExpiresUtc = DateTimeOffset.Now.AddDays(30)
-                });
-            });
             return new JsonResult(new ReturnResult() { Code = "200", Message = "OK" });
         }
 
@@ -75,15 +67,11 @@ namespace Blog.Controllers
             string account = Request.Form["account"];
             string passWord = Request.Form["password"];
             string userName = Request.Form["username"];
-            Domain.User user = new Domain.User(){
-                  Account=account,
-                  Password=passWord,
-                  Username=userName
-              };
+            Domain.User user = new Domain.User(userName, account,passWord,Sex.男,false,DateTime.Now);
               try {
-                  _userServiceSvc.RegisterUser(user);
+                _userService.Insert(user);
               }
-              catch(ValidationException e){
+              catch(Exception e){
                   message=e.Message;
               }
 
