@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Blog.Application;
+using Blog.Common;
 using Blog.Domain.Core;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +18,11 @@ namespace Blog.Controllers
     public class LoginController : Controller
     {
         protected IUserService _userService;
-        public LoginController(IUserService userService)
+        private readonly DomainNotificationHandler _domainNotificationHandler;
+        public LoginController(IUserService userService, INotificationHandler<DomainNotification> notifications)
         {
             _userService = userService;
+            _domainNotificationHandler = (DomainNotificationHandler)notifications;
         }
         public IActionResult Login()
         {
@@ -28,13 +33,13 @@ namespace Blog.Controllers
             return View();
         }
         [HttpPost]
-        public  ActionResult LoginIn()
+        public ActionResult LoginIn()
         {
-            string userName = Request.Form["Username"];
+            string account = Request.Form["Account"];
             string passWord = Request.Form["Password"];
             try
             {
-                 Domain.User  user = _userService.SelectSingle(s=>s.Username==userName&&s.Password==passWord);
+                Domain.User user = _userService.SelectUserByAccount(account);
                 if (user == null)
                 {
                     return new JsonResult(new ReturnResult() { Code = "200", Message = "用户名或密码错我" });
@@ -42,11 +47,12 @@ namespace Blog.Controllers
                 HttpContext.Login(user);
                 IList<Claim> claims = new List<Claim>()
                 {
-                    new Claim("userName", user.Account)
+                    new Claim("account", user.Account)
                 };
                 ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                Task.Run(() => {
+                Task.Run(() =>
+                {
                     HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
                     {
                         ExpiresUtc = DateTimeOffset.Now.AddDays(30)
@@ -55,7 +61,7 @@ namespace Blog.Controllers
             }
             catch (Exception e)
             {
-                return new JsonResult(new ReturnResult() { Code = "200", Message = e.Message});
+                return new JsonResult(new ReturnResult() { Code = "200", Message = e.Message });
             }
             return new JsonResult(new ReturnResult() { Code = "200", Message = "OK" });
         }
@@ -67,13 +73,21 @@ namespace Blog.Controllers
             string account = Request.Form["account"];
             string passWord = Request.Form["password"];
             string userName = Request.Form["username"];
-            Domain.User user = new Domain.User(userName, account,passWord,Sex.男,false,DateTime.Now);
-              try {
+            Domain.User user = new Domain.User(userName, account, passWord);
+            try
+            {
                 _userService.Insert(user);
-              }
-              catch(Exception e){
-                  message=e.Message;
-              }
+                IEnumerable<string> domainNotifications= _domainNotificationHandler.GetDomainNotificationList().Select(s=>s.Value);
+                foreach(var value in domainNotifications)
+                {
+                    message = value;
+                    break;
+                }
+            }
+            catch (FrameworkException e)
+            {
+                message = e.Message;
+            }
 
             if (!string.IsNullOrEmpty(message))
                 return Json(new ReturnResult() { Code = "500", Message = message });
@@ -82,7 +96,7 @@ namespace Blog.Controllers
         public IActionResult LoginOut()
         {
             Auth.LoginOut();
-            return RedirectToAction("login","login");
+            return RedirectToAction("login", "login");
         }
     }
 }

@@ -1,9 +1,13 @@
 ﻿using Blog.Domain;
 using Chloe;
+using Chloe.MySql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 using System.Text;
+using Dapper;
+using System.Linq;
 
 namespace Blog.Infrastruct
 {
@@ -14,88 +18,108 @@ namespace Blog.Infrastruct
     /// <typeparam name="U"></typeparam>
     public class Repository<T, U> : IRepository<T, U>
     {
-        private IDbContext dbContext;
-        private IQuery<T> query;
-        public Repository(IDbContext DbContext, IQuery<T> Query)
+        private bool useTransaction;
+        private IDbTransaction dbTransaction=null;
+        protected dynamic CreateConnection(Func<IDbConnection,dynamic> excuteMethod)
         {
-            dbContext = DbContext;
-            query = Query;
+            using (IDbConnection dbConnection = ConnectionProvider.CreateConnection())
+            {
+                if (dbConnection.State != ConnectionState.Open)
+                    dbConnection.Open();
+                if (useTransaction)
+                {
+                    dbTransaction= dbConnection.BeginTransaction();
+                }
+                try
+                {
+                    dynamic result =excuteMethod(dbConnection);
+                    if(dbTransaction!=null)
+                        dbTransaction.Commit();
+                    if (dbConnection.State != ConnectionState.Closed)
+                    {
+                        dbConnection.Close();
+                    }
+                    return result;
+                }
+                catch (Exception)
+                {
+                    if (dbTransaction != null)
+                        dbTransaction.Rollback();
+                    if (dbConnection.State != ConnectionState.Closed)
+                    {
+                        dbConnection.Close();
+                    }
+                    throw;
+                }
+            }
         }
-        public Repository()
-        {
-        }
-        private IQuery<T> CreateQuery => dbContext.Query<T>();
         /// <summary>
         /// 查询所有
         /// </summary>
-        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
-        public IEnumerable<T> SelectAll(Expression<Func<T, bool>> orderBy = null)
+        public IEnumerable<dynamic> SelectAll(string sql)
         {
-            if (orderBy == null)
-                return CreateQuery.AsEnumerable();
-            else
-                return CreateQuery.OrderBy(orderBy).AsEnumerable();
+           return CreateConnection(s => {
+                return s.Query(sql);
+            });
         }
         /// <summary>
-        /// 根据lambda条件查询
+        /// 查询数据集合
         /// </summary>
         /// <param name="condition">查询条件</param>
         /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
-        public IEnumerable<T> Select(Expression<Func<T, bool>> condition, Expression<Func<T, bool>> orderBy = null)
+        public IEnumerable<dynamic> Select(string sql,object param)
         {
-            if(orderBy==null)
-                return CreateQuery.Where(condition).AsEnumerable();
-            else
-                return CreateQuery.Where(condition).OrderBy(orderBy).AsEnumerable();
+            return CreateConnection(s => {
+                return s.Query(sql, param);
+            });
         }
         /// <summary>
-        /// 根据lambda条件查询
+        /// 查询单条
         /// </summary>
         /// <returns></returns>
-        public T SelectSingle(Expression<Func<T, bool>> condition)
+        public dynamic SelectSingle(string sql, object param)
         {
-            return CreateQuery.Where(condition).FirstOrDefault();
+            return CreateConnection(s =>
+            {
+                dynamic dynamic = s.QueryFirstOrDefault(sql,param);
+                return dynamic;
+            });
+        }  
+        /// <summary>
+        /// 新增数据
+        /// </summary>
+        /// <returns></returns>
+        public int Insert(string sql, T t, bool useDBTransaction = false)
+        {
+            return CreateConnection(s => {
+                useTransaction = useDBTransaction;
+                return s.ExecuteScalar(sql, t, dbTransaction);
+            });
         }
         /// <summary>
-        /// 分页查询
+        /// 更新数据
         /// </summary>
-        /// <param name="pageIndex">分页索引页</param>
-        /// <param name="pageSize">一页数量</param>
-        /// <param name="condition">查询条件</param>
-        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
-        public IEnumerable<T> SelectByPage(int pageIndex,int pageSize=10, Expression<Func<T, bool>> condition = null, Expression<Func<T, bool>> orderBy = null)
+        public void Update(string sql, T t, bool useDBTransaction = false)
         {
-            if (orderBy == null)
-                return CreateQuery.Where(condition).TakePage(pageIndex, pageSize).AsEnumerable();
-            else
-                return CreateQuery.Where(condition).OrderBy(orderBy).TakePage(pageIndex, pageSize).AsEnumerable();
+            CreateConnection(s => {
+                useTransaction = useDBTransaction;
+                return s.ExecuteScalar(sql, t, dbTransaction);
+            });
+        }
+        /// <summary>
+        /// 删除数据
+        /// </summary>
+        /// <returns></returns>
+        public void Delete(string sql, object param, bool useDBTransaction = false)
+        {
+            CreateConnection(s => {
+                useTransaction = useDBTransaction;
+                return s.ExecuteScalar(sql, param, dbTransaction);
+            });
         }
 
-        public void Delete(Expression<Func<T, U>> condition)
-        {
-            throw new NotImplementedException();
-        }
-       /// <summary>
-       /// 插入数据
-       /// </summary>
-       /// <param name="t"></param>
-       /// <returns></returns>
-        public T Insert(T t)
-        {
-            t = dbContext.Insert<T>(t);
-            return t;
-        }
-
-        public void Update(T t)
-        {
-            throw new NotImplementedException();
-        }
-        public void Delete(Expression<Func<T, bool>> condition)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

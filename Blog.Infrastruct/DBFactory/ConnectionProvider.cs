@@ -7,10 +7,10 @@ using System.Text;
 
 namespace Blog.Infrastruct
 {
-    public class ConnectionProvider : IDbConnectionFactory
+    public class ConnectionProvider
     {
-        private static IDbConnection connection = null;
-        private string connStr;
+        public IDbConnection connection ;
+        public static  string connStr="";
         private ConnectionProvider()
         {
 
@@ -23,10 +23,9 @@ namespace Blog.Infrastruct
                 connection = CreateConnection();
             }
         }
-        public IDbConnection CreateConnection()
+        public static IDbConnection CreateConnection()
         {
-            connection = new MySqlConnection(connStr);
-            return connection;
+            return  new MySqlConnection(connStr);
         }
     }
 }

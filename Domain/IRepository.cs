@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -15,46 +16,33 @@ namespace Blog.Domain
         /// <summary>
         /// 查询所有
         /// </summary>
-        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
-        IEnumerable<T> SelectAll(Expression<Func<T, bool>> orderBy = null);
-
+        IEnumerable<dynamic> SelectAll(string sql);
         /// <summary>
-        /// 根据lambda条件查询
-        /// </summary>
-        /// <param name="condition">查询条件</param>
-        /// <param name="orderBy">排序字段</param>
-        /// <returns></returns>
-        IEnumerable<T> Select(Expression<Func<T, bool>> condition, Expression<Func<T, bool>> orderBy=null);
-        /// <summary>
-        /// 根据lambda条件查询
+        /// 查询数据集合
         /// </summary>
         /// <returns></returns>
-        T SelectSingle(Expression<Func<T, bool>> condition);
+        IEnumerable<dynamic> Select(string sql, object param);
         /// <summary>
-        /// 分页查询
+        /// 查询单条数据
         /// </summary>
-        /// <param name="pageIndex">分页索引页</param>
-        /// <param name="pageSize">一页数量</param>
-        /// <param name="condition">查询条件</param>
-        /// <param name="orderBy">排序字段</param>
         /// <returns></returns>
-        IEnumerable<T> SelectByPage(int pageIndex, int pageSize = 10,Expression<Func<T, bool>> condition=null, Expression<Func<T, bool>> orderBy = null);
+        dynamic SelectSingle(string sql, object param);
         /// <summary>
         /// 插入数据
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        T Insert(T t);
+        int Insert(string sql,T t, bool useDBTransaction = false);
         /// <summary>
-        /// 根据lambda条件删除
+        /// 删除数据
         /// </summary>
         /// <param name="primaryKey"></param>
-        void Delete(Expression<Func<T, bool>> condition);
+        void Delete(string sql, object param,bool useDBTransaction = false);
         /// <summary>
         /// 更新数据
         /// </summary>
         /// <param name="t"></param>
-        void Update(T t);
+        void Update(string sql,T t, bool useDBTransaction = false);
     }
 }

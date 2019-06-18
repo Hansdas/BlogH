@@ -13,12 +13,12 @@ namespace Blog.Application
         /// </summary>
         /// <param name="condition"></param>
         /// <returns></returns>
-        User SelectSingle(Expression<Func<User, bool>> condition);
+        User SelectUserByAccount(string Account);
         /// <summary>
         /// 插入数据
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        User Insert(User user);
+        void Insert(User user);
     }
 }

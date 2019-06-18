@@ -11,7 +11,7 @@
         <form method="post" class="layui-form" style="margin-left:200px">
             <ul>
                 <li>
-                    <input type="text" name="Username" lay-verify="required" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                    <input type="text" name="Account" lay-verify="required" autocomplete="off" placeholder="请输入账号" class="layui-input">
                 </li>
                 <li>
                     <input type="password" name="Password" lay-verify="required" autocomplete="off" placeholder="请输入密码" class="layui-input">
@@ -37,7 +37,7 @@
                     url: "/Login/LoginIn",
                     type: "post",
                     data: {
-                        "Username": loginData.Username,
+                        "Account": loginData.Account,
                         "Password": loginData.Password
                     },
                     success: function (response) {
