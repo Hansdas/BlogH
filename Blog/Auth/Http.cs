@@ -1,4 +1,4 @@
-﻿using CommonHelper;
+﻿using Blog.Common;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System;

@@ -26,7 +26,7 @@ namespace Blog
         /// </summary>
         public string Message { get; set; }
         /// <summary>
-        /// 状态结果
+        /// 响应结果
         /// </summary>
         public string Code { get; set; }
         /// <summary>

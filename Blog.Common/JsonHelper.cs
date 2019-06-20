@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonHelper
+namespace Blog.Common
 {
    public static class JsonHelper
     {
