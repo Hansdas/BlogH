@@ -31,10 +31,6 @@ namespace CommonHelper
             services.AddScoped<IMediatorHandler, InMemoryBus>();
             services.AddScoped<IRequestHandler<CreateUserCommand, Unit>, UserCommandHandler>();
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
-            //services.AddScoped<IDbContext>(s =>
-            //{
-            //    return new MySqlContext(new ConnectionProvider(configuration.GetConnectionString("MySqlConnection")));
-            //});
             services.AddSingleton(new ServiceDescriptor(typeof(ConnectionProvider), new ConnectionProvider(configuration.GetConnectionString("MySqlConnection"))));
             //services.AddDistributedRedisCache(s => {
             //    s.Configuration = configuration.GetConnectionString("RedisConnection"); //多个redis服务器：s.Configuration="地址1:端口,地址2:端口"

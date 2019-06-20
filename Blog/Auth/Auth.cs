@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Domain;
+using Blog.Application.ViewModel;
 
 namespace Blog
 {
@@ -19,15 +20,15 @@ namespace Blog
         /// 从Session获取登录信息
         /// </summary>
         /// <returns></returns>
-        public static User GetLoginUser()
+        public static UserModel GetLoginUser()
         {
             string userName = "";
             if(Http.httpContext.User.Identity.IsAuthenticated)
             {
                 userName = Http.httpContext.User.Claims.First().Value;
             }
-            User user = Http.GetSession<User>(userName);
-            return user;
+            UserModel userModel = Http.GetSession<UserModel>(userName);
+            return userModel;
         }
         /// <summary>
         /// 用户登录

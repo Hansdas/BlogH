@@ -9,7 +9,10 @@ using System.Threading.Tasks;
 
 namespace Blog.Infrastruct.EventBus
 {
-    public class InMemoryBus : IMediatorHandler
+    /// <summary>
+    /// 密封类，防止重写
+    /// </summary>
+    public sealed class InMemoryBus : IMediatorHandler
     {
         private readonly IMediator _mediator;
         public InMemoryBus(IMediator mediator)
@@ -17,22 +20,41 @@ namespace Blog.Infrastruct.EventBus
             _mediator = mediator;
         }
 
+        /// <summary>
+        /// 发布邻域事件
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="event"></param>
+        /// <returns></returns>
         public Task RaiseEvent<T>(T @event) where T : Event
         {
-            return _mediator.Publish(@event);
+            try
+            {
+                return _mediator.Publish(@event);
+            }
+            catch (AggregateException ex)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
-        /// 发送命令
+        /// 发送邻域命令
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="command"></param>
         /// <returns></returns>
         public Task SendCommand<T>(T command) where T : Command
         {
-           Task task=  _mediator.Send(command);
-            task.ContinueWith(s => { throw new Exception(s.Exception.Message); }, TaskContinuationOptions.OnlyOnFaulted);
-            return task;
+            try
+            {
+              return _mediator.Send(command);
+            }
+            catch (AggregateException ex)
+            {
+                throw ex;
+            }
+
         }
     }
 }

@@ -30,7 +30,6 @@
     <ProjectReference Include="..\Blog.Application\Blog.Application.csproj" />
     <ProjectReference Include="..\Blog.Common\Blog.Common.csproj" />
     <ProjectReference Include="..\Blog.Infrastruct\Blog.Infrastruct.csproj" />
-    <ProjectReference Include="..\Domain\Blog.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
