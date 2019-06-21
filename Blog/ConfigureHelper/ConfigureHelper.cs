@@ -1,5 +1,6 @@
 ﻿using Blog;
 using Blog.Application;
+using Blog.Common.AppSetting;
 using Blog.Domain;
 using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;
@@ -32,6 +33,7 @@ namespace CommonHelper
             services.AddScoped<IRequestHandler<CreateUserCommand, Unit>, UserCommandHandler>();
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
             services.AddSingleton(new ServiceDescriptor(typeof(ConnectionProvider), new ConnectionProvider(configuration.GetConnectionString("MySqlConnection"))));
+            services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             //services.AddDistributedRedisCache(s => {
             //    s.Configuration = configuration.GetConnectionString("RedisConnection"); //多个redis服务器：s.Configuration="地址1:端口,地址2:端口"
             //    s.InstanceName = "RedisDistributedCache";
