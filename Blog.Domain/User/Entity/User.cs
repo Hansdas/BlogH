@@ -21,15 +21,13 @@ namespace Blog.Domain
             Account = account;
             Password = password;
         }
-        public User(string username, string account, string password, Sex sex, bool isvalid)
+        public User(string username, string account, string password, Sex sex, bool isvalid):this(username,account,password)
         {
-            Username = username;
-            Account = account;
-            Password = password;
             Sex = sex;
             IsValid = false;
         }
         public User(int id,string username, string account, string password, Sex sex, bool isvalid, DateTime createtime,DateTime? updatetime)
+        :this(username, account, password,sex,isvalid)
         {
             Id = id;
             Username = username;

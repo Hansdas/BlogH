@@ -22,7 +22,7 @@ namespace Blog.Common
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static async  void Upload(string filePath)
+        public static async  Task<long> Upload(string filePath)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             HttpContent httpContent = new StreamContent(fileStream);
@@ -37,6 +37,7 @@ namespace Blog.Common
                 string url = "http://"+ip + controller;
                 await HttpHelper.PostHttpClient(url, mulContent);
             }
+            return fileStream.Length;
 
         }
     }
