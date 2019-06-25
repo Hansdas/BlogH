@@ -1,6 +1,4 @@
 ﻿using Blog.Domain;
-using Chloe;
-using Chloe.MySql;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,8 +16,8 @@ namespace Blog.Infrastruct
     /// <typeparam name="U"></typeparam>
     public class Repository<T, U> : IRepository<T, U>
     {
-        private bool useTransaction;
-        private IDbTransaction dbTransaction=null;
+        protected bool useTransaction;
+        protected IDbTransaction dbTransaction=null;
         protected dynamic CreateConnection(Func<IDbConnection,dynamic> excuteMethod)
         {
             using (IDbConnection dbConnection = ConnectionProvider.CreateConnection())

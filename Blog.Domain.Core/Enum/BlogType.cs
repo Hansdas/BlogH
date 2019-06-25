@@ -4,11 +4,10 @@ using System.Text;
 
 namespace Blog.Domain.Core
 {
-    /// <summary>
-    /// 聚合根接口
-    /// </summary>
-    public interface IAggregateRoot
+   public enum BlogType
     {
-        
+        微语=1,
+        文章=2
+
     }
 }

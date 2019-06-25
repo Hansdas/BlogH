@@ -22,17 +22,16 @@ namespace Blog.Common
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static async  Task<long> Upload(string filePath)
+        public static async  Task<long> Upload(string filePath,string savePath,string fileName)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             HttpContent httpContent = new StreamContent(fileStream);
             httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-            string filename = filePath.Substring(filePath.LastIndexOf("\\") + 2);
-            //NameValueCollection nameValueCollection = new NameValueCollection();
-            //nameValueCollection.Add("user-agent", "User-Agent    Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; Touch; MALNJS; rv:11.0) like Gecko");
-            using (MultipartFormDataContent mulContent = new MultipartFormDataContent("----WebKitFormBoundaryrXRBKlhEeCbfHIY"))
+                    using (MultipartFormDataContent mulContent = new MultipartFormDataContent("----WebKitFormBoundaryrXRBKlhEeCbfHIY"))
             {
-                mulContent.Add(httpContent, "file", filename);
+                mulContent.Add(httpContent, "file", fileName);
+                mulContent.Add(new StringContent(savePath),"savePath");
+                mulContent.Add(new StringContent(fileName), "fileName");
                 string ip = ConfigurationProvider.configuration.GetSection("webapi:HttpAddresss").Value;
                 string url = "http://"+ip + controller;
                 await HttpHelper.PostHttpClient(url, mulContent);

@@ -5,10 +5,10 @@ using System.Text;
 namespace Blog.Domain.Core
 {
     /// <summary>
-    /// 值类型
+    /// 聚合根接口
     /// </summary>
-   public class ValueObject
+    public abstract class AggregateRoot<T>:Entity<T>
     {
-        public string Content { get; private set; }
+        
     }
 }

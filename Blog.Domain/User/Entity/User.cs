@@ -9,7 +9,7 @@ namespace Blog.Domain
     /// <summary>
     /// 用户
     /// </summary>
-   public class User:Entity<int>, IAggregateRoot
+   public class User:Entity<int>
     {
         public User()
         {

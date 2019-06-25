@@ -11,6 +11,7 @@ using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Common.AppSetting;
 using Blog.Domain;
+using Blog.Domain.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -20,6 +21,7 @@ namespace Blog.Controllers.Add
     public class PublishController : Controller
     {
         IOptions<ApiSettingModel> _settings;
+        private readonly object _obj = new object();
         public PublishController(IOptions<ApiSettingModel> settings)
         {
             _settings = settings;
@@ -34,15 +36,27 @@ namespace Blog.Controllers.Add
             string[] srcArray = Request.Form["imgUrls"].ToString().Trim(',').Split(',');
             string uploadSavePathBase = _settings.Value.UploadSavePathBase;
             DateTime dateTime = DateTime.Now;
-            string fileSavePath = string.Format("{0}/{1}/{2}/{3}", uploadSavePathBase, dateTime.Year.ToString(), dateTime.Month.ToString(), dateTime.Day.ToString());
             UserModel userModel = Auth.GetLoginUser();
+            string fileSavePath = string.Format("{0}/{1}/{2}/{3}/{4}", uploadSavePathBase,userModel.Account, dateTime.Year.ToString()
+                , dateTime.Month.ToString(), dateTime.Day.ToString());
+            IList<UploadFile> uploadFiles = new List<UploadFile>();
             try
             {
                 Parallel.For(0, srcArray.Length,async s =>
                 {
-                    long fileSize=await UploadHelper.Upload(srcArray[s]);
-                    UploadFile uploadFile = new UploadFile(userModel.Account, fileSavePath,"",fileSize);
+                    int index = srcArray[s].LastIndexOf("\\") + 1;
+                    string fileName = srcArray[s].Substring(index);
+                    long fileSize=await UploadHelper.Upload(srcArray[s],fileSavePath,fileName);
+                    string guid = Guid.NewGuid().ToString();
+                    UploadFile uploadFile = new UploadFile(userModel.Account, guid, fileSavePath,fileName,fileSize);
+                    lock(_obj)
+                    {
+                        uploadFiles.Add(uploadFile);
+                    }
                 });
+                Whisper whisper = new Whisper(content,uploadFiles);
+                BlogContent blogContent = new BlogContent(userModel.Account,BlogType.微语, whisper);
+
             }
             catch (AggregateException)
             {

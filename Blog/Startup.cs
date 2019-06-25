@@ -23,16 +23,10 @@ namespace Blog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(s=>s.Filters.Add<GlobaExceptionFilterAttribute>());
-            services.ConfigureServices(Configuration);
-            services.AddSession(s=> {
-                s.IdleTimeout = TimeSpan.FromDays(30);
-            });
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(s=> {
-                s.LoginPath = "/Login/Login";
-                s.ExpireTimeSpan = TimeSpan.FromDays(30);
-                s.SlidingExpiration = false;
-            });
+            services.ConfigFrame();
+            services.ConfigServices();
+            services.ConfigSettings(Configuration);
+         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
