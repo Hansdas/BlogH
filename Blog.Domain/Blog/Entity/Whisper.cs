@@ -9,7 +9,7 @@ namespace Blog.Domain
     /// <summary>
     /// 微语实体
     /// </summary>
-   public class Whisper: ContentBase<int>
+   public class Whisper: BlogBase<int>
     {
         public Whisper(string content, IList<UploadFile> uploadFileList = null)
         {
@@ -31,19 +31,10 @@ namespace Blog.Domain
         /// 内容
         /// </summary>
         public string Content { get; private set; }
-        private IList<Comment> _CommentList;
         /// <summary>
         /// 评论
         /// </summary>
-        public IList<Comment> CommentList {
-            get {
-                return _CommentList;
-            }
-            set
-            {
-                _CommentList = value;
-            }
-        }
+        public IList<Comment> CommentList { get;private set; }
         /// <summary>
         /// 评论guid(只用来数据持久化)
         /// </summary>
@@ -72,13 +63,41 @@ namespace Blog.Domain
         /// </summary>
         public IList<UploadFile> UploadFileList { get; private set; }
 
+        /// <summary>
+        /// 获取评论guid集合
+        /// </summary>
+        /// <param name="whisper"></param>
+        /// <returns></returns>
         public static IList<string> CommentGuidList(Whisper whisper)
         {
             return whisper.CommentList.Select(s => s.GUID).ToList();
         }
+        /// <summary>
+        /// 对评论guids赋值
+        /// </summary>
+        /// <param name="whisper"></param>
+        public static void SetCommentGuids(Whisper whisper)
+        {
+            IList<string> commentGuidList = CommentGuidList(whisper);
+            whisper.CommentGuids = string.Join(",",commentGuidList);
+        }
+        /// <summary>
+        /// 获取附件guid集合
+        /// </summary>
+        /// <param name="whisper"></param>
+        /// <returns></returns>
         public static IList<string> UploadFileGuidList(Whisper whisper)
         {
             return whisper.UploadFileList.Select(s => s.GUID).ToList();
+        }
+        /// <summary>
+        /// 对评论guids赋值
+        /// </summary>
+        /// <param name="whisper"></param>
+        public static void SetUploadFileGuids(Whisper whisper)
+        {
+            IList<string> uploadFileGuidList = UploadFileGuidList(whisper);
+            whisper.UploadFileGuids = string.Join(",", uploadFileGuidList);
         }
     }
 }

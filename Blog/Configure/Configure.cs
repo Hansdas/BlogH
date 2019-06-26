@@ -29,6 +29,10 @@ namespace CommonHelper
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<IRequestHandler<CreateUserCommand, Unit>, UserCommandHandler>();
+
+            services.AddTransient<IBlogRepository, BlogRepository>();
+            services.AddTransient<IBlogService,BlogService>();
+            services.AddScoped<IRequestHandler<CreateBlogCommand, Unit>, BlogCommandHandler>();
         }
         /// <summary>
         /// 基础框架
@@ -40,11 +44,11 @@ namespace CommonHelper
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
             //注册中介工具 https://github.com/jbogard/MediatR/wiki
             services.AddMediatR(typeof(Startup));
-            //发布订阅中介处理
+            //注册发布订阅中介处理
             services.AddScoped<IMediatorHandler, InMemoryBus>();
-            //领域通知
+            //注册领域通知
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
-            //仓储接口
+            //注册仓储接口
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
         }
         /// <summary>

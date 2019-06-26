@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Blog.Domain
 {
-   public abstract class ContentBase<T>:Entity<T>
+   public abstract class BlogBase<T>:Entity<T>
     {
     }
 }

@@ -12,7 +12,7 @@ namespace Blog.Application
 {
     public class UserService :IUserService
     {
-       private readonly IUserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IMediatorHandler _mediatorHandler;
         public UserService(IUserRepository userRepository, IMediatorHandler mediatorHandler)
         {

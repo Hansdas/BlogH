@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Blog.Application;
 using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Common.AppSetting;
@@ -16,15 +17,18 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace Blog.Controllers.Add
+namespace Blog.Controllers
 {
     public class PublishController : Controller
     {
-        IOptions<ApiSettingModel> _settings;
+        private readonly  IOptions<ApiSettingModel> _settings;
+        private readonly  IBlogService _blogService;
+
         private readonly object _obj = new object();
-        public PublishController(IOptions<ApiSettingModel> settings)
+        public PublishController(IOptions<ApiSettingModel> settings, IBlogService blogService)
         {
             _settings = settings;
+            _blogService = blogService;
         }
         public IActionResult Publish()
         {
@@ -37,32 +41,54 @@ namespace Blog.Controllers.Add
             string uploadSavePathBase = _settings.Value.UploadSavePathBase;
             DateTime dateTime = DateTime.Now;
             UserModel userModel = Auth.GetLoginUser();
-            string fileSavePath = string.Format("{0}/{1}/{2}/{3}/{4}", uploadSavePathBase,userModel.Account, dateTime.Year.ToString()
+            string fileSavePath = string.Format("{0}{1}/{2}/{3}/{4}", uploadSavePathBase,userModel.Account, dateTime.Year.ToString()
                 , dateTime.Month.ToString(), dateTime.Day.ToString());
             IList<UploadFile> uploadFiles = new List<UploadFile>();
             try
             {
-                Parallel.For(0, srcArray.Length,async s =>
+                Task[] tasks = new Task[srcArray.Length];
+                for (int i = 0; i < srcArray.Length; i++)
                 {
-                    int index = srcArray[s].LastIndexOf("\\") + 1;
-                    string fileName = srcArray[s].Substring(index);
-                    long fileSize=await UploadHelper.Upload(srcArray[s],fileSavePath,fileName);
-                    string guid = Guid.NewGuid().ToString();
-                    UploadFile uploadFile = new UploadFile(userModel.Account, guid, fileSavePath,fileName,fileSize);
-                    lock(_obj)
+                    int m = i;
+                    tasks[m] = Task.Run(async () =>
                     {
-                        uploadFiles.Add(uploadFile);
-                    }
-                });
-                Whisper whisper = new Whisper(content,uploadFiles);
-                BlogContent blogContent = new BlogContent(userModel.Account,BlogType.微语, whisper);
-
+                        int index = srcArray[m].LastIndexOf("\\") + 1;
+                        string fileName = srcArray[m].Substring(index);
+                        long fileSize = await UploadHelper.Upload(srcArray[m], fileSavePath, fileName);
+                        string guid = Guid.NewGuid().ToString();
+                        UploadFile uploadFile = new UploadFile(userModel.Account, guid, fileSavePath, fileName, fileSize);
+                        lock (_obj)
+                        {
+                            uploadFiles.Add(uploadFile);
+                        }
+                    });
+                }
+                Task.WaitAll(tasks);
+                Whisper whisper = new Whisper(content, uploadFiles);
+                Domain.Blog blog = new Domain.Blog(userModel.Account, BlogType.微语, whisper);
+                _blogService.PublishBlog(blog);
             }
-            catch (AggregateException)
+            catch (AggregateException e)
             {
                 //todo 有异常删除所有本次所传的附件
             }
             return "";
         }
+
+        //private void Upload(string[] srcArray, UserModel userModel, string fileSavePath, IList<UploadFile> uploadFiles)
+        //{
+        //    Parallel.For(0, srcArray.Length, async s =>
+        //    {
+        //        int index = srcArray[s].LastIndexOf("\\") + 1;
+        //        string fileName = srcArray[s].Substring(index);
+        //        long fileSize = await UploadHelper.Upload(srcArray[s], fileSavePath, fileName);
+        //        string guid = Guid.NewGuid().ToString();
+        //        UploadFile uploadFile = new UploadFile(userModel.Account, guid, fileSavePath, fileName, fileSize);
+        //        lock (_obj)
+        //        {
+        //            uploadFiles.Add(uploadFile);
+        //        }
+        //    });
+        //}
     }
 }

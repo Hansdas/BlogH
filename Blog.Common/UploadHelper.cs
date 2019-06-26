@@ -25,6 +25,7 @@ namespace Blog.Common
         public static async  Task<long> Upload(string filePath,string savePath,string fileName)
         {
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            long fileSize = fileStream.Length;
             HttpContent httpContent = new StreamContent(fileStream);
             httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
                     using (MultipartFormDataContent mulContent = new MultipartFormDataContent("----WebKitFormBoundaryrXRBKlhEeCbfHIY"))
@@ -36,8 +37,7 @@ namespace Blog.Common
                 string url = "http://"+ip + controller;
                 await HttpHelper.PostHttpClient(url, mulContent);
             }
-            return fileStream.Length;
-
+            return fileSize;
         }
     }
 }

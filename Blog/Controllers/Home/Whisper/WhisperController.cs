@@ -13,6 +13,11 @@ namespace Blog.Controllers
 
             return View();
         }
+        [HttpGet]
+        //public IActionResult LoadWhisper()
+        //{
+        //    r
+        //}
         public IActionResult AddWhisper()
         {
             return View();

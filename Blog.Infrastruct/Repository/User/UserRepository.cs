@@ -11,9 +11,9 @@ namespace Blog.Infrastruct
     public class UserRepository : Repository<User, int>, IUserRepository
     {
         private static User Map(dynamic result)
-        {
-            return new User(result.Id, result.Username, result.Account, result.Password, (Sex)result.Sex, result.IsValid == 0 ? false : true
-                , result.CreateTime, result.UpdateTime
+        {        
+            return new User(result.user_id, result.user_username, result.user_account, result.user_password, (Sex)result.user_sex
+                , result.IsValid == 0 ? false : true, result.user_email, result.user_phone, result.user_createtime, result.user_updatetime
                 );
 
         }
@@ -25,7 +25,7 @@ namespace Blog.Infrastruct
         public User SelectUserByAccount(string account)
         {
 
-            string sql = "SELECT * FROM User where Account=@Account";
+            string sql = "SELECT * FROM User where user_account=@Account";
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Account", account);
             dynamic result = base.SelectSingle(sql, dynamicParameters);
@@ -39,7 +39,7 @@ namespace Blog.Infrastruct
         public int SelectCountByAccount(string account)
         {
 
-            string sql = "SELECT COUNT(*) FROM User where Account=@Account";
+            string sql = "SELECT COUNT(*) FROM User where user_account=@Account";
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Account", account);
             int count=CreateConnection(s => {
@@ -53,8 +53,8 @@ namespace Blog.Infrastruct
         /// <param name="user"></param>
         public void Insert(User user)
         {
-            string sql = "INSERT INTO User(Id, Username, Account, Password, Sex, IsValid, CreateTime)" +
-                  " VALUES (@Id, @Username, @Account, @Password, @Sex, @IsValid,NOW())";
+            string sql = "INSERT INTO User(user_id, user_username, user_account, user_password, user_sex, user_phone, user_email, user_isvalid, user_createtime, user_updatetime)" +
+                  " VALUES (@Id, @Username, @Account, @Password, @Sex,@Phone,@Email, @IsValid,NOW())";
             Insert(sql, user);
         }
     }

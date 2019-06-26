@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Common
 {
-   public class HttpHelper
+    public class HttpHelper
     {
         /// <summary>
         /// httpclient post请求
@@ -20,8 +20,8 @@ namespace Blog.Common
         /// <param name="RequestHeaders"></param>
         /// <param name="multipartFormDataContent"></param>
         /// <returns></returns>
-        public  static async Task<string>  PostHttpClient(string url,
-             HttpContent httpContent, NameValueCollection RequestHeaders= null)
+        public static async Task<string> PostHttpClient(string url,
+             HttpContent httpContent, NameValueCollection RequestHeaders = null)
         {
             var handler = new HttpClientHandler();
             handler.ServerCertificateCustomValidationCallback = delegate { return true; };
@@ -30,7 +30,7 @@ namespace Blog.Common
                 client.MaxResponseContentBufferSize = 256000;
                 if (RequestHeaders == null)
                     RequestHeaders = new NameValueCollection();
-                foreach(string key in RequestHeaders.AllKeys)
+                foreach (string key in RequestHeaders.AllKeys)
                 {
                     client.DefaultRequestHeaders.Add(key, RequestHeaders[key]);
                 }
@@ -38,6 +38,7 @@ namespace Blog.Common
                 httpResponseMessage.EnsureSuccessStatusCode();
                 string result = httpResponseMessage.Content.ReadAsStringAsync().Result;
                 return result;
+
             }
         }
     }
