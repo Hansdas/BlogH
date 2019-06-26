@@ -10,7 +10,7 @@ namespace Blog.Controllers
     {
         public IActionResult Index()
         {
-
+              
             return View();
         }
         [HttpGet]
