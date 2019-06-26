@@ -24,6 +24,8 @@ namespace Blog.Common
         /// <returns></returns>
         public static async  Task<long> Upload(string filePath,string savePath,string fileName)
         {
+            if (!File.Exists(filePath))
+                throw new IOException("文件不存在");
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileSize = fileStream.Length;
             HttpContent httpContent = new StreamContent(fileStream);
@@ -37,6 +39,8 @@ namespace Blog.Common
                 string url = "http://"+ip + controller;
                 await HttpHelper.PostHttpClient(url, mulContent);
             }
+            //上传成功后删除本地文件
+            File.Delete(filePath);
             return fileSize;
         }
     }

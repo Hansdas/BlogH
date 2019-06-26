@@ -35,7 +35,7 @@
                 }
             });
             form.on("submit(publish)", function (data) {
-                var index = layer.load(2)
+                var index = layer.load(2);
                 $.ajax({
                     url: "/Publish/AddWhisper",
                     type: "post",
@@ -44,8 +44,8 @@
                         "imgUrls": imgUrls
                     },
                     success: function (response) {
-                        if (response.message == "OK") {
-                            window.location.href = "../Home/Index";
+                        if (response.message == "ok") {
+                            window.location.href = "../Home/Index?pagepath=Whisper";
 
                         }
                         else {

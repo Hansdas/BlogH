@@ -34,7 +34,7 @@ namespace Blog.Controllers
         {
             return View();
         }
-        public   string AddWhisper()
+        public IActionResult AddWhisper()
         {
             string content = Request.Form["content"];
             string[] srcArray = Request.Form["imgUrls"].ToString().Trim(',').Split(',');
@@ -72,7 +72,7 @@ namespace Blog.Controllers
             {
                 //todo 有异常删除所有本次所传的附件
             }
-            return "";
+            return Json(new ReturnResult() { Code = "200", Message = "ok" });
         }
 
         //private void Upload(string[] srcArray, UserModel userModel, string fileSavePath, IList<UploadFile> uploadFiles)

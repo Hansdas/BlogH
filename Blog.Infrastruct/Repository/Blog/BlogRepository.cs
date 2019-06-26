@@ -10,6 +10,21 @@ namespace Blog.Infrastruct
 {
     public class BlogRepository : Repository<Domain.Blog, int>, IBlogRepository
     {
+        private static Domain.Blog Map(dynamic d)
+        {
+
+        }
+        private static IList<Domain.Blog> Map(IEnumerable<dynamic> dynamics)
+        {
+            IList<Domain.Blog> blogs=new List<Domain.Blog>();
+            foreach(var item in dynamics)
+            {
+                string sql = "SELECT * FROM UploadFile where uploadfile_guid in @Guids";
+                //IList<dynamic> uploadFiles=base
+                Whisper whisper = new Whisper();
+                Domain.Blog blog = new Domain.Blog();
+            }
+        }
         public void InsertWhisper(Domain.Blog blog)
         {
             useTransaction = true;
@@ -42,17 +57,19 @@ namespace Blog.Infrastruct
         /// 分页查询微语
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Domain.Blog> SelectByPage()
+        public IEnumerable<dynamic> SelectByPage(int pageIndex,int pageSize)
         {
-            string sql = "SELECT * FROM Blog INNER JOIN Whisper ON blog_blogbaseid=whisper_id  WHERE blog_id>0 ORDER BY blog_id desc  LIMIT 10 ";
-            IEnumerable<Domain.Blog> d= CreateConnection(s => {
+            int pageId = pageSize *( pageIndex-1);
+            string sql = "SELECT * FROM Blog INNER JOIN Whisper ON blog_blogbaseid=whisper_id " +
+                " WHERE blog_id>"+pageId+" ORDER BY blog_id desc  LIMIT  "+pageIndex;
+            IEnumerable<dynamic> d= CreateConnection(s => {
                 return Select(s,sql);
             });
             return d;
         }
-        private IEnumerable<dynamic> Select(IDbConnection dbConnection,string sql)
+        private IEnumerable<dynamic> Select(IDbConnection dbConnection,string sql,object obj=null)
         {
-            return dbConnection.Query(sql);
+            return dbConnection.Query(sql,obj);
         }
     }
 }
