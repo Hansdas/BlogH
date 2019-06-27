@@ -21,6 +21,7 @@ $(function () {
 			}, 200);
 		})(that);
 	});
+	showPage();
 	//$(".layui-nav-item a").mouseover(function () {
 	//	$(this).attr("style", "color:black !important");
 	//});
@@ -32,4 +33,35 @@ function setIframeHeight(iframe) {
             iframe.height = iframeWin.document.body.scrollHeight;
         }
     }
+}
+function showPage() {
+	var urlParamater = window.location.search;
+	if (urlParamater == "")
+		return;
+	var page = getSearchString("pagepath", urlParamater);
+	$("#console").attr("src", "../" + page + "/Index");
+	$(".nav a").each(function (index) {
+		var thisItem = $(this)[0];
+		if (thisItem.innerText == "微语") {
+			$(this).addClass("active");
+		}
+		else {
+			$(this).removeClass("active");
+		}
+
+	});
+}
+function getSearchString(key, Url) {
+	var str = Url;
+	str = str.substring(1, str.length); // 获取URL中?之后的字符（去掉第一位的问号）
+	// 以&分隔字符串，获得类似name=xiaoli这样的元素数组
+	var arr = str.split("&");
+	var obj = new Object();
+
+	// 将每一个数组元素以=分隔并赋给obj对象 
+	for (var i = 0; i < arr.length; i++) {
+		var tmp_arr = arr[i].split("=");
+		obj[decodeURIComponent(tmp_arr[0])] = decodeURIComponent(tmp_arr[1]);
+	}
+	return obj[key];
 }

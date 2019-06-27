@@ -14,6 +14,6 @@ namespace Blog.Domain
         /// 分页查询微语
         /// </summary>
         /// <returns></returns>
-        IEnumerable<Blog> SelectByPage();
+        IEnumerable<dynamic> SelectByPage(int pageIndex, int pageSize);
     }
 }
