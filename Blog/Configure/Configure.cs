@@ -33,6 +33,8 @@ namespace CommonHelper
             services.AddTransient<IBlogRepository, BlogRepository>();
             services.AddTransient<IBlogService,BlogService>();
             services.AddScoped<IRequestHandler<CreateBlogCommand, Unit>, BlogCommandHandler>();
+
+            services.AddTransient<IUploadFileRepository, UploadFileRepository>();
         }
         /// <summary>
         /// 基础框架

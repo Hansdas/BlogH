@@ -43,6 +43,6 @@ namespace Blog
         /// <summary>
         /// 结果数量
         /// </summary>
-        public int Count { get; set; }
+        public int Total { get; set; }
     }
 }

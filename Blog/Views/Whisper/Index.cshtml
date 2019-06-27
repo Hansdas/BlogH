@@ -85,19 +85,20 @@
         element = layui.element, laypage = layui.laypage, form = layui.form, menu = layui.menu, laytpl = layui.laytpl;
         element.init();
         var whisper = document.getElementById("whisper-item").innerHTML;
+        var total=0;
         laypage.render({
-            elem: 'page'
-            , count: 100
+              elem: 'page'
+            , count: total
             , layout: ['count', 'prev', 'page', 'next', 'refresh', 'skip']
             , jump: function (obj, first) {
                 var pageSize = obj.limit;
                 var pageIndex = obj.curr;
-                loadWhisper(pageIndex, pageSize, whisper);
+                loadWhisper(pageIndex, pageSize, total, whisper);
 
             }
         });
     })
-    function loadWhisper(pageIndex, pageSize,whisper) {
+    function loadWhisper(pageIndex, pageSize,total,whisper) {
         $.ajax({
             url: "/Whisper/LoadWhisper",
             type: "get",
