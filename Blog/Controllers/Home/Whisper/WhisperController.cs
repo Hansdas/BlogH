@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Application;
+using Blog.Application.ViewModel;
 using Blog.Domain;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +11,10 @@ namespace Blog.Controllers
 {
     public class WhisperController : BaseController
     {
-        private readonly IBlogRepository _blogRepository;
-        public WhisperController(IBlogRepository blogRepository)
+        private readonly IBlogService _blogService;
+        public WhisperController(IBlogService  blogService)
         {
-            _blogRepository = blogRepository;
+            _blogService = blogService;
         }
         public IActionResult Index()
         {
@@ -21,18 +22,16 @@ namespace Blog.Controllers
             return View();
         }
         [HttpGet]
-        public void LoadWhisper(int pageIndex, int pageSize)
+        public IActionResult LoadWhisper(int pageIndex, int pageSize)
         {
             int count;
-            IEnumerable<Domain.Blog>  blogs = _blogRepository.SelectByPage(pageIndex, pageSize,out count);
+            IList<BlogModel>  blogs = _blogService.GetBlogModels(pageIndex, pageSize,out count);
             PageResult pageResult = new PageResult();
             pageResult.Total = count;
-            IList<dynamic> returnList = new List<dynamic>();
-            foreach(var item in blogs)
-            {
-                //dynamic d=;
-                //d.Author = item.Account;
-            }
+            pageResult.Data = blogs;
+            pageResult.Code = "200";
+            pageResult.Message = "ok";
+            return new JsonResult(pageResult);
         }
         public IActionResult AddWhisper()
         {

@@ -57,5 +57,21 @@ namespace Blog.Infrastruct
                   " VALUES (@Id, @Username, @Account, @Password, @Sex,@Phone,@Email, @IsValid,NOW())";
             Insert(sql, user);
         }
+
+        public Dictionary<string,string> SelectUserByAccounts(IList<string> accounts)
+        {
+            Dictionary<string, string> accountAndName = new Dictionary<string, string>();
+            string sql = "SELECT  user_username, user_account FROM User WHERE user_account  IN @Useraccount";
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("Useraccount", accounts);
+            IEnumerable<dynamic> dynamics = CreateConnection(s => {
+                return Select(sql, parameters);
+            });
+            foreach(var d in dynamics)
+            {
+                accountAndName.Add(d.user_account, d.user_username);
+            }
+            return accountAndName;
+        }
     }
 }

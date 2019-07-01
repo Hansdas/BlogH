@@ -9,7 +9,7 @@ $(function () {
 		$(this).addClass("active");
 		if (thisItem.innerText == "微语") {
 			$("#console").attr("src", "../Whisper/Index");
-			$(".header .btn").append('<a href="../Whisper/AddWhisper" class="layui-btn layui-btn-normal">发表微语</a>')
+			$(".header .btn").append('<a href="../whisper/addWhisper" class="layui-btn layui-btn-normal">发表微语</a>');
 		}
 	});
 	//iframe自适应内容高度

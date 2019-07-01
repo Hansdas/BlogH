@@ -37,7 +37,7 @@
             form.on("submit(publish)", function (data) {
                 var index = layer.load(2);
                 $.ajax({
-                    url: "/Publish/AddWhisper",
+                    url: "/publish/addwhisper",
                     type: "post",
                     data: {
                         "content": data.field.content,

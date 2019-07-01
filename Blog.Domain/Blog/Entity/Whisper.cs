@@ -11,10 +11,11 @@ namespace Blog.Domain
     /// </summary>
    public class Whisper: BlogBase<int>
     {
-        public Whisper(string content, IList<UploadFile> uploadFileList = null)
+        public Whisper(string content, IList<UploadFile> uploadFileList = null,IList<Comment> comments=null)
         {
             Content = content;
             UploadFileList = uploadFileList;
+            CommentList = comments;
         }
         public Whisper(int id,string content,IList<Comment> commentList,int praiseCount, string praiseAccount,DateTime createTime,DateTime? updateTime)
         :this(content)

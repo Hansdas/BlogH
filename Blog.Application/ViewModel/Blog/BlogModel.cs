@@ -24,7 +24,7 @@ namespace Blog.Application.ViewModel
         /// <summary>
         /// 发表日期
         /// </summary>
-        public string Data { get; set; }
+        public string Date { get; set; }
         /// <summary>
         /// 点赞数
         /// </summary>

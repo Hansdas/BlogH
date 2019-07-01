@@ -15,19 +15,19 @@
                 <div class="item-box">
                     <div class="item">
                         <div class="whisper-title">
-                            <i class="layui-icon layui-icon-username"></i> <span class="author">{{item.Author}}</span><i class="layui-icon layui-icon-date"></i><span class="hour">{{item.date}}</span>
+                            <i class="layui-icon layui-icon-username"></i> <span class="author">{{item.author}}</span><i class="layui-icon layui-icon-date"></i><span class="hour">{{item.date}}</span>
                         </div>
                         <p class="text-cont">
-                            {{item.Article}}
+                            {{item.content}}
                         </p>
                         <div class="img-box">
                             @*<img src="../res/img/wy_img1.jpg">*@
-                            {{item.PhotoPath}}
+                            {{item.photopath}}
                         </div>
                         <div class="op-list">
-                            <p class="like"><i class="layui-icon layui-icon-praise"></i><span>{{item.Praise}}</span></p>
-                            <p class="edit"><i class="layui-icon layui-icon-reply-fill"></i><span>{{item.Reply}}</span></p>
-                            <p class="off"><span>展开</span><i class="layui-icon layui-icon-down"></i></p>
+                            <p class="like"><i class="layui-icon layui-icon-praise "></i><span>{{item.praise}}</span></p>
+                            <p class="edit"><i class="layui-icon layui-icon-reply-fill"></i><span>{{item.reply}}</span></p>
+                            <p class="off"><span>评论</span><i class="layui-icon layui-icon-down"></i></p>
                         </div>
                     </div>
                     <div class="review-version layui-hide">
@@ -50,11 +50,11 @@
                         <div class="list-cont">
                             <div class="cont">
                                 <div class="img">
-                                    {{commentdata.UserPhotoPath}}
+                                    {{commentdata.userphotopath}}
                                 </div>
                                 <div class="text">
-                                    <p class="tit"><span class="name">{{commentdata.CommentUser}}</span><span class="data">{{commentdata.CommentDate}}</span></p>
-                                    <p class="ct">{{commentdata.CommentContent}}</p>
+                                    <p class="tit"><span class="name">{{commentdata.commentuser}}</span><span class="data">{{commentdata.commentdate}}</span></p>
+                                    <p class="ct">{{commentdata.commentcontent}}</p>
                                 </div>
                             </div>
                         </div>
@@ -85,20 +85,21 @@
         element = layui.element, laypage = layui.laypage, form = layui.form, menu = layui.menu, laytpl = layui.laytpl;
         element.init();
         var whisper = document.getElementById("whisper-item").innerHTML;
-        var total=0;
+        var total = 0;
         laypage.render({
-              elem: 'page'
+            elem: 'page'
             , count: total
             , layout: ['count', 'prev', 'page', 'next', 'refresh', 'skip']
-            , jump: function (obj, first) {
+            , jump: function (obj) {
                 var pageSize = obj.limit;
                 var pageIndex = obj.curr;
-                loadWhisper(pageIndex, pageSize, total, whisper);
+                var index = layer.load(2)
+                loadWhisper(pageIndex, pageSize, total, whisper, index);
 
             }
         });
     })
-    function loadWhisper(pageIndex, pageSize,total,whisper) {
+    function loadWhisper(pageIndex, pageSize, total, whisper, index) {
         $.ajax({
             url: "/Whisper/LoadWhisper",
             type: "get",
@@ -108,25 +109,25 @@
             },
             datatype: "json",
             success: function (response) {
-                var data = {
-                    "list": [
-                        {
-                            Author: "admin", Article: pageIndex + "一直听说牛油果吃起来像肥皂、肥肉，虽然很难吃，但是价格却很贵，我还是想尝试一下。今天公司新到了新西兰牛油果，这是新西兰牛油果是第一次在中国上市，个头比普通牛油果大了一倍，被誉为“超牛果”。好奇心驱使我尝了一颗，第一次吃牛油果没有见识，切开牛油果费了好大劲，切成了这样。", PhotoPath: "", date: "2019/4/21 1636", Praise: 12, Reply: 1,
-                            commentdatas: [
-                                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", },
-                                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", }
-                            ]
-                        },
-                        {
-                            Author: "admin", Article: "一直听说牛油果吃起来像肥皂、肥肉，虽然很难吃，但是价格却很贵，我还是想尝试一下。今天公司新到了新西兰牛油果，这是新西兰牛油果是第一次在中国上市，个头比普通牛油果大了一倍，被誉为“超牛果”。好奇心驱使我尝了一颗，第一次吃牛油果没有见识，切开牛油果费了好大劲，切成了这样。", PhotoPath: "", date: "2019/4/21 1636", Praise: 12, Reply: 2,
-                            commentdatas: [
-                                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", },
-                                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:15", }
-                            ]
-                        }
-                    ]
-                };
-
+                //var data = {
+                //    "list": [
+                //        {
+                //            Author: "admin", Article: pageIndex + "一直听说牛油果吃起来像肥皂、肥肉，虽然很难吃，但是价格却很贵，我还是想尝试一下。今天公司新到了新西兰牛油果，这是新西兰牛油果是第一次在中国上市，个头比普通牛油果大了一倍，被誉为“超牛果”。好奇心驱使我尝了一颗，第一次吃牛油果没有见识，切开牛油果费了好大劲，切成了这样。", PhotoPath: "", date: "2019/4/21 1636", Praise: 12, Reply: 1,
+                //            commentdatas: [
+                //                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", },
+                //                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", }
+                //            ]
+                //        },
+                //        {
+                //            Author: "admin", Article: "一直听说牛油果吃起来像肥皂、肥肉，虽然很难吃，但是价格却很贵，我还是想尝试一下。今天公司新到了新西兰牛油果，这是新西兰牛油果是第一次在中国上市，个头比普通牛油果大了一倍，被誉为“超牛果”。好奇心驱使我尝了一颗，第一次吃牛油果没有见识，切开牛油果费了好大劲，切成了这样。", PhotoPath: "", date: "2019/4/21 1636", Praise: 12, Reply: 2,
+                //            commentdatas: [
+                //                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", },
+                //                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:15", }
+                //            ]
+                //        }
+                //    ]
+                //};
+                var data = { "list": response.data };
                 whisperview = document.getElementById("whisper-list-id");
                 laytpl(whisper).render(data, function (html) {
                     whisperview.innerHTML = html;
@@ -135,9 +136,11 @@
                 menu.init();
                 menu.off();
                 menu.submit();
+                layer.close(index)
             },
             error: function (response) {
-
+                layer.close(index)
+                layer.msg("响应服务器失败", { icon: 7 });
             }
         });
     }

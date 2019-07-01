@@ -13,9 +13,11 @@ namespace Blog.Infrastruct
     public class BlogRepository : Repository<Domain.Blog, int>, IBlogRepository
     {
         private readonly IUploadFileRepository _uploadFileRepository;
-        public BlogRepository(IUploadFileRepository uploadFileRepository)
+        private readonly ICommentRepository _commentRepository;
+        public BlogRepository(IUploadFileRepository uploadFileRepository, ICommentRepository commentRepository)
         {
             _uploadFileRepository = uploadFileRepository;
+            _commentRepository = commentRepository;
         }
         #region 结果转换
         /// <summary>
@@ -23,12 +25,13 @@ namespace Blog.Infrastruct
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
-        private Domain.Blog Map(dynamic d,IList<UploadFile> uploadFileList)
+        private Domain.Blog Map(dynamic d,IList<UploadFile> uploadFileList,IList<Comment> commentList)
         {
             string uploadFileGuids = d.whisper_uploadfileguids;
+            string commentGuids = d.whisper_commentguids;
             IList<UploadFile> files = uploadFileList.Where(s => uploadFileGuids.Split(',').AsList().Contains(s.GUID)).ToList();
-
-            Whisper whisper = new Whisper(d.whisper_content, files);
+            IList<Comment> comments= commentList.Where(s => commentGuids.Split(',').AsList().Contains(s.GUID)).ToList();
+            Whisper whisper = new Whisper(d.whisper_content, files,comments);
             Domain.Blog blog = new Domain.Blog(d.blog_account, (BlogType)d.blog_blogtype, whisper);
             return blog;
         }
@@ -40,17 +43,36 @@ namespace Blog.Infrastruct
         private IList<Domain.Blog> Map(IEnumerable<dynamic> dynamics)
         {
             IList<Domain.Blog> blogs=new List<Domain.Blog>();
+            #region 查询相关附件
             string sql = "SELECT * FROM UploadFile where uploadfile_guid in @Guids";
             List<string> guidList = new List<string>();
             dynamics.Select(s => s.whisper_uploadfileguids).ToList().ForEach(s => {
-                string guids = s;
-                guidList.AddRange(guids.Split(','));
+                if (!string.IsNullOrEmpty(s))
+                {
+                    string guids = s;
+                    guidList.AddRange(guids.Split(','));
+                }
             });
             IEnumerable<dynamic> result = Select(sql, new { Guids =guidList  });
             IList<UploadFile> uploadFileList = _uploadFileRepository.Map(result);
+            #endregion
+
+            #region 查询相关评论
+            sql= "SELECT * FROM Comment where comment_guid in @Guids";
+            guidList = new List<string>();
+            dynamics.Select(s => s.whisper_commentguids).ToList().ForEach(s => {
+                if (!string.IsNullOrEmpty(s))
+                {
+                    string guids = s;
+                    guidList.AddRange(guids.Split(','));
+                }
+            });
+            result = Select(sql, new { Guids = guidList });
+            IList<Comment> comments = _commentRepository.Map(result);
+            #endregion
             foreach (var item in dynamics)
             {
-                Domain.Blog blog = Map(item, uploadFileList);
+                Domain.Blog blog = Map(item, uploadFileList,comments);
                 blogs.Add(blog);
             }
             return blogs;

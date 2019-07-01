@@ -24,5 +24,12 @@ namespace Blog.Domain
         /// </summary>
         /// <param name="user"></param>
         void Insert(User user);
+        /// <summary>
+        /// 查询用户账号和名称集合
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        Dictionary<string, string> SelectUserByAccounts(IList<string> accounts);
+
     }
 }

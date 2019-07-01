@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Content Remove="nlog.config" />
+    <Content Remove="Views\publish\publish.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,8 +67,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="TemporaryFile\Logger\" />
+    <Folder Include="Views\publish\" />
     <Folder Include="Views\User\" />
-    <Folder Include="TemporaryFile\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

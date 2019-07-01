@@ -10,13 +10,12 @@ namespace Blog.Domain
     /// </summary>
    public class Comment: ValueObject
     {
-        public Comment(string commentContent,string guid,string commentAccount,string commentUsername,DateTime commentDate)
+        public Comment(string commentContent,string guid,string commentAccount,DateTime commentDate)
         {
             GUID = guid;
             CommentContent = commentContent;
             CommentAccount = commentAccount;
-            CommentUsername = commentUsername;
-            CommentDate = CommentDate;
+            CommentDate = commentDate;
         }
         /// <summary>
         /// 评论内容

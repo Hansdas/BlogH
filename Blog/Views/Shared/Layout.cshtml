@@ -17,10 +17,10 @@
     </head>
 
 
-@model Domain.User
+@model Blog.Application.ViewModel.UserModel
 @using Blog
 @{
-    Domain.User user = Auth.GetLoginUser();
+     Blog.Application.ViewModel.UserModel user = Auth.GetLoginUser();
 }
     <body>
         <div class="fly-header layui-bg-black">
