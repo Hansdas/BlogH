@@ -1,6 +1,7 @@
 ﻿<!DOCTYPE html>
 <head>
     <meta name="viewport" content="width = device-width" />
+    <meta name="referrer" content="never">
     <title>微语</title>
     <link href="~/layui/css/layui.css" rel="stylesheet" />
     <link href="~/css/main.css?v=20192225" rel="stylesheet" />
@@ -20,10 +21,13 @@
                         <p class="text-cont">
                             {{item.content}}
                         </p>
-                        <div class="img-box">
-                            @*<img src="../res/img/wy_img1.jpg">*@
-                            {{item.photopath}}
+
+                        <div class="img-box" style="">
+                            {{#  layui.each(item.photoPaths,function(j,path){ }}
+                            <img style="width:219px;height:150px;" src="{{path}}">
+                            {{#  });  }}
                         </div>
+
                         <div class="op-list">
                             <p class="like"><i class="layui-icon layui-icon-praise "></i><span>{{item.praise}}</span></p>
                             <p class="edit"><i class="layui-icon layui-icon-reply-fill"></i><span>{{item.reply}}</span></p>
@@ -84,8 +88,9 @@
     }).use(['element', 'laypage', 'form', 'menu', 'laytpl'], function () {
         element = layui.element, laypage = layui.laypage, form = layui.form, menu = layui.menu, laytpl = layui.laytpl;
         element.init();
+        var index = layer.load(2)
         var whisper = document.getElementById("whisper-item").innerHTML;
-        var total = 0;
+        var total = loadtotal();
         laypage.render({
             elem: 'page'
             , count: total
@@ -93,13 +98,24 @@
             , jump: function (obj) {
                 var pageSize = obj.limit;
                 var pageIndex = obj.curr;
-                var index = layer.load(2)
-                loadWhisper(pageIndex, pageSize, total, whisper, index);
+                loadWhisper(pageIndex, pageSize, whisper, index);
 
             }
         });
     })
-    function loadWhisper(pageIndex, pageSize, total, whisper, index) {
+    function loadtotal() {
+        var total = 0;
+        $.ajax({
+            url: "/Whisper/LoadTotal",
+            type: "get",
+            async: false,
+            success: function (response) {
+                total = response;
+            },
+        });
+        return total;
+    }
+    function loadWhisper(pageIndex, pageSize, whisper, index) {
         $.ajax({
             url: "/Whisper/LoadWhisper",
             type: "get",
@@ -109,24 +125,6 @@
             },
             datatype: "json",
             success: function (response) {
-                //var data = {
-                //    "list": [
-                //        {
-                //            Author: "admin", Article: pageIndex + "一直听说牛油果吃起来像肥皂、肥肉，虽然很难吃，但是价格却很贵，我还是想尝试一下。今天公司新到了新西兰牛油果，这是新西兰牛油果是第一次在中国上市，个头比普通牛油果大了一倍，被誉为“超牛果”。好奇心驱使我尝了一颗，第一次吃牛油果没有见识，切开牛油果费了好大劲，切成了这样。", PhotoPath: "", date: "2019/4/21 1636", Praise: 12, Reply: 1,
-                //            commentdatas: [
-                //                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", },
-                //                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", }
-                //            ]
-                //        },
-                //        {
-                //            Author: "admin", Article: "一直听说牛油果吃起来像肥皂、肥肉，虽然很难吃，但是价格却很贵，我还是想尝试一下。今天公司新到了新西兰牛油果，这是新西兰牛油果是第一次在中国上市，个头比普通牛油果大了一倍，被誉为“超牛果”。好奇心驱使我尝了一颗，第一次吃牛油果没有见识，切开牛油果费了好大劲，切成了这样。", PhotoPath: "", date: "2019/4/21 1636", Praise: 12, Reply: 2,
-                //            commentdatas: [
-                //                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:12", },
-                //                { UserPhotoPath: "", CommentContent: "好看", CommentUser: "吴亦凡", CommentDate: "2019/4/22 12:15", }
-                //            ]
-                //        }
-                //    ]
-                //};
                 var data = { "list": response.data };
                 whisperview = document.getElementById("whisper-list-id");
                 laytpl(whisper).render(data, function (html) {

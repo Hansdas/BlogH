@@ -9,6 +9,6 @@ namespace Blog.Application
     {
         void PublishBlog(Domain.Blog blog);
 
-        IList<BlogModel> GetBlogModels(int pageIndex, int pageSize, out int recordCount);
+        IList<BlogModel> GetBlogModels(int pageIndex, int pageSize);
     }
 }

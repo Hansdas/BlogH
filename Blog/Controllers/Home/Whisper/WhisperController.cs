@@ -12,9 +12,11 @@ namespace Blog.Controllers
     public class WhisperController : BaseController
     {
         private readonly IBlogService _blogService;
-        public WhisperController(IBlogService  blogService)
+        private readonly IBlogRepository  _blogRepository;
+        public WhisperController(IBlogService  blogService, IBlogRepository blogRepository)
         {
             _blogService = blogService;
+            _blogRepository = blogRepository;
         }
         public IActionResult Index()
         {
@@ -24,14 +26,17 @@ namespace Blog.Controllers
         [HttpGet]
         public IActionResult LoadWhisper(int pageIndex, int pageSize)
         {
-            int count;
-            IList<BlogModel>  blogs = _blogService.GetBlogModels(pageIndex, pageSize,out count);
+            IList<BlogModel>  blogs = _blogService.GetBlogModels(pageIndex, pageSize);
             PageResult pageResult = new PageResult();
-            pageResult.Total = count;
             pageResult.Data = blogs;
             pageResult.Code = "200";
             pageResult.Message = "ok";
             return new JsonResult(pageResult);
+        }
+        public int LoadTotal()
+        {
+            int total = _blogRepository.SelectCount();
+            return total;
         }
         public IActionResult AddWhisper()
         {

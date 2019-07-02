@@ -1,4 +1,5 @@
 ﻿using Blog.Application.ViewModel;
+using Blog.Common;
 using Blog.Domain;
 using Blog.Domain.Core.Bus;
 using System;
@@ -20,9 +21,9 @@ namespace Blog.Application
             _userRepository = userRepository;
         }
 
-        public IList<BlogModel> GetBlogModels(int pageIndex, int pageSize, out int recordCount)
+        public IList<BlogModel> GetBlogModels(int pageIndex, int pageSize)
         {
-            IEnumerable<Domain.Blog> blogs = _blogRepository.SelectByPage(pageIndex,pageSize,out recordCount);
+            IEnumerable<Domain.Blog> blogs = _blogRepository.SelectByPage(pageIndex,pageSize);
             Dictionary<string, string> accountAndName = _userRepository.SelectUserByAccounts(blogs.Select(s=>s.Account).ToList());
             IList<BlogModel> blogModels = new List<BlogModel>();
             foreach (var item in blogs)
@@ -31,11 +32,10 @@ namespace Blog.Application
                 blogModel.Author = accountAndName[item.Account];
                 Whisper whisper = (Whisper)item.BlogBase;
                 blogModel.Content = whisper.Content;
-                blogModel.PhotoPath = "";
+                blogModel.PhotoPaths = UploadHelper.DownFile(whisper.UploadFileList.Select(s=>s.SaveFullPath).ToList());
                 blogModel.Reply = whisper.CommentCount;
                 blogModel.Praise = whisper.PraiseCount;
                 blogModel.Date = whisper.CreateTime.ToString("yyyy/MM/dd hh:mm");
-                blogModel.PhotoPath = "";
                 IEnumerable<CommentDataModel> commentDataModels = from comment in whisper.CommentList
                                                                   select GetCommentDataModel(comment);
                 blogModel.Commentdatas = commentDataModels.ToList();

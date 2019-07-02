@@ -13,5 +13,9 @@ namespace Blog.Domain.Core
         /// 校验重复性key
         /// </summary>
         public const string CHECK_REPEAT_KEY = "CHECK_REPEAT";
+        /// <summary>
+        /// //自定义使用虚拟资源目录
+        /// </summary>
+        public const string STATIC_FILE = "/StaticFiles";
     }
 }

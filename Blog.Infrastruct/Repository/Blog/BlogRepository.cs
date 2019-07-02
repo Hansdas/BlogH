@@ -25,13 +25,13 @@ namespace Blog.Infrastruct
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
-        private Domain.Blog Map(dynamic d,IList<UploadFile> uploadFileList,IList<Comment> commentList)
+        private Domain.Blog Map(dynamic d, IList<UploadFile> uploadFileList, IList<Comment> commentList)
         {
             string uploadFileGuids = d.whisper_uploadfileguids;
             string commentGuids = d.whisper_commentguids;
             IList<UploadFile> files = uploadFileList.Where(s => uploadFileGuids.Split(',').AsList().Contains(s.GUID)).ToList();
-            IList<Comment> comments= commentList.Where(s => commentGuids.Split(',').AsList().Contains(s.GUID)).ToList();
-            Whisper whisper = new Whisper(d.whisper_content, files,comments);
+            IList<Comment> comments = commentList.Where(s => commentGuids.Split(',').AsList().Contains(s.GUID)).ToList();
+            Whisper whisper = new Whisper(d.whisper_content, files, comments);
             Domain.Blog blog = new Domain.Blog(d.blog_account, (BlogType)d.blog_blogtype, whisper);
             return blog;
         }
@@ -42,25 +42,27 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         private IList<Domain.Blog> Map(IEnumerable<dynamic> dynamics)
         {
-            IList<Domain.Blog> blogs=new List<Domain.Blog>();
+            IList<Domain.Blog> blogs = new List<Domain.Blog>();
             #region 查询相关附件
             string sql = "SELECT * FROM UploadFile where uploadfile_guid in @Guids";
             List<string> guidList = new List<string>();
-            dynamics.Select(s => s.whisper_uploadfileguids).ToList().ForEach(s => {
+            dynamics.Select(s => s.whisper_uploadfileguids).ToList().ForEach(s =>
+            {
                 if (!string.IsNullOrEmpty(s))
                 {
                     string guids = s;
                     guidList.AddRange(guids.Split(','));
                 }
             });
-            IEnumerable<dynamic> result = Select(sql, new { Guids =guidList  });
+            IEnumerable<dynamic> result = Select(sql, new { Guids = guidList });
             IList<UploadFile> uploadFileList = _uploadFileRepository.Map(result);
             #endregion
 
             #region 查询相关评论
-            sql= "SELECT * FROM Comment where comment_guid in @Guids";
+            sql = "SELECT * FROM Comment where comment_guid in @Guids";
             guidList = new List<string>();
-            dynamics.Select(s => s.whisper_commentguids).ToList().ForEach(s => {
+            dynamics.Select(s => s.whisper_commentguids).ToList().ForEach(s =>
+            {
                 if (!string.IsNullOrEmpty(s))
                 {
                     string guids = s;
@@ -72,7 +74,7 @@ namespace Blog.Infrastruct
             #endregion
             foreach (var item in dynamics)
             {
-                Domain.Blog blog = Map(item, uploadFileList,comments);
+                Domain.Blog blog = Map(item, uploadFileList, comments);
                 blogs.Add(blog);
             }
             return blogs;
@@ -96,17 +98,14 @@ namespace Blog.Infrastruct
         /// 分页查询微语
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<Domain.Blog> SelectByPage(int pageIndex, int pageSize, out int recordCount)
+        public IEnumerable<Domain.Blog> SelectByPage(int pageIndex, int pageSize)
         {
             int pageId = pageSize * (pageIndex - 1);
             string sql = "SELECT * FROM Blog INNER JOIN Whisper ON blog_blogbaseid=whisper_id " +
-                " WHERE blog_id>" + pageId + " ORDER BY blog_id DESC  LIMIT  " + pageIndex;
-            IEnumerable<dynamic> dynamics = CreateConnection(s => {
+                " WHERE blog_id>" + pageId + " ORDER BY blog_id DESC  LIMIT  " + pageSize;
+            IEnumerable<dynamic> dynamics = CreateConnection(s =>
+            {
                 return Select(s, sql);
-            });
-            sql = "SELECT COUNT(*) FROM Blog";
-            recordCount = CreateConnection(s => {
-                return s.ExecuteScalar<int>(sql);
             });
             return Map(dynamics);
         }
@@ -125,17 +124,27 @@ namespace Blog.Infrastruct
             //插入微语
             string insertWhisperSql = "INSERT INTO Whisper(whisper_content, whisper_commentguids, whisper_praisecount, whisper_praiseaccount, whisper_uploadfileguids, whisper_createtime)" +
                 " VALUES ( @Content, @Commentguids, @PraiseCount, @PraiseAccount, @UploadfileGuids, NOW());SELECT @@identity";
-            int whisperId= dbConnection.ExecuteScalar<int>(insertWhisperSql, whisper, dbTransaction);
+            int whisperId = dbConnection.ExecuteScalar<int>(insertWhisperSql, whisper, dbTransaction);
             //插入实体
             Domain.Blog.SetBlogBaseId(whisperId, blog);
             string insertBlogSql = "INSERT INTO Blog(blog_account, blog_blogbaseid, blog_blogtype, blog_createtime) " +
                 "VALUES (@Account, @BlogBaseId, @GetBlogType, NOW());";
-            return  dbConnection.Execute(insertBlogSql,blog,dbTransaction);
+            return dbConnection.Execute(insertBlogSql, blog, dbTransaction);
         }
 
-        private IEnumerable<dynamic> Select(IDbConnection dbConnection,string sql,object obj=null)
+        private IEnumerable<dynamic> Select(IDbConnection dbConnection, string sql, object obj = null)
         {
-            return dbConnection.Query(sql,obj);
+            return dbConnection.Query(sql, obj);
+        }
+
+        public int SelectCount()
+        {
+            string sql = "SELECT COUNT(*) FROM Blog";
+            int recordCount = CreateConnection(s =>
+            {
+                return s.ExecuteScalar<int>(sql);
+            });
+            return recordCount;
         }
         #endregion
     }

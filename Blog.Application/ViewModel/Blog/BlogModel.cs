@@ -20,7 +20,7 @@ namespace Blog.Application.ViewModel
         /// <summary>
         /// 图片路径
         /// </summary>
-        public string PhotoPath { get; set; }
+        public IList<string> PhotoPaths { get; set; }
         /// <summary>
         /// 发表日期
         /// </summary>

@@ -35,5 +35,13 @@ namespace Blog.Domain
         /// 附件大小
         /// </summary>
         public long FileSize { get; private set; }
+        /// <summary>
+        /// 全路径
+        /// </summary>
+        public string SaveFullPath { get
+            {
+                return SavePath + "/" + FileName;
+            } 
+        }
     }
 }
