@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Blog.Application;
 using Blog.Common;
+using Blog.Common.CacheFactory;
 using Blog.Domain.Core;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -18,11 +19,13 @@ namespace Blog.Controllers
     public class LoginController : Controller
     {
         protected IUserService _userService;
+        protected ICacheClient _cacheClient;
         private readonly DomainNotificationHandler _domainNotificationHandler;
-        public LoginController(IUserService userService, INotificationHandler<DomainNotification> notifications)
+        public LoginController(IUserService userService, ICacheClient cacheClient, INotificationHandler<DomainNotification> notifications)
         {
             _userService = userService;
             _domainNotificationHandler = (DomainNotificationHandler)notifications;
+            _cacheClient = cacheClient;
         }
         public IActionResult Login()
         {
@@ -39,6 +42,7 @@ namespace Blog.Controllers
             string passWord = Request.Form["Password"];
             try
             {
+                _cacheClient.Set("11", "1");
                 Domain.User user = _userService.SelectUserByAccount(account);
                 if (user == null)
                 {
