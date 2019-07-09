@@ -78,6 +78,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="TempFile\" />
     <Folder Include="Views\publish\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
