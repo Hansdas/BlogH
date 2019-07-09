@@ -52,7 +52,7 @@ namespace Blog
             //自定义使用资源目录
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath + "/TemporaryFile/Down")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath + "/TempFile/Down")),
                 RequestPath = ConstantKey.STATIC_FILE
             }); ;
             app.UseAuthentication();
