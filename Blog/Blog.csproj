@@ -71,7 +71,6 @@
     <Folder Include="TemporaryFile\Logger\" />
     <Folder Include="Views\publish\" />
     <Folder Include="Views\User\" />
-    <Folder Include="wwwroot\TemporaryPhoto\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
