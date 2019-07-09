@@ -1,6 +1,7 @@
 ﻿using Blog;
 using Blog.Application;
 using Blog.Common.AppSetting;
+using Blog.Common.CacheFactory;
 using Blog.Domain;
 using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;
@@ -37,6 +38,8 @@ namespace CommonHelper
             services.AddTransient<IUploadFileRepository, UploadFileRepository>();
 
             services.AddTransient<ICommentRepository, CommentRepository>();
+
+            services.AddTransient<ICacheClient, CacheClient>();
         }
         /// <summary>
         /// 基础框架
@@ -54,6 +57,8 @@ namespace CommonHelper
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
             //注册仓储接口
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+            //注册Redis
+            services.AddSingleton(new CacheProvider());
         }
         /// <summary>
         /// 配置集合
@@ -64,6 +69,7 @@ namespace CommonHelper
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(new ServiceDescriptor(typeof(ConnectionProvider), new ConnectionProvider(configuration.GetConnectionString("MySqlConnection"))));
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
+            services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
             services.AddSession(s => {
                 s.IdleTimeout = TimeSpan.FromDays(30);
             });

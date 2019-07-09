@@ -9,16 +9,22 @@ namespace Blog.Domain
     /// <summary>
     /// 微语实体
     /// </summary>
-   public class Whisper: BlogBase<int>
+    public class Whisper : BlogBase<int>
     {
-        public Whisper(string content, IList<UploadFile> uploadFileList = null,IList<Comment> comments=null)
+        public Whisper(string content, IList<UploadFile> uploadFileList = null)
         {
             Content = content;
             UploadFileList = uploadFileList;
-            CommentList = comments;
         }
-        public Whisper(int id,string content,IList<Comment> commentList,int praiseCount, string praiseAccount,DateTime createTime,DateTime? updateTime)
-        :this(content)
+        public Whisper(string content, DateTime createTime, IList<UploadFile> uploadFileList = null, IList<Comment> comments = null)
+            : this(content)
+        {
+            UploadFileList = uploadFileList;
+            CommentList = comments;
+            CreateTime = createTime;
+        }
+        public Whisper(int id, string content, IList<Comment> commentList, int praiseCount, string praiseAccount, DateTime createTime, DateTime? updateTime)
+        : this(content)
         {
             Id = id;
             Content = content;
@@ -35,7 +41,7 @@ namespace Blog.Domain
         /// <summary>
         /// 评论
         /// </summary>
-        public IList<Comment> CommentList { get;private set; }
+        public IList<Comment> CommentList { get; private set; }
         /// <summary>
         /// 评论guid(只用来数据持久化)
         /// </summary>
@@ -80,7 +86,7 @@ namespace Blog.Domain
         public static void SetCommentGuids(Whisper whisper)
         {
             IList<string> commentGuidList = CommentGuidList(whisper);
-            whisper.CommentGuids = string.Join(",",commentGuidList);
+            whisper.CommentGuids = string.Join(",", commentGuidList);
         }
         /// <summary>
         /// 获取附件guid集合
