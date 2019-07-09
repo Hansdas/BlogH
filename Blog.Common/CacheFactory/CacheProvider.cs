@@ -31,7 +31,7 @@ namespace Blog.Common.CacheFactory
             };
             options.ClientName = model.InstanceName;
             //return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect(options));
-            return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect("58.85.92.221:6379,abortconnect=false,allowAdmin=true,password=123456"));
+            return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect("58.87.92.221:6379,allowAdmin=true,password=123456"));
         }
     }
 }
