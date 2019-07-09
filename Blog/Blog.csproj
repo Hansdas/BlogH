@@ -78,8 +78,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TempFile\Down\" />
-    <Folder Include="TempFile\Logger\" />
     <Folder Include="Views\publish\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
