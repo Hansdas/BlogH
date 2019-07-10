@@ -7,6 +7,7 @@ using System.Text;
 using Blog.Common;
 using System.Linq;
 using Blog.Domain.Core;
+using Blog.AOP.Cache;
 
 namespace Blog.Infrastruct
 {

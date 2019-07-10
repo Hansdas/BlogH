@@ -20,7 +20,7 @@ namespace Blog.Common.CacheFactory
         private ConnectionMultiplexer GetConnection()
         {
             RedisSettingModel model = ConfigurationProvider.GetSettingModel<RedisSettingModel>("Redis");
-            string connstr = string.Format("{0}:{1}", model.Connection, model.Port);
+            string connstr = string.Format("{0}:{1}", model.Host, model.Port);
             _defaultDB = model.DefaultDB;
             ConfigurationOptions options = new ConfigurationOptions() {
                 EndPoints = { { connstr} },
@@ -30,8 +30,8 @@ namespace Blog.Common.CacheFactory
                 ReconnectRetryPolicy = new ExponentialRetry(5000)
             };
             options.ClientName = model.InstanceName;
-            //return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect(options));
-            return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect("58.87.92.221:6379,allowAdmin=true,password=123456"));
+            return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect(options));
+           // return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect("58.87.92.221:6379,allowAdmin=true,password=123456"));
         }
     }
 }

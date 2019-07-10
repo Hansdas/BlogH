@@ -42,7 +42,6 @@ namespace Blog.Controllers
             string passWord = Request.Form["Password"];
             try
             {
-                _cacheClient.Set("11", "1");
                 Domain.User user = _userService.SelectUserByAccount(account);
                 if (user == null)
                 {

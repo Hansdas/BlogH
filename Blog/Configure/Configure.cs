@@ -1,4 +1,7 @@
-﻿using Blog;
+﻿using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using Blog;
+using Blog.AOP.Cache;
 using Blog.Application;
 using Blog.Common.AppSetting;
 using Blog.Common.CacheFactory;
@@ -7,8 +10,6 @@ using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;
 using Blog.Infrastruct;
 using Blog.Infrastruct.EventBus;
-using Chloe;
-using Chloe.MySql;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +17,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Reflection;
+using Autofac.Extras.DynamicProxy;
 
 namespace CommonHelper
 {
@@ -45,7 +48,7 @@ namespace CommonHelper
         /// 基础框架
         /// </summary>
         /// <param name="services"></param>
-        public static void ConfigFrame(this IServiceCollection services)
+        public static IServiceProvider ConfigFrame(this IServiceCollection services)
         {
             //注册全局过滤器
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
@@ -59,6 +62,8 @@ namespace CommonHelper
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
             //注册Redis
             services.AddSingleton(new CacheProvider());
+            //注册AOP拦截器
+            return GetAutofacServiceProvider(services);
         }
         /// <summary>
         /// 配置集合
@@ -89,6 +94,22 @@ namespace CommonHelper
             var httpContextAccessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
             Http.Configure(httpContextAccessor);
             return app;
+        }
+        private static IServiceProvider GetAutofacServiceProvider(IServiceCollection services)
+        {
+            var builder = new ContainerBuilder();
+            builder.Populate(services);
+            var assembly = Assembly.Load("");
+            builder.RegisterType<CacheInterceptor>();
+            //scenario 1
+            builder.RegisterAssemblyTypes(assembly)
+                         .Where(type => typeof(ICache).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)
+                         .AsImplementedInterfaces()
+                         .InstancePerLifetimeScope()
+                         .EnableInterfaceInterceptors()
+                         .InterceptedBy(typeof(CacheInterceptor));
+
+            return new AutofacServiceProvider(builder.Build());
         }
     }
 }
