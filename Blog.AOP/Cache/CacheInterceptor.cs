@@ -1,4 +1,5 @@
-﻿using Blog.Common.CacheFactory;
+﻿using Blog.Common;
+using Blog.Common.CacheFactory;
 using Castle.DynamicProxy;
 using System;
 using System.Collections.Generic;
@@ -10,26 +11,37 @@ namespace Blog.AOP.Cache
     public class CacheInterceptor : IInterceptor
     {
         private readonly ICacheClient _cacheClient;
+        /// <summary>
+        /// 缓存key前缀
+        /// </summary>
+        private string keyPrefix = "MapCache";
         public CacheInterceptor(ICacheClient cacheClient)
         {
             _cacheClient = cacheClient;
         }
+        /// <summary>
+        /// 拦截被特性标记的方法
+        /// </summary>
+        /// <param name="invocation"></param>
         public void Intercept(IInvocation invocation)
         {
             MapCacheAttribute cacheAttribute = Core.GetAttribute<MapCacheAttribute>
-                (invocation.MethodInvocationTarget ?? invocation.Method,typeof(MapCacheAttribute));
+                (invocation.MethodInvocationTarget ?? invocation.Method, typeof(MapCacheAttribute));
             if (cacheAttribute == null)
                 invocation.Proceed();
             else
-                ProgressCaching(invocation);
+                ProgressCaching(invocation,cacheAttribute);
         }
-        private void ProgressCaching(IInvocation invocation)
+        /// <summary>
+        /// 操作缓存
+        /// </summary>
+        /// <param name="invocation"></param>
+        private void ProgressCaching(IInvocation invocation, MapCacheAttribute mapCacheAttribute)
         {
             var typeName = invocation.TargetType.Name;
             var methodName = invocation.Method.Name;
-            var methodArguments = this.FormatArgumentsToPartOfCacheKey(invocation.Arguments);
-
-            var cacheKey = BuildCacheKey(typeName,methodName,methodArguments);
+            var methodArguments = ParseArgumentsToPartOfCacheKey(invocation.Arguments);
+            var cacheKey = BuildCacheKey(typeName, methodName, methodArguments, mapCacheAttribute.dbNameList);
 
             var cacheValue = _cacheClient.Get(cacheKey);
             if (cacheValue != null)
@@ -45,9 +57,18 @@ namespace Blog.AOP.Cache
                 _cacheClient.Set(cacheKey, invocation.ReturnValue);
             }
         }
-        private string BuildCacheKey(string typeName, string methodName, IList<string> parameters)
+        /// <summary>
+        /// 拼接缓存key
+        /// </summary>
+        /// <param name="typeName"></param>
+        /// <param name="methodName"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        private string BuildCacheKey(string typeName, string methodName, IList<string> parameters,IList<string> dbNames)
         {
             StringBuilder cacheKey = new StringBuilder();
+            cacheKey.Append(keyPrefix);
+            cacheKey.Append(":");
             cacheKey.Append(typeName);
             cacheKey.Append(":");
 
@@ -59,14 +80,30 @@ namespace Blog.AOP.Cache
                 cacheKey.Append(param);
                 cacheKey.Append(":");
             }
-
+            cacheKey.Append("=>");
+            foreach (var name in dbNames)
+            {
+                cacheKey.Append(name);
+                cacheKey.Append(":");
+            }
             return cacheKey.ToString().TrimEnd(':');
         }
-        private IList<string> FormatArgumentsToPartOfCacheKey(IList<object> methodArguments, int maxCount = 5)
+        /// <summary>
+        /// 解析方法参数值来组缓存key
+        /// </summary>
+        /// <param name="methodArguments"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        private IList<string> ParseArgumentsToPartOfCacheKey(IList<object> methodArguments, int maxCount = 5)
         {
-            return methodArguments.Select(this.GetArgumentValue).Take(maxCount).ToList();
+            return methodArguments.Select(GetArgumentValue).Take(maxCount).ToList();
         }
 
+        /// <summary>
+        /// 解析参数值
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
         private string GetArgumentValue(object arg)
         {
             if (arg is int || arg is long || arg is string)
@@ -75,14 +112,13 @@ namespace Blog.AOP.Cache
             if (arg is DateTime)
                 return ((DateTime)arg).ToString("yyyyMMddHHmmss");
 
-            if (arg is ICache)
-                return ((ICache)arg).CacheKey;
-
-            return null;
+            return JsonHelper.Serialize(arg);
         }
     }
-   public  interface ICache
+    /// <summary>
+    /// 标记接口，表示该类的方法如果被标记，将会被拦截
+    /// </summary>
+    public interface ICache
     {
-        string CacheKey { get; }
     }
 }

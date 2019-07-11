@@ -11,5 +11,8 @@ namespace Blog.Common.CacheFactory
         T Get<T>(string key);
         string Get(string key);
         void Remove(string key);
+        void BatchRemovePattern(string keyPattern);
+        string[] GetKeys(string keyPattern);
+        string[] LuaScriptGetKeys(string keyPattern);
     }
 }

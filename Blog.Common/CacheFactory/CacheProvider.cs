@@ -11,6 +11,7 @@ namespace Blog.Common.CacheFactory
     {
         private static ConcurrentDictionary<string, ConnectionMultiplexer> connectionDic;
         public static IDatabase database =null;
+        public static IServer server = null;
         private int _defaultDB;
         public CacheProvider()
         {
@@ -20,18 +21,31 @@ namespace Blog.Common.CacheFactory
         private ConnectionMultiplexer GetConnection()
         {
             RedisSettingModel model = ConfigurationProvider.GetSettingModel<RedisSettingModel>("Redis");
-            string connstr = string.Format("{0}:{1}", model.Host, model.Port);
+             string connStr = string.Format("{0}:{1}", model.Host, model.Port);
             _defaultDB = model.DefaultDB;
             ConfigurationOptions options = new ConfigurationOptions() {
-                EndPoints = { { connstr} },
+                EndPoints = { { connStr } },
                 DefaultDatabase = _defaultDB,
-                ServiceName=connstr,
+                ServiceName= connStr,
                 Password=model.Password,
                 ReconnectRetryPolicy = new ExponentialRetry(5000)
             };
             options.ClientName = model.InstanceName;
-            return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect(options));
-           // return connectionDic.GetOrAdd(connstr, s => ConnectionMultiplexer.Connect("58.87.92.221:6379,allowAdmin=true,password=123456"));
+            return connectionDic.GetOrAdd(connStr, s => ConnectionMultiplexer.Connect(options));
+        }
+        /// <summary>
+        /// 并不是使用频繁，所以没有再构造函数添加
+        /// </summary>
+        /// <returns></returns>
+        private IServer GetServer()
+        {
+            if (server == null)
+            {
+                RedisSettingModel model = ConfigurationProvider.GetSettingModel<RedisSettingModel>("Redis");
+                string connStr = string.Format("{0}:{1}", model.Host, model.Port);
+                server = connectionDic[connStr].GetServer(model.Host, model.Port);
+            }
+            return server;
         }
     }
 }

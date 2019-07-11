@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using System.Text;
 using Dapper;
 using Blog.Domain.Core;
+using Blog.AOP.Cache;
 
 namespace Blog.Infrastruct
 {
-    public class UserRepository : Repository<User, int>, IUserRepository
+    public class UserRepository : Repository<User, int>, IUserRepository,ICache
     {
         private static User Map(dynamic result)
         {        

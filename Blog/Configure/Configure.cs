@@ -48,7 +48,7 @@ namespace CommonHelper
         /// 基础框架
         /// </summary>
         /// <param name="services"></param>
-        public static IServiceProvider ConfigFrame(this IServiceCollection services)
+        public static void ConfigFrame(this IServiceCollection services)
         {
             //注册全局过滤器
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
@@ -59,11 +59,11 @@ namespace CommonHelper
             //注册领域通知
             services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
             //注册仓储接口
-            services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+            services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
             //注册Redis
             services.AddSingleton(new CacheProvider());
             //注册AOP拦截器
-            return GetAutofacServiceProvider(services);
+            //return GetAutofacServiceProvider(services);
         }
         /// <summary>
         /// 配置集合
@@ -95,11 +95,12 @@ namespace CommonHelper
             Http.Configure(httpContextAccessor);
             return app;
         }
-        private static IServiceProvider GetAutofacServiceProvider(IServiceCollection services)
+        public static IServiceProvider GetAutofacServiceProvider(this IServiceCollection services)
         {
             var builder = new ContainerBuilder();
             builder.Populate(services);
-            var assembly = Assembly.Load("");
+            var assembly = Assembly.Load("Blog.Infrastruct");
+            //var assembly = typeof(Blog.AOP.).GetType().GetTypeInfo().Assembly;
             builder.RegisterType<CacheInterceptor>();
             //scenario 1
             builder.RegisterAssemblyTypes(assembly)
