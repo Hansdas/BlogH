@@ -23,6 +23,7 @@ namespace Blog.Infrastruct
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
+        [MapCache("User")]
         public User SelectUserByAccount(string account)
         {
 
