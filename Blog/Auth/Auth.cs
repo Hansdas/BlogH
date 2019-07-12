@@ -36,8 +36,7 @@ namespace Blog
         /// </summary>
         public  static void Login(this HttpContext httpContext, User user)
         {
-            //Http.SetSession(user.Account, user);
-            httpContext.Session.SetString(user.Account, JsonHelper.Serialize(user));
+            Http.SetSession(user.Account, user);
         }
          /// <summary>
         /// 退出操作

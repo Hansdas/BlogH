@@ -10,13 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="TemporaryFile\Logger\**" />
     <Compile Remove="wwwroot\TemporaryPhoto\**" />
-    <Content Remove="TemporaryFile\Logger\**" />
     <Content Remove="wwwroot\TemporaryPhoto\**" />
-    <EmbeddedResource Remove="TemporaryFile\Logger\**" />
     <EmbeddedResource Remove="wwwroot\TemporaryPhoto\**" />
-    <None Remove="TemporaryFile\Logger\**" />
     <None Remove="wwwroot\TemporaryPhoto\**" />
   </ItemGroup>
 

@@ -4,7 +4,10 @@ using System.Text;
 
 namespace Blog.AOP.Cache
 {
-   [AttributeUsage(AttributeTargets.Method)]
+    /// <summary>
+    /// AOP缓存，如果使用了该特性，相关的修改操作需使用RomveCacheAttribute删除缓存
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
    public  class MapCacheAttribute:Attribute
     {
         public MapCacheAttribute(params string[] dbNames)

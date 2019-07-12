@@ -1,9 +1,12 @@
 ﻿using Blog.Common;
 using Blog.Common.CacheFactory;
 using Castle.DynamicProxy;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Blog.AOP.Cache
@@ -40,13 +43,25 @@ namespace Blog.AOP.Cache
         {
             var typeName = invocation.TargetType.Name;
             var methodName = invocation.Method.Name;
+            Type methodReturnType=invocation.Method.ReturnType;
             var methodArguments = ParseArgumentsToPartOfCacheKey(invocation.Arguments);
             var cacheKey = BuildCacheKey(typeName, methodName, methodArguments, mapCacheAttribute.dbNameList);
 
             var cacheValue = _cacheClient.Get(cacheKey);
             if (cacheValue != null)
             {
-                invocation.ReturnValue = cacheValue;
+                //基元类型和string类型不需要序列化
+                if (methodReturnType.IsPrimitive || methodReturnType.Name == "String") 
+                    invocation.ReturnValue = cacheKey;
+                else
+                {
+                    var contractResolver = new JsonContractResolver();
+                    JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings()
+                    {
+                        ContractResolver = contractResolver
+                    };
+                    invocation.ReturnValue = JsonConvert.DeserializeObject(cacheValue, methodReturnType, jsonSerializerSettings);
+                }
                 return;
             }
 
