@@ -7,9 +7,14 @@ $(function () {
 		});
 		var thisItem = $(this)[0];
 		$(this).addClass("active");
+		$(".header .btn").empty();
 		if (thisItem.innerText == "微语") {
 			$("#console").attr("src", "../Whisper/Index");
 			$(".header .btn").append('<a href="../whisper/addWhisper" class="layui-btn layui-btn-normal">发表微语</a>');
+		}
+		if (thisItem.innerText == "文章") {
+			$("#console").attr("src", "../Article/Index");
+			//$(".header .btn").append('<a href="../whisper/addWhisper" class="layui-btn layui-btn-normal">发表文章</a>');
 		}
 	});
 	//iframe自适应内容高度

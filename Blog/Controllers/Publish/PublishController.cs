@@ -68,7 +68,7 @@ namespace Blog.Controllers
                 Domain.Blog blog = new Domain.Blog(userModel.Account, BlogType.微语, whisper);
                 _blogService.PublishBlog(blog);
             }
-            catch (AggregateException e)
+            catch (AggregateException)
             {
                 //todo 有异常删除所有本次所传的附件
             }

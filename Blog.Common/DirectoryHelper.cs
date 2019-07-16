@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace FileHelper
+namespace Blog.Common
 {
     /// <summary>
     /// 目录帮助类

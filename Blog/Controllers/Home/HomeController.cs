@@ -11,6 +11,7 @@ namespace Blog.Controllers.Home
     {
       public IActionResult Index()
         {
+            throw new Exception("测试异常过滤器");
             return View();
         }
     }

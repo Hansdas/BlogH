@@ -9,8 +9,8 @@ namespace Blog.Infrastruct
 {
     public class ConnectionProvider
     {
-        public IDbConnection connection ;
-        public static  string connStr="";
+        private IDbConnection connection ;
+        private static  string connStr="";
         private ConnectionProvider()
         {
 

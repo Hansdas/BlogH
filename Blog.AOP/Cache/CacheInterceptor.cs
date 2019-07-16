@@ -83,25 +83,25 @@ namespace Blog.AOP.Cache
         {
             StringBuilder cacheKey = new StringBuilder();
             cacheKey.Append(keyPrefix);
-            cacheKey.Append(":");
+            cacheKey.Append(".");
             cacheKey.Append(typeName);
-            cacheKey.Append(":");
+            cacheKey.Append(".");
 
             cacheKey.Append(methodName);
-            cacheKey.Append(":");
+            cacheKey.Append(".");
 
             foreach (var param in parameters)
             {
                 cacheKey.Append(param);
-                cacheKey.Append(":");
+                cacheKey.Append(".");
             }
             cacheKey.Append("=>");
             foreach (var name in dbNames)
             {
                 cacheKey.Append(name);
-                cacheKey.Append(":");
+                cacheKey.Append(".");
             }
-            return cacheKey.ToString().TrimEnd(':');
+            return cacheKey.ToString().TrimEnd('.');
         }
         /// <summary>
         /// 解析方法参数值来组缓存key

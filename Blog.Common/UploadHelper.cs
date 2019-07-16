@@ -22,10 +22,6 @@ namespace Blog.Common
     {
         private static readonly string controller = "/api/Upload";
         private readonly static object obj = new object();
-        /// <summary>
-        /// 网站根目录
-        /// </summary>
-        public static string WebRoot = "";
         private static IConfigurationSection GetConfigurationSection(string sctionKey)
         {
             IConfigurationSection section= ConfigurationProvider.configuration.GetSection(sctionKey);
@@ -38,7 +34,6 @@ namespace Blog.Common
         private static string GetIP()
         {
             string ip= GetConfigurationSection("webapi").GetSection("HttpAddresss").Value;
-            //string ip = ConfigurationProvider.configuration.GetSection("webapi:HttpAddresss").Value;
             string http = "http://" + ip;
             return http;
         }
@@ -79,11 +74,10 @@ namespace Blog.Common
             IConfigurationSection section = GetConfigurationSection("webapi");
             if (string.IsNullOrEmpty(saveLocalPath))
             {
-                saveLocalPath = string.Format(@"{0}{1}\{2}\{3}\", WebRoot, section.GetSection("DownSavePathBase").Value.Replace("/", @"\"), dateTime.Year.ToString(), dateTime.Month.ToString());
+                saveLocalPath = string.Format(@"{0}{1}\{2}\{3}\", ConstantKey.WebRoot, section.GetSection("DownSavePathBase").Value.Replace("/", @"\"), dateTime.Year.ToString(), dateTime.Month.ToString());
 
             }
             string fileName = Path.GetFileName(httpUrl);
-            string extension = Path.GetExtension(httpUrl);
             if (!Directory.Exists(saveLocalPath))
                 Directory.CreateDirectory(saveLocalPath);
             WebClient webClient = new WebClient();
@@ -102,7 +96,7 @@ namespace Blog.Common
         {
             DateTime dateTime = DateTime.Now;
             IConfigurationSection section = GetConfigurationSection("webapi");
-            string saveLocalPath = string.Format(@"{0}{1}\{2}\{3}\", WebRoot,section.GetSection("DownSavePathBase").Value.Replace("/",@"\"), dateTime.Year.ToString(), dateTime.Month.ToString());
+            string saveLocalPath = string.Format(@"{0}{1}\{2}\{3}\", ConstantKey.WebRoot, section.GetSection("DownSavePathBase").Value.Replace("/",@"\"), dateTime.Year.ToString(), dateTime.Month.ToString());
             IList<string> localSavePaths = new List<string>();
             string ip ="http://"+section.GetSection("HttpAddresss").Value;
             string UploadSavePathBase = ConfigurationProvider.configuration.GetSection("webapi:UploadSavePathBase").Value;

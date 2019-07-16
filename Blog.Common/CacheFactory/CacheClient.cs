@@ -8,6 +8,9 @@ namespace Blog.Common.CacheFactory
 {
     public class CacheClient : ICacheClient
     {
+        /// <summary>
+        /// 过期时间
+        /// </summary>
         private const double ExpireTime = 1D;
         private IDatabase database => CacheProvider.database;
         private IServer server => CacheProvider.server;
@@ -27,6 +30,8 @@ namespace Blog.Common.CacheFactory
         public T Get<T>(string key)
         {
             string value = Get(key);
+            if (string.IsNullOrEmpty(value))
+                return default(T);
             return JsonHelper.DeserializeObject<T>(value);
         }
 
