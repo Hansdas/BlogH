@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width = device-width" />
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/css/main.css?v=27" rel="stylesheet" />
+</head>
+<body>
+    <div class="login" style="margin-top:50px">
+        <form method="post" class="layui-form" style="margin-left:200px">
+            <ul>
+                <li>
+                    <input type="text" name="Account" lay-verify="required" autocomplete="off" placeholder="请输入账号" class="layui-input">
+                </li>
+                <li>
+                    <input type="password" name="Password" lay-verify="required" autocomplete="off" placeholder="请输入密码" class="layui-input">
+                </li>
+                <li>
+                    <input type="checkbox" name="cbRemember" title="记住我" lay-skin="primary">
+                </li>
+            </ul>
+            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="login">登录</button>
+            <a href="Register"  class="layui-btn layui-btn-primary layui-btn-sm">前往注册</a>
+        </form>
+    </div>
+    <script src="~/js/jquery.js"></script>
+    <script src="~/layui/layui.js"></script>
+    <script>
+        layui.use(["form"], function () {
+            var form = layui.form;
+            var layer = layui.layer;
+            form.on("submit(login)", function (data) {
+                var loginData = data.field;
+                var index = layer.load(2)
+                $.ajax({
+                    url: "/Login/LoginIn",
+                    type: "post",
+                    data: {
+                        "Account": loginData.Account,
+                        "Password": loginData.Password
+                    },
+                    success: function (response) {
+                        if (response.message == "OK") {
+                            window.location.href = "../home/index";
+
+                        }
+                        else {
+                            layer.close(index)
+                            layer.msg(response.message, { icon: 4 });
+                        }
+                    },
+                    error: function (response) {
+                        layer.close(index)
+                        layer.msg("响应服务器失败", { icon: 7 });
+                    }
+                });
+                return false;
+            })
+        })
+    </script>
+</body>
+</html>
