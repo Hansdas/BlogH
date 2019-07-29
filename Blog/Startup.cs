@@ -51,8 +51,7 @@ namespace Blog
             app.UseStaticFiles();
             //自定义使用资源目录
             app.UseStaticFiles(new StaticFileOptions()
-            {
-              
+            {              
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath + Configuration.GetSection("webapi:DownSavePathBase").Value)),
                 RequestPath = ConstantKey.STATIC_FILE
             }); 

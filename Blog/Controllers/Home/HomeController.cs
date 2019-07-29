@@ -10,8 +10,7 @@ namespace Blog.Controllers.Home
     public class HomeController : BaseController
     {
       public IActionResult Index()
-        {
-            throw new Exception("测试异常过滤器");
+        {           
             return View();
         }
     }
