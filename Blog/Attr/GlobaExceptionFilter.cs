@@ -23,16 +23,11 @@ namespace Blog
         }
         public override void OnException(ExceptionContext context)
         {
+            string message = context.Exception.Message;
             Task.Factory.StartNew(() =>
             {
-                LogEventInfo lei = new LogEventInfo();
-                UserModel userModel = Auth.GetLoginUser();
-                lei.Level = LogLevel.Error;
-                lei.Properties["Account"] = userModel == null ? "" : userModel.Account;
-                lei.Properties["Level"] = LogLevel.Error;
-                lei.Properties["Message"] = context.Exception.Message;
-                lei.Properties["logger"] = context.Exception.GetBaseException().TargetSite.Name;
-                _logger.Log(lei);
+                //_logger.Log(LogLevel.Error, context.Exception, message);
+                _logger.Error(context.Exception, message);
             });
             ReturnResult returnResult = new ReturnResult("500", "响应服务器错误");
             context.Result = new JsonResult(returnResult);

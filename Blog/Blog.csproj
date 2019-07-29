@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <None Include="nlog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="wwwroot\js\mods\case.js" />
     <None Include="wwwroot\js\mods\face.js" />
@@ -80,7 +80,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="TempFile\Logger\" />
     <Folder Include="Views\publish\" />
     <Folder Include="Views\User\" />
   </ItemGroup>

@@ -14,7 +14,7 @@ namespace Blog.Domain.Core
         /// </summary>
         public const string CHECK_REPEAT_KEY = "CHECK_REPEAT";
         /// <summary>
-        /// //自定义使用虚拟资源目录
+        /// 映射到静态资源的相对请求路径
         /// </summary>
         public const string STATIC_FILE = "/StaticFiles";
         /// <summary>
