@@ -40,32 +40,30 @@ namespace Blog.Controllers
         {
             string account = Request.Form["Account"];
             string passWord = Request.Form["Password"];
+            Domain.User user = new Domain.User();
             try
             {
-                Domain.User user = _userService.SelectUserByAccount(account);
+                user = _userService.SelectUser(account, passWord);
                 if (user == null)
-                {
-                    return new JsonResult(new ReturnResult() { Code = "200", Message = "用户名或密码错我" });
-                }
-                HttpContext.Login(user);
-                IList<Claim> claims = new List<Claim>()
-                {
-                    new Claim("account", user.Account)
-                };
-                ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-                Task.Run(() =>
-                {
-                    HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
-                    {
-                        ExpiresUtc = DateTimeOffset.Now.AddDays(30)
-                    });
-                });
+                    HttpContext.Login(user);
             }
-            catch (Exception e)
+            catch (ValidationException e)
             {
                 return new JsonResult(new ReturnResult() { Code = "200", Message = e.Message });
             }
+            IList<Claim> claims = new List<Claim>()
+                {
+                    new Claim("account", user.Account)
+                };
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            Task.Run(() =>
+            {
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
+                {
+                    ExpiresUtc = DateTimeOffset.Now.AddDays(30)
+                });
+            });
             return new JsonResult(new ReturnResult() { Code = "200", Message = "OK" });
         }
 
@@ -80,12 +78,9 @@ namespace Blog.Controllers
             try
             {
                 _userService.Insert(user);
-                IEnumerable<string> domainNotifications= _domainNotificationHandler.GetDomainNotificationList().Select(s=>s.Value);
-                foreach(var value in domainNotifications)
-                {
-                    message = value;
-                    break;
-                }
+                string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
+                if (!string.IsNullOrEmpty(domainNotification))
+                    message = domainNotification;
             }
             catch (FrameworkException e)
             {

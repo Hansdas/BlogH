@@ -5,6 +5,7 @@ $(function () {
 		$(".nav a").each(function (index) {
 			$(this).removeClass("active");
 		});
+		var index = layer.load(2);
 		var thisItem = $(this)[0];
 		$(this).addClass("active");
 		$(".header .btn").empty();
@@ -16,6 +17,7 @@ $(function () {
 			$("#console").attr("src", "../Article/Index");
 			//$(".header .btn").append('<a href="../whisper/addWhisper" class="layui-btn layui-btn-normal">发表文章</a>');
 		}
+		layer.close(index);
 	});
 	//iframe自适应内容高度
 	$("#console").each(function (index) {

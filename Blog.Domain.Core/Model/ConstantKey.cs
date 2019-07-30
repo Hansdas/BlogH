@@ -10,9 +10,9 @@ namespace Blog.Domain.Core
     public static class ConstantKey
     {
         /// <summary>
-        /// 校验重复性key
+        /// 领域校验校验key
         /// </summary>
-        public const string CHECK_REPEAT_KEY = "CHECK_REPEAT";
+        public const string CHECK_KEY = "CHECK_KEY";
         /// <summary>
         /// 映射到静态资源的相对请求路径
         /// </summary>

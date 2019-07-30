@@ -26,7 +26,7 @@ namespace Blog.Domain
             int count=_userRepository.SelectCountByAccount(command.User.Account);
             if (count > 0)
             {
-                _mediatorHandler.RaiseEvent(new DomainNotification(ConstantKey.CHECK_REPEAT_KEY, "该账号已存在"));
+                _mediatorHandler.RaiseEvent(new DomainNotification(ConstantKey.CHECK_KEY, "该账号已存在"));
                 return Task.FromResult(new Unit());
             }
             _userRepository.Insert(command.User);

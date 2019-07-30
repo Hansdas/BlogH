@@ -31,6 +31,8 @@ namespace Blog.Infrastruct
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Account", account);
             dynamic result = base.SelectSingle(sql, dynamicParameters);
+            if (result == null)
+                return null;
             return Map(result);
         }
         /// <summary>

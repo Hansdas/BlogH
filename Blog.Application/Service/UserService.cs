@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Blog.Common;
 using Blog.Domain;
+using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;
 
 namespace Blog.Application
@@ -33,9 +34,13 @@ namespace Blog.Application
             }
         }
 
-        public User SelectUserByAccount(string Account)
+        public User SelectUser(string Account,string password)
         {
             User user = _userRepository.SelectUserByAccount(Account);
+            if (user == null)
+                throw new ValidationException("用户名不存在或密码错误");
+            if (user.Password != password)
+                throw new ValidationException("用户名不存在或密码错误");
             return user;
         }
     }
