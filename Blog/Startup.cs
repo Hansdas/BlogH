@@ -36,6 +36,8 @@ namespace Blog
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env,ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddNLog();
+            env.ConfigureNLog("nlog.config");
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
@@ -45,7 +47,6 @@ namespace Blog
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            env.ConfigureNLog("nlog.config");
             ConstantKey.WebRoot = env.ContentRootPath;
             loggerFactory.AddNLog();
             app.UseStaticFiles();
