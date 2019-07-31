@@ -16,9 +16,10 @@ namespace Blog.Domain
             Content = content;
             UploadFileList = uploadFileList;
         }
-        public Whisper(string content, DateTime createTime, IList<UploadFile> uploadFileList = null, IList<Comment> comments = null)
+        public Whisper(int id,string content, DateTime createTime, IList<UploadFile> uploadFileList = null, IList<Comment> comments = null)
             : this(content)
         {
+            Id = id;
             UploadFileList = uploadFileList;
             CommentList = comments;
             CreateTime = createTime;

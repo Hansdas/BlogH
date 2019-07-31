@@ -4,60 +4,44 @@
 <head>
     <meta name="viewport" content="width = device-width" />
     <link href="~/layui/css/layui.css" rel="stylesheet" />
-    <link href="~/css/main.css?v=27" rel="stylesheet" />
+    <link href="~/css/login.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="login" style="margin-top:50px">
-        <form method="post" class="layui-form" style="margin-left:200px">
-            <ul>
-                <li>
-                    <input type="text" name="Account" lay-verify="required" autocomplete="off" placeholder="请输入账号" class="layui-input">
-                </li>
-                <li>
-                    <input type="password" name="Password" lay-verify="required" autocomplete="off" placeholder="请输入密码" class="layui-input">
-                </li>
-                <li>
-                    <input type="checkbox" name="cbRemember" title="记住我" lay-skin="primary">
-                </li>
-            </ul>
-            <button class="layui-btn layui-btn-primary layui-btn-sm" lay-submit="" lay-filter="login">登录</button>
-            <a href="Register"  class="layui-btn layui-btn-primary layui-btn-sm">前往注册</a>
-        </form>
+    <div class="cb-login">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3>登录</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post" class="layui-form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="Account" lay-verify="required" autocomplete="off" placeholder="请输入账号" value="">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control" name="Password" lay-verify="required" autocomplete="off" placeholder="请输入密码" value="">
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="is_remember_pass" lay-ignore> 记住密码</label>
+                        <a href="" class="pull-right text-danger">忘记密码？</a>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block" lay-submit="" lay-filter="login">登录</button>
+                    <div class="checkbox">
+                        <span>还没有帐号？<a href="/index/sign/register.html" class="text-danger">马上注册</a></span>
+                    </div>
+                    <hr>
+                </form>
+                <div class="checkbox">
+                    <span class="text-muted">其他登录方式</span>
+                    <span class="pull-right other-login">
+                        <a href="/index/other/qq_login.html"><img src="~/img/other_qq.png" class="img-circle"></a>
+                        <a href="javascript:;"><img src="~/img/other_wx.png" class="img-circle"></a>
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="~/js/jquery.js"></script>
     <script src="~/layui/layui.js"></script>
-    <script>
-        layui.use(["form"], function () {
-            var form = layui.form;
-            var layer = layui.layer;
-            form.on("submit(login)", function (data) {
-                var loginData = data.field;
-                var index = layer.load(2)
-                $.ajax({
-                    url: "/Login/LoginIn",
-                    type: "post",
-                    data: {
-                        "Account": loginData.Account,
-                        "Password": loginData.Password
-                    },
-                    success: function (response) {
-                        if (response.message == "OK") {
-                            window.location.href = "../home/index";
-
-                        }
-                        else {
-                            layer.close(index)
-                            layer.msg(response.message, { icon: 4 });
-                        }
-                    },
-                    error: function (response) {
-                        layer.close(index)
-                        layer.msg("响应服务器失败", { icon: 7 });
-                    }
-                });
-                return false;
-            })
-        })
-    </script>
+    <script src="~/js/login.js"></script>
 </body>
 </html>

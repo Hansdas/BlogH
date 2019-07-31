@@ -13,7 +13,7 @@ namespace Blog.Application
         /// </summary>
         /// <param name="condition"></param>
         /// <returns></returns>
-        User SelectUserByAccount(string Account);
+        User SelectUser(string Account, string password);
         /// <summary>
         /// 插入数据
         /// </summary>

@@ -48,15 +48,13 @@ namespace Blog
                 app.UseExceptionHandler("/Home/Error");
             }
             ConstantKey.WebRoot = env.ContentRootPath;
-            loggerFactory.AddNLog();
             app.UseStaticFiles();
             //自定义使用资源目录
             app.UseStaticFiles(new StaticFileOptions()
-            {
-              
+            {              
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath + Configuration.GetSection("webapi:DownSavePathBase").Value)),
                 RequestPath = ConstantKey.STATIC_FILE
-            }); ; ;
+            }); 
             app.UseAuthentication();
             app.UseSession();
             app.UseStaticHttpContext();

@@ -32,7 +32,7 @@ namespace Blog.Infrastruct
             string commentGuids = d.whisper_commentguids;
             IList<UploadFile> files = uploadFileList.Where(s => uploadFileGuids.Split(',').AsList().Contains(s.GUID)).ToList();
             IList<Comment> comments = commentList.Where(s => commentGuids.Split(',').AsList().Contains(s.GUID)).ToList();
-            Whisper whisper = new Whisper(d.whisper_content,d.whisper_createtime, files, comments);
+            Whisper whisper = new Whisper(d.whisper_id, d.whisper_content,d.whisper_createtime, files, comments);
             Domain.Blog blog = new Domain.Blog(d.blog_account, (BlogType)d.blog_blogtype, whisper);
             return blog;
         }

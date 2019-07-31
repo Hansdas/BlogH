@@ -2,18 +2,18 @@
 $(function () {
 	//导航栏点击变色
 	$(".nav a").click(function () {
-		$(".nav a").each(function (index) {
+		$(".nav a").each(function () {
 			$(this).removeClass("active");
 		});
 		var thisItem = $(this)[0];
 		$(this).addClass("active");
 		$(".header .btn").empty();
 		if (thisItem.innerText == "微语") {
-			$("#console").attr("src", "../Whisper/Index");
+			$("#console").attr("src", "../whisper/index");
 			$(".header .btn").append('<a href="../whisper/addWhisper" class="layui-btn layui-btn-normal">发表微语</a>');
 		}
 		if (thisItem.innerText == "文章") {
-			$("#console").attr("src", "../Article/Index");
+			$("#console").attr("src", "../article/index");
 			//$(".header .btn").append('<a href="../whisper/addWhisper" class="layui-btn layui-btn-normal">发表文章</a>');
 		}
 	});
@@ -23,7 +23,7 @@ $(function () {
 		(function () {
 			setInterval(function () {
 				setIframeHeight(that[0]);
-			}, 200);
+			}, 300);
 		})(that);
 	});
 	showPage();

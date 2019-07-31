@@ -19,25 +19,6 @@ namespace Blog.Infrastruct.EventBus
         {
             _mediator = mediator;
         }
-
-        /// <summary>
-        /// 发布邻域事件
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="event"></param>
-        /// <returns></returns>
-        public Task RaiseEvent<T>(T @event) where T : Event
-        {
-            try
-            {
-                return _mediator.Publish(@event);
-            }
-            catch (AggregateException ex)
-            {
-                throw ex;
-            }
-        }
-
         /// <summary>
         /// 发送邻域命令
         /// </summary>
@@ -54,7 +35,23 @@ namespace Blog.Infrastruct.EventBus
             {
                 throw ex;
             }
-
+        }
+        /// <summary>
+        /// 发布邻域事件通知
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="event"></param>
+        /// <returns></returns>
+        public Task RaiseEvent<T>(T @event) where T : Event
+        {
+            try
+            {
+                return _mediator.Publish(@event);
+            }
+            catch (AggregateException ex)
+            {
+                throw ex;
+            }
         }
     }
 }
