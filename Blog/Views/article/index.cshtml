@@ -7,13 +7,38 @@
     <link href="~/css/main.css" rel="stylesheet" />
     <script src="~/js/jquery.js"></script>
     <script src="~/layui/layui.js?v=123"></script>
+    <style>
+      .layui-row h3 {
+            margin:20px 0px 15px 209px !important
+        }
+       .layui-row h5 {
+            margin-bottom:14px !important;
+            margin-left:298px
+        }
+       .article-type {
+    /* top: -2px; */
+    height: 18px;
+    /* line-height: 25px; */
+    padding: 0 5px;
+    margin-right: 10px;
+    font-size: 14px;
+    border: 1px solid #5FB878;
+    background: none;
+    color: #5FB878;
+    cursor: pointer;
+    padding-bottom: 10p;
+    /* margin-bottom: -10px !important; */
+    display: inline-block;
+    margin-bottom: 10;
+}
+    </style>
 </head>
 <div class="content">
-    <div class="cont w1000">
-        <div class="title">
+    <div class="cont">
+        <div class="title" style="margin-left:23.33%">
             <span class="layui-breadcrumb" lay-separator="|">
-                <a href="javascript:;" class="active">设计文章</a>
-                <a href="javascript:;">前端文章</a>
+                <a href="javascript:;" class="active">散文礼记</a>
+                <a href="javascript:;">编程世界</a>
                 <a href="javascript:;">旅游杂记</a>
             </span>
         </div>
@@ -21,15 +46,15 @@
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
-                            <div class="img"><img src="../res/img/sy_img1.jpg" alt=""></div>
-                        </div>
+                        @*<div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                                <div class="img"><img src="../res/img/sy_img1.jpg" alt=""></div>
+                            </div>*@
                         <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                             <div class="item-cont">
-                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
-                                <h5>设计文章</h5>
+                               <h3> <a class="article-type">设计文章</a>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
+
                                 <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                                <a href="details.html" class="go-icon"></a>
+                                @*<a href="details.html" class="go-icon"></a>*@
                             </div>
                         </div>
                     </div>
@@ -38,15 +63,15 @@
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
-                            <div class="img"><img src="../res/img/sy_img2.jpg" alt=""></div>
-                        </div>
+                        @*<div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                                <div class="img"><img src="../res/img/sy_img2.jpg" alt=""></div>
+                            </div>*@
                         <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                             <div class="item-cont">
                                 <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
                                 <h5>设计文章</h5>
                                 <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                                <a href="details.html" class="go-icon"></a>
+                                @*<a href="details.html" class="go-icon"></a>*@
                             </div>
                         </div>
                     </div>
@@ -55,15 +80,15 @@
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
-                            <div class="img"><img src="../res/img/sy_img3.jpg" alt=""></div>
-                        </div>
+                        @*<div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                                <div class="img"><img src="../res/img/sy_img3.jpg" alt=""></div>
+                            </div>*@
                         <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                             <div class="item-cont">
                                 <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
                                 <h5>设计文章</h5>
                                 <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                                <a href="details.html" class="go-icon"></a>
+                                @*<a href="details.html" class="go-icon"></a>*@
                             </div>
                         </div>
                     </div>
@@ -72,15 +97,15 @@
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
-                            <div class="img"><img src="../res/img/sy_img4.jpg" alt=""></div>
-                        </div>
+                        @*<div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                                <div class="img"><img src="../res/img/sy_img4.jpg" alt=""></div>
+                            </div>*@
                         <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                             <div class="item-cont">
                                 <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
                                 <h5>设计文章</h5>
                                 <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                                <a href="details.html" class="go-icon"></a>
+                                @*<a href="details.html" class="go-icon"></a>*@
                             </div>
                         </div>
                     </div>
@@ -89,15 +114,15 @@
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
-                            <div class="img"><img src="../res/img/sy_img5.jpg" alt=""></div>
-                        </div>
+                        @*<div class="layui-col-xs12 layui-col-sm4 layui-col-md5">
+                                <div class="img"><img src="../res/img/sy_img5.jpg" alt=""></div>
+                            </div>*@
                         <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                             <div class="item-cont">
                                 <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
                                 <h5>设计文章</h5>
                                 <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                                <a href="details.html" class="go-icon"></a>
+                                @*<a href="details.html" class="go-icon"></a>*@
                             </div>
                         </div>
                     </div>
@@ -112,10 +137,6 @@
         base: '/js/'
     }).use(['element', 'laypage', 'jquery', 'menu'], function () {
         element = layui.element, laypage = layui.laypage, $ = layui.$, menu = layui.menu;
-        laypage.render({
-            elem: 'demo'
-            , count: 70 //数据总数，从服务端得到
-        });
         menu.init();
     })
 </script>

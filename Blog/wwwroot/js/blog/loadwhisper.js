@@ -1,9 +1,9 @@
 ﻿layui.config({
 	base: '/js/'
 }).use(['element', 'laypage', 'form', 'menu', 'laytpl'], function () {
+	var index = layer.load(2)
 	element = layui.element, laypage = layui.laypage, form = layui.form, menu = layui.menu, laytpl = layui.laytpl;
 	element.init();
-	var index = layer.load(2)
 	var whisper = document.getElementById("whisper-item").innerHTML;
 	var total = loadtotal();
 	laypage.render({
