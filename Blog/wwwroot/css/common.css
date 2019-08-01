@@ -3,9 +3,7 @@
 {
     height:1370px
 }
-.h1370 .title{
-    margin-left:19.33%
-}
+
 .h1370 .title i{
     position:absolute;
     top:8px;
@@ -15,10 +13,7 @@
     color: white !important;
     font-size: 14px !important
 }
-.box-left{
-    float:left;
-    width:1170px
-}
+
 .item-title{
     width:954px
 }
@@ -94,4 +89,42 @@
 }
 .color4 {
     background-color: #f0ad4e
+}
+.bor {
+    width: 1376px;
+    margin-left: 5%;
+    height: -17px;
+    border: none;
+    border-top: 1px dotted #ddd;
+    background-color: #fff;
+}
+@media screen and (max-width: 1800px) {
+    .box-left {
+        float: left;
+    }
+
+    .title-type {
+        margin-left:25.33%
+    }
+    .box-left h3 {
+        text-align: center !important;
+        margin-right: 26% !important
+    }
+    .search{
+        margin-left:30.1%
+    }
+}
+
+@media screen and (min-width:1800px) {
+
+    .box-left {
+        float: left;
+        width: 1170px
+    }
+    .h1370 .title {
+        margin-left: 19.33%
+    }
+    .search {
+        margin-left: 47%
+    }
 }
