@@ -3,10 +3,11 @@
     @*<meta name="viewport" content="width = device-width" />*@
     <meta name="referrer" content="never">
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>微语</title>
     <link href="~/layui/css/layui.css" rel="stylesheet" />
-    <link href="~/css/main.css" rel="stylesheet" />
-    <link href="~/css/common.css?v=201908012009" rel="stylesheet" />
+    <link href="~/css/main.css?v=201908021513" rel="stylesheet" />
+    <link href="~/css/common.css?v=201908021702" rel="stylesheet" />
     <script src="~/js/jquery.js"></script>
     <script src="~/layui/layui.js?v=123"></script>
     @*<style media="screen">
@@ -34,7 +35,7 @@
                     <div class="layui-row">
                         <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                             <div class="item-cont item-title">
-                                <h3>空间立体效果图，完美呈现最终效果 <button class="layui-btn layui-btn-danger new-icon">Hot</button><button class="layui-btn new-icon w62">散文礼记</button></h3>
+                                <h3>空间立体效果图，完美呈现最终效果 <button class="layui-btn layui-btn-danger new-icon">new</button><button class="layui-btn new-icon w62">散文礼记</button></h3>
 
                                 <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
                             </div>
@@ -42,6 +43,7 @@
                     </div>
                 </div>
             </div>
+            <hr class="bor item-bottom" />
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
@@ -54,6 +56,7 @@
                     </div>
                 </div>
             </div>
+            <hr class="bor item-bottom"/>
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
@@ -66,6 +69,7 @@
                     </div>
                 </div>
             </div>
+            <hr class="bor item-bottom" style="" />
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
@@ -78,6 +82,7 @@
                     </div>
                 </div>
             </div>
+            <hr class="bor item-bottom" />
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
@@ -90,13 +95,15 @@
                     </div>
                 </div>
             </div>
+            <hr class="bor item-bottom"/>
+            <div id="page" style="text-align: center;"></div>
         </div>
         <div class="box-right">
             <div class="box h251">
                 <div class="box-title">
                     <h3>热门推荐</h3>
                 </div>
-                <ul>
+                <ul class="li-item">
                     <li> <a href="">正是个好文章</a></li>
                     <li> <a href="">hijklmn</a></li>
                     <li> <a href="">opq</a></li>
@@ -105,9 +112,39 @@
                     <li> <a href="">1</a></li>
                 </ul>
             </div>
+
+            <div class="box hot">
+                <div class="box-title">
+                    <h3>热门推荐</h3>
+                </div>
+                <div class="layui-tab layui-tab-card" lay-filter="test" style="margin-top:-1px">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this" lay-id="day">一日内</li>
+                        <li lay-id="week">一周内</li>
+                        <li lay-id="month">一月内</li>
+                    </ul>
+                    <div class="layui-tab-content" style="padding:0px !important">
+                        <div class="layui-tab-item layui-show">
+                            点击该Tab的任一标题，观察地址栏变化，再刷新页面。选项卡将会自动定位到上一次切换的项
+                        </div>
+                        <div class="layui-tab-item">
+                            <ul class="li-item-hot">
+                                <li> <a href="">正是个好文章</a></li>
+                                <li> <a href="">hijklmn</a></li>
+                                <li> <a href="">opq</a></li>
+                                <li> <a href="">正是个好文章</a></li>
+                                <li> <a href="">正是个好文章</a></li>
+                            </ul>
+                        </div>
+                        <div class="layui-tab-item">内容3</div>
+                        <div class="layui-tab-item">内容4</div>
+                    </div>
+                </div>
+            </div>
+
             <div class="box h155">
                 <div class="box-title">
-                    <h3>星标签</h3>
+                    <h3>推荐网址</h3>
                 </div>
                 <a href="https://www.cnblogs.com/" target="_blank">
                     <span class="label color2">博客园</span>
@@ -132,7 +169,7 @@
                 </a>
             </div>
         </div>
-        <div id="demo" style="text-align: center;"></div>
+        <div id="page" style="text-align: center;"></div>
     </div>
 </div>
 <script type="text/javascript">
@@ -141,5 +178,10 @@
     }).use(['element', 'laypage', 'jquery', 'menu'], function () {
         element = layui.element, laypage = layui.laypage, $ = layui.$, menu = layui.menu;
         menu.init();
+      laypage.render({
+    elem: 'page'
+    ,count: 1000
+    ,layout: ['page', 'count']
+  });
     })
 </script>

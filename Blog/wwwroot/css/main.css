@@ -89,7 +89,7 @@ form input[type=checkbox] {
 .content .cont .title .layui-breadcrumb span{position: relative; top: -1px; margin:0 16px;}
 .content .cont .title a.active,.content .cont .title a:hover{color: #ff7f21!important;}
 .content .cont .list-item .layui-fluid{padding:0;}
-.content .cont .list-item .item{margin-bottom: 80px; overflow: hidden;}
+.content .cont .list-item .item{ overflow: hidden;}
 .content .cont .list-item .item .img img{width: 100%;}
 .content .cont .list-item .item .item-cont{padding-left: 100px;}
 .content .cont .list-item .item .item-cont .go-icon{width: 33px; height: 11px; background: url(../img/jiantou.png) center center no-repeat; display: block; padding:10px 0; margin-top: 16px;}
@@ -127,6 +127,12 @@ form input[type=checkbox] {
 .footer .practice-mode .text h4{font-size: 20px; line-height: 60px;}
 .footer .practice-mode .text p{line-height: 32px;}
 .footer .practice-mode .text p span{padding-left: 24px;}
+.footer-wrap p {
+    padding: 0px;
+    font-weight: 300;
+    color: #333;
+    text-align: center
+}
 
 
 
