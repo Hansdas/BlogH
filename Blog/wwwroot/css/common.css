@@ -20,7 +20,7 @@
     width:954px
 }
 .box-left .item h3 {
-    margin-left: 181px !important
+    margin-left: 75px !important
 }
 .w62{
     width:62px !important
@@ -52,7 +52,7 @@
         color: white
     }
 .item-bottom {
-    width: 93%;
+    width: 100%;
     margin-left: 8.5% !important
 }
 .h251 .li-item li {
@@ -120,7 +120,7 @@
 
     .box-left {
         float: left;
-        width: 1024px
+        width: 900px
     }
 
     .h1370 .title {
@@ -138,12 +138,13 @@
         margin-right:162px
     }
     .box-left p {
-        width:991px
+        width:802px
     }
 }
-@media  (min-width: 1700px) {
+@media  (min-width: 1900px) {
     .box-left {
         float: left;
+        width: 900px
     }
 
     .title-type {
@@ -155,5 +156,8 @@
     }
     .search{
         margin-left:30.1%
+    }
+    .box-left p {
+        width: 90%
     }
 }
