@@ -3,17 +3,13 @@
 
 <head>
     <meta name="viewport" content="width = device-width" />
-    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/layui/css/layui.css?201908072009" rel="stylesheet" />
     <link href="~/css/main.css?v=201922262" rel="stylesheet" />
-    <link href="~/css/layout.css?v=121" rel="stylesheet" />
+    <link href="~/css/layout.css?v=201908072011" rel="stylesheet" />
+    <link href="~/css/common.css?v=201908072040" rel="stylesheet" />
     <link href="~/css/global.css?v=1" rel="stylesheet" />
     <script src="~/js/jquery.js"></script>
     <script src="~/layui/layui.js"></script>
-    <style>
-        iframe{
-            height:400px !important
-        }
-    </style>
 </head>
 
 @using Blog.Common
@@ -25,14 +21,24 @@
         dic.Add(item.ToString(), item.GetEnumText<ArticleType>());
     }
 }
-<body>
+<body class="add">
+    <div class="add-header">
+        <img src="/img/logo.png" class="header-bg">
+        <ul class="layui-nav layui-layout-right nav-right">
+                <li class="layui-nav-item" lay-unselect="">
+                   <img src="" class="layui-nav-img" />风一样的男子
+                </li>
+        </ul>
+    </div>
     <div class="layui-container fly-marginTop">
         <div class="fly-panel" pad20 style="padding-top: 5px;">
             <div class="layui-form layui-form-pane">
                 <div class="layui-tab layui-tab-brief" lay-filter="user">
-                    <ul class="layui-tab-title">
-                        <li class="layui-this">发表文章</li>
-                    </ul>
+                        <ul class="layui-tab-title">
+                            <li class="layui-this">发表文章</li>
+                            <li>   <button type="button" class="layui-btn layui-btn-primary">预览</button></li>
+                        </ul>
+
                     <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
                         <div class="layui-tab-item layui-show">
                             <form action="" method="post">
@@ -61,7 +67,11 @@
                                         <textarea id="L_content" name="content" required lay-verify="required" placeholder="写一写" class="layui-textarea"></textarea>
                                     </div>
                                 </div>
+                                <div class="add-chechbox">
+                                    <input type="checkbox" name="" title="有人评论时邮箱通知我" lay-skin="primary" checked>
+                                </div>
                                 <div class="layui-form-item">
+                                    <button class="layui-btn site-demo-layedit" lay-filter="publish" data-type="content" lay-submit>存为草稿</button>
                                     <button class="layui-btn site-demo-layedit" lay-filter="publish" data-type="content" lay-submit>立即发布</button>
                                 </div>
                             </form>

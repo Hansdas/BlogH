@@ -127,10 +127,10 @@
         margin-left: 19.33%
     }
     .title-type {
-        margin-left: 8.33%
+        margin-left: 9px
     }
     .search {
-        margin-left: 35.1%
+        margin-left: 363px
     }
     .box-left h3 {
         text-align: center !important;
@@ -160,4 +160,36 @@
     .box-left p {
         width: 90%
     }
+}
+#LAY_layedit_1 {
+    height: 400px !important
+}
+
+.layui-form-checkbox[lay-skin=primary] span {
+    color: black;
+}
+
+.add {
+    margin-top: 0px !important
+}
+
+.fly-marginTop {
+    margin-top: 29px !important;
+}
+
+.layui-btn-primary {
+    border: none !important;
+    color: #009688 !important
+}
+.add-header {
+    background-color: burlywood;
+    height: 66px;
+    z-index: 1000
+}
+    .header-bg{
+        margin: 6px 0 0 192px
+    }
+.add-chechbox {
+    margin-left: -10px;
+    margin-bottom: 12px
 }
