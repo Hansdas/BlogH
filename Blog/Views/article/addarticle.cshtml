@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width = device-width" />
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/css/main.css?v=201922262" rel="stylesheet" />
+    <link href="~/css/layout.css?v=121" rel="stylesheet" />
+    <link href="~/css/global.css?v=1" rel="stylesheet" />
+    <script src="~/js/jquery.js"></script>
+    <script src="~/layui/layui.js"></script>
+    <style>
+        iframe{
+            height:400px !important
+        }
+    </style>
+</head>
+
+@using Blog.Common
+@using Blog.Domain.Core
+@{
+    Dictionary<string, string> dic = new Dictionary<string, string>();
+    foreach (var item in Enum.GetValues(typeof(ArticleType)))
+    {
+        dic.Add(item.ToString(), item.GetEnumText<ArticleType>());
+    }
+}
+<body>
+    <div class="layui-container fly-marginTop">
+        <div class="fly-panel" pad20 style="padding-top: 5px;">
+            <div class="layui-form layui-form-pane">
+                <div class="layui-tab layui-tab-brief" lay-filter="user">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">发表文章</li>
+                    </ul>
+                    <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+                        <div class="layui-tab-item layui-show">
+                            <form action="" method="post">
+                                <div class="layui-row layui-col-space15 layui-form-item" style="margin-top:-214px">
+                                    <div class="layui-col-md3">
+                                        <label class="layui-form-label">所在专栏</label>
+                                        <div class="layui-input-block">
+                                            <select lay-verify="required" name="class" lay-filter="column">
+                                                <option>...</option>
+                                                @foreach (var item in dic)
+                                                {
+                                                    <option value="@item.Key">@item.Value</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-col-md9">
+                                        <label for="L_title" class="layui-form-label">标题</label>
+                                        <div class="layui-input-block">
+                                            <input type="text" id="L_title" name="title" required lay-verify="required" autocomplete="off" class="layui-input">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-form-text">
+                                    <div class="layui-input-block">
+                                        <textarea id="L_content" name="content" required lay-verify="required" placeholder="写一写" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <button class="layui-btn site-demo-layedit" lay-filter="publish" data-type="content" lay-submit>立即发布</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+        layui.use(['form', 'layer', 'layedit'], function () {
+            var layedit = layui.layedit
+                , $ = layui.jquery;
+            var form = layui.form;
+            layui.form.render("select");
+            var index = layedit.build('L_content');
+            var active = {
+                content: function () {
+                    alert(layedit.getContent(index)); //获取编辑器内容
+                }
+                , text: function () {
+                    alert(layedit.getText(index)); //获取编辑器纯文本内容
+                }
+                , selection: function () {
+                    alert(layedit.getSelection(index));
+                }
+            };
+            $('.site-demo-layedit').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+        });
+
+    </script>
+</body>
+</html>

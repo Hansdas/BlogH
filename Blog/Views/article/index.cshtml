@@ -8,11 +8,6 @@
     <link href="~/layui/css/layui.css" rel="stylesheet" />
     <link href="~/css/main.css?v=201908021513" rel="stylesheet" />
     <link href="~/css/common.css?v=201908021702" rel="stylesheet" />
-    <script src="~/js/jquery.js"></script>
-    <script src="~/layui/layui.js?v=123"></script>
-    @*<style media="screen">
-
-        </style>*@
 </head>
 <div class="content">
     <div class="cont h1370">
@@ -21,12 +16,13 @@
                 <a href="javascript:;" class="active">散文礼记</a>
                 <a href="javascript:;">编程世界</a>
                 <a href="javascript:;">旅游杂记</a>
+                <a href="javascript:;">游戏人生</a>
             </span>
             <div class="layui-input-inline search">
                 <input type="search" name="keyword" autocomplete="off" class="layui-input" placeholder="输入完后按回车" />
                 <i class="layui-icon layui-icon-search"></i>
             </div>
-            <a href="" class="layui-btn" style="color:white !important;font-size:14px !important">写一写</a>
+            <a href="../article/addarticle" target="_blank" class="layui-btn" style="color:white !important;font-size:14px !important">写一写</a>
         </div>
         <hr class="bor" />
         <div class="list-item box-left">
@@ -56,7 +52,7 @@
                     </div>
                 </div>
             </div>
-            <hr class="bor item-bottom"/>
+            <hr class="bor item-bottom" />
             <div class="item">
                 <div class="layui-fluid">
                     <div class="layui-row">
@@ -95,7 +91,7 @@
                     </div>
                 </div>
             </div>
-            <hr class="bor item-bottom"/>
+            <hr class="bor item-bottom" />
             <div id="page" style="text-align: center;"></div>
         </div>
         <div class="box-right">
@@ -168,20 +164,23 @@
                     <span class="label color1">5173</span>
                 </a>
             </div>
+
         </div>
         <div id="page" style="text-align: center;"></div>
     </div>
 </div>
+<script src="~/js/jquery.js"></script>
+<script src="~/layui/layui.js?v=123"></script>
 <script type="text/javascript">
     layui.config({
         base: '/js/'
     }).use(['element', 'laypage', 'jquery', 'menu'], function () {
         element = layui.element, laypage = layui.laypage, $ = layui.$, menu = layui.menu;
         menu.init();
-      laypage.render({
-    elem: 'page'
-    ,count: 1000
-    ,layout: ['page', 'count']
-  });
+        laypage.render({
+            elem: 'page'
+            , count: 1000
+            , layout: ['page', 'count']
+        });
     })
 </script>

@@ -18,7 +18,8 @@ namespace Blog.Common
         {
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(Directory.GetCurrentDirectory());
-            builder.AddJsonFile("appsettings.json", false, true);
+            builder.AddJsonFile("Configs/appsettings.json", false, true);
+            builder.AddJsonFile("Configs/keyvalue.json", false, true);
             configuration = builder.Build();
         }
         /// <summary>

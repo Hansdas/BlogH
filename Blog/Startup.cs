@@ -17,12 +17,14 @@ namespace Blog
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+     
+        public IConfiguration Configuration
         {
-            Configuration = configuration;
+            get
+            {
+                return Common.ConfigurationProvider.configuration;
+            }
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
