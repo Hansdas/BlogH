@@ -74,7 +74,7 @@ namespace Blog.Common
             IConfigurationSection section = GetConfigurationSection("webapi");
             if (string.IsNullOrEmpty(saveLocalPath))
             {
-                saveLocalPath = string.Format(@"{0}{1}\{2}\{3}\", ConstantKey.WebRoot, section.GetSection("DownSavePathBase").Value.Replace("/", @"\"), dateTime.Year.ToString(), dateTime.Month.ToString());
+                saveLocalPath = string.Format(@"{0}\TempFile\{1}\{2}\", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString());
 
             }
             string fileName = Path.GetFileName(httpUrl);
@@ -96,7 +96,7 @@ namespace Blog.Common
         {
             DateTime dateTime = DateTime.Now;
             IConfigurationSection section = GetConfigurationSection("webapi");
-            string saveLocalPath = string.Format(@"{0}{1}\{2}\{3}\", ConstantKey.WebRoot, section.GetSection("DownSavePathBase").Value.Replace("/",@"\"), dateTime.Year.ToString(), dateTime.Month.ToString());
+            string saveLocalPath = saveLocalPath = string.Format(@"{0}\TempFile\{1}\{2}\", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString()); ;
             IList<string> localSavePaths = new List<string>();
             string ip ="http://"+section.GetSection("HttpAddresss").Value;
             string UploadSavePathBase = ConfigurationProvider.configuration.GetSection("webapi:UploadSavePathBase").Value;
