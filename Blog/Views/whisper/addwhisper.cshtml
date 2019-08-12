@@ -28,7 +28,7 @@
                     });
                 }
                 , done: function (res) {
-                    if (res.code == 200) {
+                    if (res.code == 0) {
 
                         imgUrls = imgUrls + res.data + ",";
                     }
@@ -50,7 +50,7 @@
                         }
                         else {
                             layer.close(index)
-                            layer.msg(response.message, { icon: 4 });
+                            layer.msg(response.msg, { icon: 4 });
                         }
                     },
                     error: function (response) {

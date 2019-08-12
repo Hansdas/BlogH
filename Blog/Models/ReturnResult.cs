@@ -12,9 +12,12 @@ namespace Blog
         {
 
         }
-        public ReturnResult(string code,string message)
+        public ReturnResult(string code)
         {
             Code = code;
+        }
+        public ReturnResult(string code,string message):this(code)
+        {
             Message = message;
         }
         public ReturnResult(string code, string message,string data):this(code,message)

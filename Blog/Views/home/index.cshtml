@@ -3,10 +3,11 @@
 
 <head>
     <meta name="viewport" content="width = device-width" />
-    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/layui/css/layui.css?201908072006" rel="stylesheet" />
     <link href="~/css/main.css?v=201908062156" rel="stylesheet" />
     <link href="~/css/layout.css" rel="stylesheet" />
     <link href="~/layui/css/modules/layer/default/layer.css" rel="stylesheet" />
+    <link href="~/css/common.css" rel="stylesheet" />
 </head>
 
 
@@ -18,6 +19,7 @@
 <body>
     <div class="fly-header layui-bg-black">
         <div class="layui-header">
+            <img class="header-bg" src="~/img/logo.png">
             <ul class="layui-nav layui-layout-right nav-right">
                 @if (user == null)
                 {
@@ -53,7 +55,7 @@
 
         <h1 class="logo">
             <a href="index.html">
-                <img src="~/img/logo.png">
+           
             </a>
         </h1>
         <div class="nav">
