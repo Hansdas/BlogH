@@ -11,6 +11,16 @@
     <script src="~/js/jquery.js"></script>
     <script src="~/layui/layui.js?v=3"></script>
     <style>
+        .layui-container{
+            width:1406px !important
+        }
+          .layui-layedit-tool .layui-colorpicker-xs {
+            border: 0;
+        }
+
+        .layui-layedit-tool .layui-colorpicker-trigger-span i {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -87,11 +97,91 @@
         layui.use(['form', 'layer', 'layedit'], function () {
             var layedit = layui.layedit, $ = layui.jquery;
             layui.form.render("select");
-            layedit.set({
-                uploadImage: {
-                    url: '/Upload/UploadImage', 
+             layedit.set({
+            //暴露layupload参数设置接口 --详细查看layupload参数说明
+            uploadImage: {
+                url: '/Upload/UploadImage',
+                accept: 'image',
+                acceptMime: 'image/*',
+                exts: 'jpg|png|gif|bmp|jpeg',
+                size: 1024 * 10,              
+                done: function (data) {
+                    console.log(data);
                 }
-            });
+            },
+            uploadVideo: {
+                url: 'your url',
+                accept: 'video',
+                acceptMime: 'video/*',
+                exts: 'mp4|flv|avi|rm|rmvb',
+                size: 1024 * 10 * 2,
+                done: function (data) {
+                    console.log(data);
+                }
+            }
+            , uploadFiles: {
+                url: 'your url',
+                accept: 'file',
+                acceptMime: 'file/*',
+                size: '20480',
+                autoInsert: true , //自动插入编辑器设置
+                done: function (data) {
+                    console.log(data);
+                }
+            }
+            //右键删除图片/视频时的回调参数，post到后台删除服务器文件等操作，
+            //传递参数：
+            //图片： imgpath --图片路径
+            //视频： filepath --视频路径 imgpath --封面路径
+            //附件： filepath --附件路径
+            , calldel: {
+                url: 'your url',
+                done: function (data) {
+                    console.log(data);
+                }
+            }
+            , rightBtn: {
+                type: "layBtn",//default|layBtn|custom  浏览器默认/layedit右键面板/自定义菜单 default和layBtn无需配置customEvent
+                customEvent: function (targetName, event) {
+                    //根据tagName分类型设置
+                    switch (targetName) {
+                        case "img":
+                            alert("this is img");
+                            break;
+                        default:
+                            alert("hello world");
+                            break;
+                    };
+                    //或者直接统一设定
+                    //alert("all in one");
+                }
+            }
+            //测试参数
+            , backDelImg: true
+                 //开发者模式 --默认为false
+            , devmode: false
+            //是否自动同步到textarea
+            , autoSync: true
+            //内容改变监听事件
+            , onchange: function (content) {
+                console.log(content);
+            }
+            //插入代码设置 --hide:false 等同于不配置codeConfig
+            , codeConfig: {
+                hide: true,  //是否隐藏编码语言选择框
+                default: 'javascript', //hide为true时的默认语言格式
+                encode: true //是否转义
+                ,class:'layui-code' //默认样式
+            }
+            , tool: [
+                 'code', 'strong', 'italic', 'underline', 'del', 'addhr', '|','removeformat', 'fontFomatt', 'fontfamily','fontSize', 'fontBackColor', 'colorpicker', 'face'
+                , '|', 'left', 'center', 'right', '|', 'link', 'unlink', 'image_alt', 'video','attachment'
+                , '|'
+                , 'table'
+                , 'fullScreen'
+            ]
+            , height: '500px'
+        });
             var index = layedit.build('L_content');
             var active = {
                 content: function () {

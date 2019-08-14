@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,20 +24,48 @@ namespace Blog.Controllers.Upload
         }
         public IActionResult UploadPhoto()
         {
-            return Upload(false);
+            var imgFile = Request.Form.Files[0];
+            if (imgFile == null)
+                return Json(new ReturnResult("1", "附件为null"));
+            if (string.IsNullOrEmpty(imgFile.FileName))
+                return Json(new ReturnResult("1", "附件名称为空"));
+            var value =CombinePath(imgFile);
+            using (FileStream fs = System.IO.File.Create(value.imgSrc))
+            {
+                imgFile.CopyTo(fs);
+                fs.Flush();
+            }
+            return Json(new ReturnResult("0", "", value.imgSrc));
         }
         public IActionResult UploadImage()
-        {
-            return Upload(true);
-        }
-
-        private JsonResult Upload(bool isArticle)
         {
             var imgFile = Request.Form.Files[0];
             if (imgFile == null)
                 return Json(new ReturnResult("1", "附件为null"));
             if (string.IsNullOrEmpty(imgFile.FileName))
                 return Json(new ReturnResult("1", "附件名称为空"));
+            var value=  CombinePath(imgFile);
+            using (FileStream fs = System.IO.File.Create(value.imgSrc))
+            {
+                using (Stream stream = CompressImage(imgFile.OpenReadStream()))
+                {
+                    byte[] srcBuf = StreamToBytes(stream);
+
+                    fs.Write(srcBuf, 0, srcBuf.Length);
+                    fs.Flush();
+                }
+            }
+            //使用虚拟静态资源路径，否则无法读取到图片
+            string virtualPath = ConstantKey.STATIC_FILE + value.datePath + value.newFileName;
+            return Json(new { Code = "0", Msg = "", Data = new { Src = virtualPath, Title = imgFile.FileName } });
+        }
+         /// <summary>
+         /// 组合图片保存路径
+         /// </summary>
+         /// <param name="imgFile"></param>
+         /// <returns></returns>
+        private (string newFileName,string datePath, string imgSrc) CombinePath(IFormFile imgFile)
+        {
             int index = imgFile.FileName.LastIndexOf('.');
             //获取后缀名
             string extension = imgFile.FileName.Substring(index, imgFile.FileName.Length - index);
@@ -47,31 +76,28 @@ namespace Blog.Controllers.Upload
             string datePath = string.Format(@"\{0}\{1}\{2}\", dateTime.Year, dateTime.Month, dateTime.Day);
             string fullPath = string.Format(@"{0}\TempFile{1}", webpath, datePath);
             string imgSrc = DirectoryHelper.CreateDirectory(fullPath) + newFileName;
-            using (FileStream fs = System.IO.File.Create(imgSrc))
-            {
-
-                imgFile.CopyTo(fs);
-                MemoryStream memoryStream = CompressImage(fs);
-                imgFile.CopyTo(memoryStream);
-                fs.Flush();
-            }
-            string virtualPath = ConstantKey.STATIC_FILE + datePath + newFileName;
-            //使用虚拟静态资源路径，否则无法读取到图片
-            if (isArticle)
-                return Json(new { Code = "0", Msg = "", Data = new { Src = virtualPath, Title = imgFile.FileName } });
-            return Json(new ReturnResult("0", "", imgSrc));
+            return (newFileName, datePath, imgSrc);
+        }
+        public byte[] StreamToBytes(Stream stream)
+        {
+            byte[] bytes = new byte[stream.Length];
+            // 设置当前流的位置为流的开始 
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Read(bytes, 0, bytes.Length);
+            return bytes;
         }
         private MemoryStream CompressImage(Stream stream)
         {
-            //Image image = Image.FromStream(stream);
             using (Image image = Image.FromStream(stream))
             {
-                Size size = new Size(200, 200);
                 int sourceWidth = image.Width;
                 //获取图片高度
                 int sourceHeight = image.Height;
-
-                float nPercent = 0;
+                Size size = default(Size);
+                if (image.Width > 1200||image.Width>1200)
+                    size = new Size(230, 200);
+                else
+                    size = new Size(sourceWidth, sourceHeight);
                 float nPercentW = 0;
                 float nPercentH = 0;
                 //计算宽度的缩放比例
@@ -79,24 +105,24 @@ namespace Blog.Controllers.Upload
                 //计算高度的缩放比例
                 nPercentH = ((float)size.Height / (float)sourceHeight);
 
-                if (nPercentH < nPercentW)
-                    nPercent = nPercentH;
-                else
-                    nPercent = nPercentW;
                 //期望的宽度
-                int destWidth = (int)(sourceWidth * nPercent);
+                int destWidth = (int)(sourceWidth * nPercentW);
                 //期望的高度
-                int destHeight = (int)(sourceHeight * nPercent);
+                int destHeight = (int)(sourceHeight * nPercentH);
                 using (Bitmap bitmap = new Bitmap(destWidth, destHeight))
                 {
+
                     using (Graphics graphics = Graphics.FromImage(bitmap))
                     {
                         graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                         //绘制图像
-                        graphics.DrawImage(image, 0, 0, 200, 200);
-                        MemoryStream memoryStream = new MemoryStream();
-                        image.Save(memoryStream, System.Drawing.Imaging.ImageFormat.Png);
+                        graphics.DrawImage(image, 0, 0, destWidth, destHeight);
                         graphics.Dispose();
+                        MemoryStream memoryStream = new MemoryStream();
+                        if(image.RawFormat== ImageFormat.Jpeg)
+                            bitmap.Save(memoryStream, ImageFormat.Jpeg);
+                        else
+                            bitmap.Save(memoryStream, ImageFormat.Png);
                         return memoryStream;
                     }
                 }

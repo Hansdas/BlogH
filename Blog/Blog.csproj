@@ -81,6 +81,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="TempFile\2019\" />
     <Folder Include="Views\publish\" />
     <Folder Include="Views\User\" />
   </ItemGroup>
