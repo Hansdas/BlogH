@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Blog.Controllers.Upload
 {
-    [Consumes("multipart/form-data")]
+
     public class UploadController : Controller
     {
         private IHostingEnvironment hostingEnvironment;
@@ -22,6 +22,7 @@ namespace Blog.Controllers.Upload
         {
             hostingEnvironment = _hostingEnvironment;
         }
+        [Consumes("multipart/form-data")]
         public IActionResult UploadPhoto()
         {
             var imgFile = Request.Form.Files[0];
@@ -37,6 +38,7 @@ namespace Blog.Controllers.Upload
             }
             return Json(new ReturnResult("0", "", value.imgSrc));
         }
+        [Consumes("multipart/form-data")]
         public IActionResult UploadImage()
         {
             var imgFile = Request.Form.Files[0];
@@ -127,6 +129,14 @@ namespace Blog.Controllers.Upload
                     }
                 }
             }
+        }
+        public IActionResult DeleteFile(string imgpath)
+        {
+            int index = imgpath.IndexOf(ConstantKey.STATIC_FILE)+ConstantKey.STATIC_FILE.Length;
+            string path = hostingEnvironment.ContentRootPath+ "/TempFile" + imgpath.Substring(index);
+            path = path.Replace("/",@"\");
+            DirectoryHelper.Delete(path);
+            return Json(new ReturnResult("0"));
         }
     }
 }

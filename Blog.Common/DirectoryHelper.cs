@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Blog.Common
 {
@@ -16,10 +17,10 @@ namespace Blog.Common
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public static IEnumerable<string> IsExists(string path)
-        {
-            return Directory.EnumerateDirectories(path, "*", SearchOption.AllDirectories);
-        }
+        //public static IEnumerable<string> IsExists(string path)
+        //{
+        //    //return Directory.EnumerateDirectories(path, "*", SearchOption.AllDirectories);
+        //}
         /// <summary>
         /// 创建目录,返回路径
         /// </summary>
@@ -31,6 +32,15 @@ namespace Blog.Common
                 Directory.CreateDirectory(path);
             }
             return path;
+        }
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="path"></param>
+        public  static void Delete(string path)
+        {
+            if (File.Exists(path))
+                File.Delete(path);
         }
     }
 }
