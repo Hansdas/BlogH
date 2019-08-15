@@ -26,5 +26,9 @@ namespace Blog.Domain
         /// 是否为草稿
         /// </summary>
         public bool IsDraft { get; private set; }
+        /// <summary>
+        /// 点赞数
+        /// </summary>
+        public int PraiseCount { get; private set; }
     }
 }
