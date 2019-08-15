@@ -145,6 +145,35 @@
         width: 802px
     }
 }
+@media (min-width:1500px) {
+
+    .box-left {
+        float: left;
+        width: 900px
+    }
+
+    .h1370 .title {
+        margin-left: 11.33%
+    }
+
+    .title-type {
+        margin-left: 8.33%
+    }
+
+    .search {
+        margin-left: 32.1%
+    }
+
+    .box-left h3 {
+        text-align: center !important;
+        margin-right: 26% !important;
+        margin-right: 162px
+    }
+
+    .box-left p {
+        width: 802px
+    }
+}
 /*@media (min-width:1500px) {
 
     .box-left {

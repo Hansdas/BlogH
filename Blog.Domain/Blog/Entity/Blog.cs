@@ -24,7 +24,7 @@ namespace Blog.Domain
             UpdateTime = updateTime;
         }
         /// <summary>
-        /// 提交着
+        /// 提交者
         /// </summary>
         public string Account { get; private set; }
         /// <summary>
@@ -49,6 +49,7 @@ namespace Blog.Domain
         /// 博客
         /// </summary>
         public BlogBase<int> BlogBase { get; private set; }
+       
         public static void SetBlogBaseId(int id, Blog blog)
         {
             blog.BlogBaseId = id;

@@ -16,6 +16,14 @@ namespace Blog.Controllers.Home.Ariticel
         //[PermissionFilter]
         public IActionResult AddArticle()
         {
+            try
+            {
+                string account = Request.Form["type"];
+            }
+            catch (Exception)
+            {
+
+            }
             return View();
         }
     }

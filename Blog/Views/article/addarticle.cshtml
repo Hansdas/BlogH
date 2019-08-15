@@ -49,7 +49,7 @@
                 <div class="layui-tab layui-tab-brief" lay-filter="user">
                     <ul class="layui-tab-title">
                         <li class="layui-this">发表文章</li>
-                        <li>   <button type="button" class="layui-btn layui-btn-primary edit" data-method="notice" data-type="content">预览</button></li>
+                        <li>   <button type="button" class="layui-btn-primary layui-btn" data-method="notice" data-type="content">预览</button></li>
                     </ul>
 
                     <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
@@ -59,7 +59,7 @@
                                     <div class="layui-col-md3">
                                         <label class="layui-form-label">所在专栏</label>
                                         <div class="layui-input-block">
-                                            <select lay-verify="required" name="class" lay-filter="column">
+                                            <select lay-verify="articletype" name="type" lay-filter="column">
                                                 <option>...</option>
                                                 @foreach (var item in dic)
                                                 {
@@ -84,8 +84,8 @@
                                     <input type="checkbox" name="" title="有人评论时邮箱通知我" lay-skin="primary" checked>
                                 </div>
                                 <div class="layui-form-item">
-                                    <button class="layui-btn edit" lay-filter="publish" data-type="content" lay-submit>存为草稿</button>
-                                    <button class="layui-btn edit" lay-filter="publish" data-type="content" lay-submit>立即发布</button>
+                                    <button class="layui-btn" lay-filter="save" data-type="save" lay-submit>存为草稿</button>
+                                    <button class="layui-btn" lay-filter="publish" data-type="publish" lay-submit>立即发布</button>
                                 </div>
                             </form>
                         </div>
@@ -96,8 +96,11 @@
     </div>
     <script>
         layui.use(['form', 'layer', 'layedit'], function () {
-            var layedit = layui.layedit, $ = layui.jquery;
+            var layedit = layui.layedit, $ = layui.jquery
+            var form = layui.form;
+            var imgUrls = "";
             layui.form.render("select");
+
             layedit.set({
                 uploadImage: {
                     url: '/Upload/UploadImage',
@@ -105,8 +108,10 @@
                     acceptMime: 'image/*',
                     exts: 'jpg|png|gif|bmp|jpeg',
                     size: 1024 * 10,
-                    done: function (data) {
-                        console.log(data);
+                    done: function (res) {
+                        if (res.code == 0) {
+                            imgUrls = imgUrls + res.data + ",";
+                        }
                     }
                 },
                 uploadVideo: {
@@ -166,12 +171,12 @@
                     console.log(content);
                 }
                 //插入代码设置 --hide:false 等同于不配置codeConfig
-                , codeConfig: {
-                    hide: true,  //是否隐藏编码语言选择框
-                    default: 'javascript', //hide为true时的默认语言格式
-                    encode: true //是否转义
-                    , class: 'layui-code' //默认样式
-                }
+                //, codeConfig: {
+                //    hide: true,  //是否隐藏编码语言选择框
+                //    default: 'javascript', //hide为true时的默认语言格式
+                //    encode: true //是否转义
+                //    , class: 'layui-code' //默认样式
+                //}
                 , tool: [
                     'code', 'strong', 'italic', 'underline', 'del', 'addhr', '|', 'removeformat', 'fontFomatt', 'fontfamily', 'fontSize', 'fontBackColor', 'colorpicker', 'face'
                     , '|', 'left', 'center', 'right', '|', 'link', 'unlink', 'image_alt', 'video', 'attachment'
@@ -181,31 +186,54 @@
                 ]
                 , height: '500px'
             });
+            form.verify({
+                articletype: function (value) {
+                    if (value == '...') {
+                        return '请选择专栏';
+                    }
+                }
+            });
             var index = layedit.build('L_content');
             var active = {
                 content: function () {
-                    alert(layedit.getContent(index)); //获取编辑器内容
-                       layer.open({
-                        type: 1
+                    layer.open({
+                        type: 0
                         , title: false //不显示标题栏
+                        , skin: 'demo-class'
                         , closeBtn: false
-                        , area: ['1000px','500px']
+                        , area: ['1200px', '700px']
                         , shade: 0.8
                         , id: 'LAY_layuipro' //设定一个id，防止重复弹出
                         , btn: ['确定']
                         , btnAlign: 'c'
                         , moveType: 1 //拖拽模式，0或者1
-                        , content:layedit.getContent(index)                       
+                        , content: layedit.getContent(index)
                     });
                 }
-                , text: function () {
-                    alert(layedit.getText(index)); //获取编辑器纯文本内容
+                , save: function () {
+                    form.on('submit(save)', function (data) {
+                        var articleData = data.field;
+                        var content = layedit.getContent(index);
+                        $.ajax({
+                            url: '/article/addarticle',
+                            type: 'post',
+                            datatype: 'json',
+                            data: {
+                                'articletype': articleData.type,
+                                'title': articleData.title,
+                                'content': content
+                            },
+                            success: function (response) {
+                               
+                            },
+                        });
+                    })
                 }
-                , selection: function () {
-                    alert(layedit.getSelection(index));
+                , publish: function () {
+                    alert("11");
                 }
             };
-            $('.edit').on('click', function () {
+            $('.layui-btn').on('click', function () {
                 var type = $(this).data('type');
                 active[type] ? active[type].call(this) : '';
             });
