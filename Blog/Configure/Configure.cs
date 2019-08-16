@@ -19,6 +19,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
 using Autofac.Extras.DynamicProxy;
+using Blog.Dapper;
+using Blog.AOP.Transaction;
 
 namespace CommonHelper
 {
@@ -72,7 +74,7 @@ namespace CommonHelper
         public static void ConfigSettings(this IServiceCollection services,IConfiguration configuration)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton(new ServiceDescriptor(typeof(ConnectionProvider), new ConnectionProvider(configuration.GetConnectionString("MySqlConnection"))));
+            services.AddSingleton(new ServiceDescriptor(typeof(DapperProvider), new DapperProvider(configuration.GetConnectionString("MySqlConnection"))));
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
             services.AddSession(s => {
@@ -95,22 +97,24 @@ namespace CommonHelper
             Http.Configure(httpContextAccessor);
             return app;
         }
-        public static IServiceProvider GetAutofacServiceProvider(this IServiceCollection services)
+        public static void GetAutofacServiceProvider(this IServiceCollection services)
         {
             var builder = new ContainerBuilder();
             builder.Populate(services);
             var assembly = Assembly.Load("Blog.Infrastruct");
             //var assembly = typeof(Blog.AOP.).GetType().GetTypeInfo().Assembly;
-            builder.RegisterType<CacheInterceptor>();
+            //builder.RegisterType<CacheInterceptor>();
+            builder.RegisterType<TransactionInterceptor>();
             //scenario 1
             builder.RegisterAssemblyTypes(assembly)
-                         .Where(type => typeof(ICache).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)
+                         .Where(type =>typeof(ITransaction).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)
                          .AsImplementedInterfaces()
                          .InstancePerLifetimeScope()
                          .EnableInterfaceInterceptors()
-                         .InterceptedBy(typeof(CacheInterceptor));
+                         .InterceptedBy(typeof(TransactionInterceptor));
+            builder.Build();
 
-            return new AutofacServiceProvider(builder.Build());
+            //return new AutofacServiceProvider(builder.Build());
         }
     }
 }

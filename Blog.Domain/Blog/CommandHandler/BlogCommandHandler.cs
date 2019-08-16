@@ -16,7 +16,10 @@ namespace Blog.Domain
         }
         public Task<Unit> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
         {
-            _blogRepository.InsertWhisper(request.Blog);
+            if(request.Blog.BlogType==Core.BlogType.微语)
+                _blogRepository.InsertWhisper(request.Blog);
+            else
+                _blogRepository.InsertArticle(request.Blog);
             return Task.FromResult(new Unit());
         }
     }

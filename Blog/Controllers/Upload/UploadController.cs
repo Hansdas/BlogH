@@ -17,10 +17,10 @@ namespace Blog.Controllers.Upload
 
     public class UploadController : Controller
     {
-        private IHostingEnvironment hostingEnvironment;
-        public UploadController(IHostingEnvironment _hostingEnvironment)
+        private IWebHostEnvironment _webHostEnvironment;
+        public UploadController(IWebHostEnvironment webHostEnvironment)
         {
-            hostingEnvironment = _hostingEnvironment;
+            _webHostEnvironment = webHostEnvironment;
         }
         [Consumes("multipart/form-data")]
         public IActionResult UploadPhoto()
@@ -71,7 +71,7 @@ namespace Blog.Controllers.Upload
             int index = imgFile.FileName.LastIndexOf('.');
             //获取后缀名
             string extension = imgFile.FileName.Substring(index, imgFile.FileName.Length - index);
-            string webpath = hostingEnvironment.ContentRootPath;
+            string webpath = _webHostEnvironment.ContentRootPath;
             string guid = Guid.NewGuid().ToString().Replace("-", "");
             string newFileName = guid + extension;
             DateTime dateTime = DateTime.Now;
@@ -133,7 +133,7 @@ namespace Blog.Controllers.Upload
         public IActionResult DeleteFile(string imgpath)
         {
             int index = imgpath.IndexOf(ConstantKey.STATIC_FILE)+ConstantKey.STATIC_FILE.Length;
-            string path = hostingEnvironment.ContentRootPath+ "/TempFile" + imgpath.Substring(index);
+            string path = _webHostEnvironment.ContentRootPath+ "/TempFile" + imgpath.Substring(index);
             path = path.Replace("/",@"\");
             DirectoryHelper.Delete(path);
             return Json(new ReturnResult("0"));

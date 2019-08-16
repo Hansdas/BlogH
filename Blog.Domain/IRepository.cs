@@ -33,16 +33,16 @@ namespace Blog.Domain
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        int Insert(string sql,T t, bool useDBTransaction = false);
+        void Insert(string sql,T t);
         /// <summary>
         /// 删除数据
         /// </summary>
         /// <param name="primaryKey"></param>
-        void Delete(string sql, object param,bool useDBTransaction = false);
+        void Delete(string sql, object param);
         /// <summary>
         /// 更新数据
         /// </summary>
         /// <param name="t"></param>
-        void Update(string sql,T t, bool useDBTransaction = false);
+        void Update(string sql,T t);
     }
 }

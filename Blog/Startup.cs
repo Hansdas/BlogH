@@ -1,4 +1,6 @@
-﻿using Blog.Common;
+﻿
+using Autofac;
+using Blog.Common;
 using Blog.Domain.Core;
 using CommonHelper;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -27,12 +29,12 @@ namespace Blog
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public IServiceProvider ConfigureServices(IServiceCollection services)
+        public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigFrame();
             services.ConfigServices();
             services.ConfigSettings(Configuration);
-            return services.GetAutofacServiceProvider();
+            services.GetAutofacServiceProvider();
 
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -42,7 +44,7 @@ namespace Blog
             env.ConfigureNLog("nlog.config");
             if (env.IsDevelopment())
             {
-                app.UseBrowserLink();
+                //app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -51,21 +53,21 @@ namespace Blog
             }
             ConstantKey.WebRoot = env.ContentRootPath;
             app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthentication();
             //自定义使用资源目录
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath + "/TempFile")),
                 RequestPath = ConstantKey.STATIC_FILE
             });
-            app.UseAuthentication();
             app.UseSession();
             app.UseStaticHttpContext();
-
-            app.UseMvc(routes =>
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                     name: "default",
-                    template: "{controller=home}/{action=index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

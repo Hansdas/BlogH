@@ -6,6 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using Dapper;
 using System.Linq;
+using Blog.Dapper;
 
 namespace Blog.Infrastruct
 {
@@ -16,40 +17,24 @@ namespace Blog.Infrastruct
     /// <typeparam name="U"></typeparam>
     public class Repository<T, U> : IRepository<T, U>
     {
-        protected bool useTransaction;
-        protected IDbTransaction dbTransaction=null;
-        protected dynamic CreateConnection(Func<IDbConnection,dynamic> excuteMethod)
+        private IDbConnection _dbConnection;
+        public IDbConnection dbConnection
         {
-            using (IDbConnection dbConnection = ConnectionProvider.CreateConnection())
+            get
             {
-                if (dbConnection.State != ConnectionState.Open)
-                    dbConnection.Open();
-                if (useTransaction)
-                {
-                    dbTransaction= dbConnection.BeginTransaction();
-                }
-                try
-                {
-                    dynamic result =excuteMethod(dbConnection);
-                    if(dbTransaction!=null)
-                        dbTransaction.Commit();
-                    if (dbConnection.State != ConnectionState.Closed)
-                    {
-                        dbConnection.Close();
-                    }
-                    return result;
-                }
-                catch (Exception)
-                {
-                    if (dbTransaction != null)
-                        dbTransaction.Rollback();
-                    if (dbConnection.State != ConnectionState.Closed)
-                    {
-                        dbConnection.Close();
-                    }
-                    throw;
-                }
+                _dbConnection = DapperProvider.CreateConnection();
+                if (_dbConnection.State != ConnectionState.Open)
+                    _dbConnection.Open();
+                return _dbConnection;
             }
+        }
+        private void Dispose()
+        {
+            if (_dbConnection == null)
+                return;
+            if (_dbConnection.State != ConnectionState.Closed)
+                _dbConnection.Close();
+            _dbConnection.Dispose();
         }
         /// <summary>
         /// 查询所有
@@ -57,9 +42,9 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public IEnumerable<dynamic> SelectAll(string sql)
         {
-           return CreateConnection(s => {
-                return s.Query(sql);
-            });
+                IEnumerable<dynamic> dynamics = dbConnection.Query(sql);
+                Dispose();
+                return dynamics;
         }
         /// <summary>
         /// 查询数据集合
@@ -69,9 +54,9 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public IEnumerable<dynamic> Select(string sql,object param)
         {
-            return CreateConnection(s => {
-                return s.Query(sql, param);
-            });
+            IEnumerable<dynamic> dynamics = dbConnection.Query(sql,param);
+            Dispose();
+            return dynamics;
         }
         /// <summary>
         /// 查询单条
@@ -79,44 +64,36 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public dynamic SelectSingle(string sql, object param)
         {
-            return CreateConnection(s =>
-            {
-                dynamic dynamic = s.QueryFirstOrDefault(sql,param);
-                return dynamic;
-            });
+            dynamic dynamic = dbConnection.Query(sql, param);
+            Dispose();
+            return dynamic;
         }  
         /// <summary>
         /// 新增数据
         /// </summary>
         /// <returns></returns>
-        public int Insert(string sql, T t, bool useDBTransaction = false)
+        public void Insert(string sql, T t)
         {
-            return CreateConnection(s => {
-                useTransaction = useDBTransaction;
-                return s.ExecuteScalar(sql, t, dbTransaction);
-            });
+            dbConnection.Execute(sql,t);
+            Dispose();
         }
         /// <summary>
         /// 更新数据
         /// </summary>
         /// <returns></returns>
-        public void Update(string sql, T t, bool useDBTransaction = false)
+        public void Update(string sql, T t)
         {
-            CreateConnection(s => {
-                useTransaction = useDBTransaction;
-                return s.ExecuteScalar(sql, t, dbTransaction);
-            });
+            dbConnection.Execute(sql, t);
+            Dispose();
         }
         /// <summary>
         /// 删除数据
         /// </summary>
         /// <returns></returns>
-        public void Delete(string sql, object param, bool useDBTransaction = false)
+        public void Delete(string sql, object param)
         {
-            CreateConnection(s => {
-                useTransaction = useDBTransaction;
-                return s.ExecuteScalar(sql, param, dbTransaction);
-            });
+            dbConnection.Execute(sql, param);
+            Dispose();
         }
 
     }

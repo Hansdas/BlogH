@@ -7,25 +7,25 @@ using System.Text;
 
 namespace Blog.Infrastruct
 {
-    public class ConnectionProvider
-    {
-        private IDbConnection connection ;
-        private static  string connStr="";
-        private ConnectionProvider()
-        {
+    //public class ConnectionProvider
+    //{
+    //    private IDbConnection connection ;
+    //    private static  string connStr="";
+    //    private ConnectionProvider()
+    //    {
 
-        }
-        public ConnectionProvider(string conn)
-        {
-            if (connection == null)
-            {
-                connStr = conn;
-                connection = CreateConnection();
-            }
-        }
-        public static IDbConnection CreateConnection()
-        {
-            return  new MySqlConnection(connStr);
-        }
-    }
+    //    }
+    //    public ConnectionProvider(string conn)
+    //    {
+    //        if (connection == null)
+    //        {
+    //            connStr = conn;
+    //            connection = CreateConnection();
+    //        }
+    //    }
+    //    public static IDbConnection CreateConnection()
+    //    {
+    //        return  new MySqlConnection(connStr);
+    //    }
+    //}
 }

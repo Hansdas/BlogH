@@ -11,6 +11,11 @@ namespace Blog.Domain
         /// </summary>
         void InsertWhisper(Blog blogContent);
         /// <summary>
+        /// 新增文章
+        /// </summary>
+        /// <param name="blog"></param>
+        void InsertArticle(Blog blog);
+        /// <summary>
         /// 分页查询微语
         /// </summary>
         /// <returns></returns>

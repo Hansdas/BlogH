@@ -130,10 +130,4 @@ namespace Blog.AOP.Cache
             return JsonHelper.Serialize(arg);
         }
     }
-    /// <summary>
-    /// 标记接口，表示该类的方法如果被标记，将会被拦截
-    /// </summary>
-    public interface ICache
-    {
-    }
 }
