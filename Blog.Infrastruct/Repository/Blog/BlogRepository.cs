@@ -9,10 +9,11 @@ using System.Linq;
 using Blog.Domain.Core;
 using Blog.AOP.Cache;
 using Blog.AOP.Transaction;
+using Blog.AOP;
 
 namespace Blog.Infrastruct
 {
-    public class BlogRepository : Repository<Domain.Blog, int>, IBlogRepository,ICache,ITransaction
+    public class BlogRepository : Repository<Domain.Blog, int>, IBlogRepository, IInterceptorHandler
     {
         private readonly IUploadFileRepository _uploadFileRepository;
         private readonly ICommentRepository _commentRepository;

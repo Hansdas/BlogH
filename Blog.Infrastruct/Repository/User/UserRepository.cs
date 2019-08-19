@@ -6,10 +6,11 @@ using System.Text;
 using Dapper;
 using Blog.Domain.Core;
 using Blog.AOP.Cache;
+using Blog.AOP;
 
 namespace Blog.Infrastruct
 {
-    public class UserRepository : Repository<User, int>, IUserRepository,ICache
+    public class UserRepository : Repository<User, int>, IUserRepository, IInterceptorHandler
     {
         private static User Map(dynamic result)
         {        
@@ -23,7 +24,7 @@ namespace Blog.Infrastruct
         /// </summary>
         /// <param name="account"></param>
         /// <returns></returns>
-        [MapCache("User")]
+        [Cache("User")]
         public User SelectUserByAccount(string account)
         {
 

@@ -14,29 +14,29 @@ namespace Blog.AOP.Transaction
     {
         public void Intercept(IInvocation invocation)
         {
-            TransactionAttribute transactionAttribute = Core.GetAttribute<TransactionAttribute>
-                (invocation.MethodInvocationTarget??invocation.Method,typeof(TransactionAttribute));
-            if (transactionAttribute != null)
-            {
-                //如果要嵌套使用TransactionScope，则使用TransactionScopeOption.Required
-                using (TransactionScope transactionScope=new TransactionScope(transactionAttribute.TransactionScopeOption, transactionAttribute.transactionOptions))
-                {
-                    try
-                    {
-                        invocation.Proceed();
-                        transactionScope.Complete();
-                    }
-                    catch (Exception)
-                    {
+            //TransactionAttribute transactionAttribute = Core.GetAttribute<TransactionAttribute>
+            //    (invocation.MethodInvocationTarget??invocation.Method,typeof(TransactionAttribute));
+            //if (transactionAttribute != null)
+            //{
+            //    //如果要嵌套使用TransactionScope，则使用TransactionScopeOption.Required
+            //    using (TransactionScope transactionScope=new TransactionScope(transactionAttribute.TransactionScopeOption, transactionAttribute.transactionOptions))
+            //    {
+            //        try
+            //        {
+            //            invocation.Proceed();
+            //            transactionScope.Complete();
+            //        }
+            //        catch (Exception)
+            //        {
 
-                        throw;
-                    }
-                    finally
-                    {
-                        transactionScope.Dispose();
-                    }
-                }
-            }
+            //            throw;
+            //        }
+            //        finally
+            //        {
+            //            transactionScope.Dispose();
+            //        }
+            //    }
+            //}
         }
     }
 }

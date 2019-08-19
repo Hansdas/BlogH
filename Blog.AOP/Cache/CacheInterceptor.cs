@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Blog.AOP.Cache
 {
-    public class CacheInterceptor : IInterceptor
+    public class CacheInterceptor
     {
         private readonly ICacheClient _cacheClient;
         /// <summary>
@@ -26,20 +26,18 @@ namespace Blog.AOP.Cache
         /// 拦截被特性标记的方法
         /// </summary>
         /// <param name="invocation"></param>
-        public void Intercept(IInvocation invocation)
+        public static void Intercept(CacheAttribute attribute, IInvocation invocation)
         {
-            MapCacheAttribute cacheAttribute = Core.GetAttribute<MapCacheAttribute>
-                (invocation.MethodInvocationTarget ?? invocation.Method, typeof(MapCacheAttribute));
-            if (cacheAttribute == null)
+            if (attribute == null)
                 invocation.Proceed();
             else
-                ProgressCaching(invocation,cacheAttribute);
+                ProgressCaching(invocation, attribute);
         }
         /// <summary>
         /// 操作缓存
         /// </summary>
         /// <param name="invocation"></param>
-        private void ProgressCaching(IInvocation invocation, MapCacheAttribute mapCacheAttribute)
+        private void ProgressCaching(IInvocation invocation, CacheAttribute mapCacheAttribute)
         {
             var typeName = invocation.TargetType.Name;
             var methodName = invocation.Method.Name;

@@ -28,21 +28,16 @@ namespace Blog.Controllers.Home.Ariticel
         {
             return View();
         }
-        //[PermissionFilter]
+        [PermissionFilter]
         public IActionResult AddArticle()
         {
             try
             {
-                //string articleType = Request.Form["type"];
-                //string title = Request.Form["title"];
-                //string content = Request.Form["content"];
-                //string[] srcArray = Request.Form["imgUrls"].ToString().Trim(',').Split(',');
-                string[] srcArray = {  };
-                DateTime dateTime = DateTime.Now;
+                ArticleType articleType = Enum.Parse<ArticleType>(Request.Form["articletype"]);
+                string title = Request.Form["title"];
+                string content = Request.Form["content"];
+                string[] srcArray = Request.Form["imgUrls"].ToString().Trim(',').Split(',');
                 UserModel userModel = Auth.GetLoginUser();
-                string uploadSavePathBase = _settings.Value.UploadSavePathBase;
-                string fileSavePath = string.Format("{0}{1}/{2}/{3}/{4}", uploadSavePathBase, "11", dateTime.Year.ToString()
-                , dateTime.Month.ToString(), dateTime.Day.ToString());
                 IList<UploadFile> uploadFiles = new List<UploadFile>();
                 try
                 {
@@ -54,9 +49,9 @@ namespace Blog.Controllers.Home.Ariticel
                         {
                             int index = srcArray[m].LastIndexOf("\\") + 1;
                             string fileName = srcArray[m].Substring(index);
-                            long fileSize = await UploadHelper.Upload(srcArray[m], fileSavePath, fileName);
+                            dynamic d = await UploadHelper.Upload(srcArray[m], fileName,userModel.Account);
                             string guid = Guid.NewGuid().ToString();
-                            UploadFile uploadFile = new UploadFile(userModel.Account, guid, fileSavePath, fileName, fileSize);
+                            UploadFile uploadFile = new UploadFile(userModel.Account, guid, d.path, fileName, d.size);
                             lock (_obj)
                             {
                                 uploadFiles.Add(uploadFile);
@@ -64,8 +59,8 @@ namespace Blog.Controllers.Home.Ariticel
                         });
                     }
                     Task.WaitAll(tasks);
-                    Article article = new Article("111","111111",ArticleType.旅游杂记,true, uploadFiles);
-                    Domain.Blog blog = new Domain.Blog("111", BlogType.文章, article);
+                    Article article = new Article(title,content, articleType, true, uploadFiles);
+                    Domain.Blog blog = new Domain.Blog(userModel.Account, BlogType.文章, article);
                     _blogService.PublishBlog(blog);
                 }
                 catch (AggregateException)

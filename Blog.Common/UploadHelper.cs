@@ -42,10 +42,14 @@ namespace Blog.Common
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static async Task<long> Upload(string filePath, string savePath, string fileName)
+        public static async Task<dynamic> Upload(string filePath, string fileName,string userAccount)
         {
             if (!File.Exists(filePath))
                 throw new IOException("文件不存在");
+            DateTime dateTime = DateTime.Now;
+            ApiSettingModel apiSettingMode=ConfigurationProvider.GetSettingModel<ApiSettingModel>("webapi");
+            string savePath  = string.Format("{0}{1}/{2}/{3}/{4}", apiSettingMode.UploadSavePathBase, userAccount, dateTime.Year.ToString()
+               , dateTime.Month.ToString(), dateTime.Day.ToString());
             FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileSize = fileStream.Length;
             HttpContent httpContent = new StreamContent(fileStream);
@@ -60,7 +64,7 @@ namespace Blog.Common
             }
             //上传成功后删除本地文件
             File.Delete(filePath);
-            return fileSize;
+            return new { size=fileSize,path=savePath};
         }
         /// <summary>
         /// WebClinet下载附件

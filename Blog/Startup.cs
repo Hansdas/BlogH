@@ -27,14 +27,17 @@ namespace Blog
                 return Common.ConfigurationProvider.configuration;
             }
         }
-
+        public void ConfigureContainer(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.GetAutofacServiceProvider();
+        }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigFrame();
             services.ConfigServices();
             services.ConfigSettings(Configuration);
-            services.GetAutofacServiceProvider();
+            //services.GetAutofacServiceProvider();
 
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

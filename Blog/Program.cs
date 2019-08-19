@@ -22,10 +22,10 @@ namespace Blog
 
         }
         public static IHostBuilder CreateHostBuilder(string[] args) => Host.CreateDefaultBuilder(args)
+           .UseServiceProviderFactory(new AutofacServiceProviderFactory())
           .ConfigureWebHostDefaults(webBuilder =>
           {
-              webBuilder
-              .ConfigureServices(s => s.AddAutofac())
+              webBuilder             
               .UseNLog()
               .UseStartup<Startup>();
           });

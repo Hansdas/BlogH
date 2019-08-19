@@ -7,37 +7,58 @@ using System.Transactions;
 namespace Blog.AOP.Transaction
 {
     /// <summary>
-    /// 事务处理特性
+    /// 标记一个方法使用数据库事务
     /// </summary>
+    [AttributeUsage(AttributeTargets.Method)]
    public class TransactionAttribute:Attribute
     {
 
         public TransactionAttribute()
         {
+            TimeSpan timeOut = new TimeSpan(0, 0, 20);
+            if (Timeout.HasValue)
+                timeOut = Timeout.Value;
             Timeout = new TimeSpan(0, 0, 20);
-            TransactionScopeOption = TransactionScopeOption.RequiresNew;
+
+            IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted;
+            if (TransactionLevel.HasValue)
+                isolationLevel = Enum.Parse<IsolationLevel>(TransactionLevel.Value.GetEnumValue().ToString());
+
+            if (TransactionScopeOptionLevel.HasValue)
+                TransactionScopeOption = Enum.Parse<TransactionScopeOption>(TransactionScopeOptionLevel.Value.GetEnumValue().ToString());
+            else
+                TransactionScopeOption = TransactionScopeOption.Required;
+
             transactionOptions = new TransactionOptions() {
-                Timeout = Timeout,
-                IsolationLevel=Enum.Parse<IsolationLevel>(TransactionLevel.GetEnumValue().ToString())
+                Timeout = timeOut,
+                IsolationLevel= isolationLevel
             };
         }
         /// <summary>
         /// 超时时间
         /// </summary>
-        public TimeSpan Timeout { get; set; }
+        public TimeSpan? Timeout { get; set; }
         /// <summary>
         /// 事务级别
         /// </summary>
-        public TransactionLevel TransactionLevel { get; set; }
+        public TransactionLevel? TransactionLevel { get; set; }
+        /// <summary>
+        /// 事务范围
+        /// </summary>
+        public TransactionScopeOptionLevel? TransactionScopeOptionLevel { get; set; }
         /// <summary>
         /// 事务信息
         /// </summary>
         public TransactionOptions transactionOptions { get; private set; }
+
         /// <summary>
-        /// 事务范围
+        /// 事务信息
         /// </summary>
-        public TransactionScopeOption TransactionScopeOption { get; set; }
+        public TransactionScopeOption TransactionScopeOption { get;private set; }
     }
+    /// <summary>
+    /// 事务级别
+    /// </summary>
     public enum TransactionLevel
     {
         //序列化。最严格的隔离级别，当然并发性也是最差的，事务必须依次进行
@@ -48,5 +69,17 @@ namespace Blog.AOP.Transaction
         ReadCommitted,
         //未提交读。当事务A更新某条数据的时候，不容许其他事务来更新该数据，但可以进行读取操作
         ReadUncommitted,
+    }
+    /// <summary>
+    /// 事务范围
+    /// </summary>
+    public enum TransactionScopeOptionLevel
+    {
+        //多个connection共用一个事务
+        Required,
+        //每个connection从新创建一个事物
+        RequiresNew,
+        //不参与事务
+        Suppress
     }
 }

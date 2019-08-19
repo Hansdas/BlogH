@@ -20,7 +20,7 @@ namespace Blog.Attr
             if (userModel == null)
             {
                 string loginContent = string.Format("<script>top.location.href='{0}';</script>", "Login");
-                context.Result = new ContentResult() { Content = loginContent, ContentType = "text/html" };
+                context.Result = new RedirectResult("/login/login");
             }
         }
     }

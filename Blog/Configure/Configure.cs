@@ -21,6 +21,7 @@ using System.Reflection;
 using Autofac.Extras.DynamicProxy;
 using Blog.Dapper;
 using Blog.AOP.Transaction;
+using Blog.AOP;
 
 namespace CommonHelper
 {
@@ -97,22 +98,23 @@ namespace CommonHelper
             Http.Configure(httpContextAccessor);
             return app;
         }
-        public static void GetAutofacServiceProvider(this IServiceCollection services)
+        /// <summary>
+        /// 3.0不支持返回IServiceProvider
+        /// </summary>
+        /// <param name="containerBuilder"></param>
+        public static void GetAutofacServiceProvider(this ContainerBuilder containerBuilder)
         {
-            var builder = new ContainerBuilder();
-            builder.Populate(services);
+            //containerBuilder.Populate(services);
             var assembly = Assembly.Load("Blog.Infrastruct");
             //var assembly = typeof(Blog.AOP.).GetType().GetTypeInfo().Assembly;
-            //builder.RegisterType<CacheInterceptor>();
-            builder.RegisterType<TransactionInterceptor>();
-            //scenario 1
-            builder.RegisterAssemblyTypes(assembly)
-                         .Where(type =>typeof(ITransaction).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)
+            containerBuilder.RegisterTypes(typeof(Interceptor));
+            containerBuilder.RegisterAssemblyTypes(assembly)
+                         .Where(type =>typeof(IInterceptorHandler).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)
                          .AsImplementedInterfaces()
                          .InstancePerLifetimeScope()
                          .EnableInterfaceInterceptors()
-                         .InterceptedBy(typeof(TransactionInterceptor));
-            builder.Build();
+                         .InterceptedBy(typeof(Interceptor));
+            //containerBuilder.Build();
 
             //return new AutofacServiceProvider(builder.Build());
         }
