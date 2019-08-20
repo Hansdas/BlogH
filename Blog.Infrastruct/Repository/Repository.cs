@@ -64,7 +64,7 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public dynamic SelectSingle(string sql, object param)
         {
-            dynamic dynamic = dbConnection.Query(sql, param);
+            dynamic dynamic = dbConnection.Query(sql, param).FirstOrDefault();
             Dispose();
             return dynamic;
         }  
@@ -96,5 +96,11 @@ namespace Blog.Infrastruct
             Dispose();
         }
 
+        public T SelectSingle1(string sql, object param)
+        {
+            T t = dbConnection.Query<T>(sql, param).FirstOrDefault();
+            Dispose();
+            return t;
+        }
     }
 }

@@ -44,7 +44,7 @@ namespace Blog.Controllers
             try
             {
                 user = _userService.SelectUser(account, passWord);
-                if (user == null)
+                if (user != null)
                     HttpContext.Login(user);
             }
             catch (ValidationException e)

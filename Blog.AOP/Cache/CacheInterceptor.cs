@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Blog.AOP.Cache
 {
-    public class CacheInterceptor
+    public class CacheInterceptor: ICacheInterceptor
     {
         private readonly ICacheClient _cacheClient;
         /// <summary>
@@ -26,7 +26,7 @@ namespace Blog.AOP.Cache
         /// 拦截被特性标记的方法
         /// </summary>
         /// <param name="invocation"></param>
-        public static void Intercept(CacheAttribute attribute, IInvocation invocation)
+        public  void Intercept(CacheAttribute attribute, IInvocation invocation)
         {
             if (attribute == null)
                 invocation.Proceed();

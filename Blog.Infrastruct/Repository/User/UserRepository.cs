@@ -13,7 +13,7 @@ namespace Blog.Infrastruct
     public class UserRepository : Repository<User, int>, IUserRepository, IInterceptorHandler
     {
         private static User Map(dynamic result)
-        {        
+        {
             return new User(result.user_id, result.user_username, result.user_account, result.user_password, (Sex)result.user_sex
                 , result.IsValid == 0 ? false : true, result.user_email, result.user_phone, result.user_createtime, result.user_updatetime
                 );
@@ -31,7 +31,8 @@ namespace Blog.Infrastruct
             string sql = "SELECT * FROM User where user_account=@Account";
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Account", account);
-            dynamic result = base.SelectSingle(sql, dynamicParameters);
+            dynamic result = new User();
+            result = base.SelectSingle(sql, dynamicParameters);
             if (result == null)
                 return null;
             return Map(result);

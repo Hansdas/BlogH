@@ -16,12 +16,10 @@ namespace Blog.Controllers.Home.Ariticel
 {
     public class ArticleController : Controller
     {
-        private readonly IOptions<ApiSettingModel> _settings;
         private readonly object _obj = new object();
         private readonly IBlogService _blogService;
-        public ArticleController(IOptions<ApiSettingModel> settings, IBlogService blogService)
+        public ArticleController(IBlogService blogService)
         {
-            _settings = settings;
             _blogService = blogService;
         }
         public IActionResult Index()

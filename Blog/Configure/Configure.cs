@@ -22,6 +22,7 @@ using Autofac.Extras.DynamicProxy;
 using Blog.Dapper;
 using Blog.AOP.Transaction;
 using Blog.AOP;
+using Castle.DynamicProxy;
 
 namespace CommonHelper
 {
@@ -46,6 +47,9 @@ namespace CommonHelper
             services.AddTransient<ICommentRepository, CommentRepository>();
 
             services.AddTransient<ICacheClient, CacheClient>();
+
+            services.AddTransient<ICacheInterceptor, CacheInterceptor>();
+            services.AddTransient<ITransactionInterceptor, TransactionInterceptor>();
         }
         /// <summary>
         /// 基础框架
@@ -107,7 +111,7 @@ namespace CommonHelper
             //containerBuilder.Populate(services);
             var assembly = Assembly.Load("Blog.Infrastruct");
             //var assembly = typeof(Blog.AOP.).GetType().GetTypeInfo().Assembly;
-            containerBuilder.RegisterTypes(typeof(Interceptor));
+            containerBuilder.RegisterType<Interceptor>();
             containerBuilder.RegisterAssemblyTypes(assembly)
                          .Where(type =>typeof(IInterceptorHandler).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)
                          .AsImplementedInterfaces()
