@@ -38,9 +38,9 @@ namespace CommonHelper
             services.AddTransient<IUserService, UserService>();
             services.AddScoped<IRequestHandler<CreateUserCommand, Unit>, UserCommandHandler>();
 
-            services.AddTransient<IWhisperRepository, BlogRepository>();
-            services.AddTransient<IArticleService,BlogService>();
-            services.AddScoped<IRequestHandler<CreateBlogCommand, Unit>, BlogCommandHandler>();
+            services.AddTransient<IArticleRepository, ArticleRepository>();
+            services.AddTransient<IArticleService,ArticleService>();
+            services.AddScoped<IRequestHandler<CreateArticleCommand, Unit>, ArticleCommandHandler>();
 
             //services.AddTransient<IUploadFileRepository, UploadFileRepository>();
 

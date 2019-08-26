@@ -171,12 +171,12 @@
                     console.log(content);
                 }
                 //插入代码设置 --hide:false 等同于不配置codeConfig
-                //, codeConfig: {
-                //    hide: true,  //是否隐藏编码语言选择框
-                //    default: 'javascript', //hide为true时的默认语言格式
-                //    encode: true //是否转义
-                //    , class: 'layui-code' //默认样式
-                //}
+                , codeConfig: {
+                    hide: true,  //是否隐藏编码语言选择框
+                    default: 'javascript', //hide为true时的默认语言格式
+                    encode: true //是否转义
+                    , class: 'layui-code' //默认样式
+                }
                 , tool: [
                     'code', 'strong', 'italic', 'underline', 'del', 'addhr', '|', 'removeformat', 'fontFomatt', 'fontfamily', 'fontSize', 'fontBackColor', 'colorpicker', 'face'
                     , '|', 'left', 'center', 'right', '|', 'link', 'unlink', 'image_alt', 'video', 'attachment'
@@ -193,7 +193,7 @@
                     }
                 }
             });
-            var index = layedit.build('L_content');
+            var textcontent = layedit.build('L_content');
             var active = {
                 content: function () {
                     layer.open({
@@ -213,11 +213,13 @@
                 , save: function () {
                     form.on('submit(save)', function (data) {
                         var articleData = data.field;
-                        var content = layedit.getContent(index);
-                        var text = layedit.getText(index).substring(-1, 30);
+                        var content = layedit.getContent(textcontent);
+                        var textsection = layedit.getText(textcontent);
+                        if (textsection.length > 30)
+                            textsection=textsection.substring(-1, 30);
                         var index = layer.load(2)
                         $.ajax({
-                            url: '/article/addarticle',
+                            url: '/article/publish',
                             type: 'post',
                             datatype: 'json',
                             data: {
@@ -225,7 +227,7 @@
                                 'title': articleData.title,
                                 'content': content,
                                 'imgSrc': imgUrls,
-                                'text': text
+                                'textsection': textsection
                             },
                             async: false,
                             success: function (response) {
@@ -239,6 +241,7 @@
                                 }
                             },
                         });
+                        return false;
                     })
                 }
                 , publish: function () {

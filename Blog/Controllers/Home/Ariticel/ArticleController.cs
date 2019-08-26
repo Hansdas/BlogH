@@ -30,41 +30,34 @@ namespace Blog.Controllers.Home.Ariticel
             return View();
         }
         [PermissionFilter]
-        public IActionResult Add()
+        public IActionResult AddArticle()
         {
             return View();
         }
-        public IActionResult AddArticle()
+        public IActionResult Publish()
         {
+            ArticleType articleType = Enum.Parse<ArticleType>(Request.Form["articletype"]);
+            string title = Request.Form["title"];
+            string content = Request.Form["content"];
+            string imgSrc = Request.Form["imgSrc"];
+            string textSection = Request.Form["textsection"];
+            string[] srcArray = { };
+            if (!string.IsNullOrEmpty(imgSrc))
+                srcArray = imgSrc.Trim(',').Split(',');
+            UserModel userModel = Auth.GetLoginUser();
+            IList<string> filePaths = new List<string>();
             try
             {
-                ArticleType articleType = Enum.Parse<ArticleType>(Request.Form["articletype"]);
-                string title = Request.Form["title"];
-                string content = Request.Form["content"];
-                string imgSrc = Request.Form["imgSrc"];
-                string textSection = Request.Form["text"];
-                string[] srcArray = { };
-                if (!string.IsNullOrEmpty(imgSrc))
-                    srcArray = imgSrc.Trim(',').Split(',');
-                UserModel userModel = Auth.GetLoginUser();
-                IList<string> filePaths = new List<string>();
-                try
-                {
-                    UploadFile(srcArray, userModel, filePaths);
-                    Article article = new Article(title,textSection, content, articleType, true, filePaths);
-                    //_articleService.(blog);
-                }
-                catch (AggregateException)
-                {
-                    //todo 有异常删除所有本次所传的附件
-                }
-                return Json(new ReturnResult() { Code = "200", Message = "ok" });
+                UploadFile(srcArray, userModel, filePaths);
+                Article article = new Article(userModel.Username, title, textSection, content, articleType, true, filePaths);
+                _articleService.Publish(article);
             }
-            catch (Exception ex)
+            catch (AggregateException)
             {
-
+                return Json(new ReturnResult() { Code = "500", Message ="服务器异常" });
+                //todo 有异常删除所有本次所传的附件
             }
-            return View();
+            return Json(new ReturnResult() { Code = "200", Message = "ok" });
         }
 
         private void UploadFile(string[] srcArray, UserModel userModel, IList<string> filePaths)

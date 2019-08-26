@@ -10,6 +10,7 @@ using Blog.Dapper;
 
 namespace Blog.Infrastruct
 {
+
     /// <summary>
     /// 仓储接口实现基类
     /// </summary>
@@ -18,7 +19,7 @@ namespace Blog.Infrastruct
     public class Repository<T, U> : IRepository<T, U>
     {
         private IDbConnection _dbConnection;
-        public IDbConnection dbConnection
+        public IDbConnection DbConnection
         {
             get
             {
@@ -28,7 +29,7 @@ namespace Blog.Infrastruct
                 return _dbConnection;
             }
         }
-        private void Dispose()
+        public  void Dispose()
         {
             if (_dbConnection == null)
                 return;
@@ -42,7 +43,7 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public IEnumerable<dynamic> SelectAll(string sql)
         {
-                IEnumerable<dynamic> dynamics = dbConnection.Query(sql);
+                IEnumerable<dynamic> dynamics = DbConnection.Query(sql);
                 Dispose();
                 return dynamics;
         }
@@ -54,7 +55,7 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public IEnumerable<dynamic> Select(string sql,object param)
         {
-            IEnumerable<dynamic> dynamics = dbConnection.Query(sql,param);
+            IEnumerable<dynamic> dynamics = DbConnection.Query(sql,param);
             Dispose();
             return dynamics;
         }
@@ -64,7 +65,7 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public dynamic SelectSingle(string sql, object param)
         {
-            dynamic dynamic = dbConnection.Query(sql, param).FirstOrDefault();
+            dynamic dynamic = DbConnection.Query(sql, param).FirstOrDefault();
             Dispose();
             return dynamic;
         }  
@@ -74,7 +75,7 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public void Insert(string sql, T t)
         {
-            dbConnection.Execute(sql,t);
+            DbConnection.Execute(sql,t);
             Dispose();
         }
         /// <summary>
@@ -83,7 +84,7 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public void Update(string sql, T t)
         {
-            dbConnection.Execute(sql, t);
+            DbConnection.Execute(sql, t);
             Dispose();
         }
         /// <summary>
@@ -92,13 +93,13 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public void Delete(string sql, object param)
         {
-            dbConnection.Execute(sql, param);
+            DbConnection.Execute(sql, param);
             Dispose();
         }
 
         public T SelectSingle1(string sql, object param)
         {
-            T t = dbConnection.Query<T>(sql, param).FirstOrDefault();
+            T t = DbConnection.Query<T>(sql, param).FirstOrDefault();
             Dispose();
             return t;
         }

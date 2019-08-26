@@ -48,7 +48,7 @@ namespace Blog.Infrastruct
             string sql = "SELECT COUNT(*) FROM User where user_account=@Account";
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Account", account);
-            int count= dbConnection.ExecuteScalar<int>(sql, dynamicParameters);
+            int count= DbConnection.ExecuteScalar<int>(sql, dynamicParameters);
             return count;
         }
         /// <summary>
@@ -68,7 +68,7 @@ namespace Blog.Infrastruct
             string sql = "SELECT  user_username, user_account FROM User WHERE user_account  IN @Useraccount";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Useraccount", accounts);
-            IEnumerable<dynamic> dynamics = dbConnection.Query(sql, parameters);
+            IEnumerable<dynamic> dynamics = DbConnection.Query(sql, parameters);
             foreach (var d in dynamics)
             {
                 accountAndName.Add(d.user_account, d.user_username);

@@ -64,7 +64,7 @@ namespace Blog.Common
             }
             //上传成功后删除本地文件
             File.Delete(filePath);
-            uploadSavePath = savePath;
+            uploadSavePath = savePath+"/"+fileName;
             return fileSize;
         }
         /// <summary>

@@ -12,8 +12,9 @@ namespace Blog.Domain
     /// </summary>
     public class Article : AggregateRoot<int>
     {
-        public Article(string title,string textSection, string content, ArticleType articleType, bool isDraft,IList<string> relatedFileList)
+        public Article(string author, string title,string textSection, string content, ArticleType articleType, bool isDraft,IList<string> relatedFileList)
         {
+            Author = author;
             Title = title;
             TextSection = textSection;
             Content = content;
@@ -21,13 +22,16 @@ namespace Blog.Domain
             IsDraft = isDraft;
             RelatedFileList = relatedFileList;
         }
-        public Article(int id, string title,string textSection, string content, ArticleType articleType, bool isDraft, IList<string> relatedFileList, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
-         : this(title,textSection, content, articleType, isDraft, relatedFileList)
+        public Article(string author,int id, string title,string textSection, string content, ArticleType articleType, bool isDraft, IList<string> relatedFileList, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
+         : this(author,title,textSection, content, articleType, isDraft, relatedFileList)
         {
             Id = id;
             PraiseCount = praiseCount;
             BrowserCount = browserCount;
+            CreateTime = createTime;
+            UpdateTime = updateTime;
         }
+        public string Author { get; private set; }
         /// <summary>
         /// 标题
         /// </summary>
@@ -57,27 +61,18 @@ namespace Blog.Domain
         /// </summary>
         public int BrowserCount { get; private set; }
         /// <summary>
-        /// 相关文件guid(只用来数据持久化)
-        /// </summary>
-        public string FileGuids { get; private set; }
-        /// <summary>
         /// 相关文件
         /// </summary>
-        public IList<string> RelatedFileList {
-            get
-            {
-                if (string.IsNullOrEmpty(RelatedFiles))
-                    return new List<string>();
-                return RelatedFiles.Split(',');
-            }
-            private set
-            {
-                RelatedFiles = value.ConvertTostring(",");
-            }
-        }
+        public IList<string> RelatedFileList { get; private set; }
         /// <summary>
         /// 相关文件,数据库持久化，存放附件路径
         /// </summary>
-        private string RelatedFiles { get;  set; }
+        public string RelatedFiles {
+            get {
+                if (RelatedFileList == null || RelatedFileList.Count == 0)
+                    return "";
+                return RelatedFileList.ConvertTostring(',');
+            }
+        }
     }
 }
