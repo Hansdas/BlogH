@@ -22,7 +22,7 @@ namespace Blog.Infrastruct
         {
             get
             {
-                _dbConnection = DapperProvider.CreateConnection();
+                _dbConnection = DapperProvider.connection;
                 if (_dbConnection.State != ConnectionState.Open)
                     _dbConnection.Open();
                 return _dbConnection;

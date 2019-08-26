@@ -42,7 +42,7 @@ namespace Blog.Common
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static async Task<dynamic> Upload(string filePath, string fileName,string userAccount)
+        public static long Upload(string filePath, string fileName,string userAccount,out string uploadSavePath)
         {
             if (!File.Exists(filePath))
                 throw new IOException("文件不存在");
@@ -60,11 +60,12 @@ namespace Blog.Common
                 mulContent.Add(new StringContent(savePath), "savePath");
                 mulContent.Add(new StringContent(fileName), "fileName");
                 string url = GetIP() + controller;
-                await HttpHelper.PostHttpClient(url, mulContent);
+                HttpHelper.PostHttpClient(url, mulContent);
             }
             //上传成功后删除本地文件
             File.Delete(filePath);
-            return new { size=fileSize,path=savePath};
+            uploadSavePath = savePath;
+            return fileSize;
         }
         /// <summary>
         /// WebClinet下载附件

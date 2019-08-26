@@ -9,7 +9,7 @@ namespace Blog.Domain
     /// <summary>
     /// 微语实体
     /// </summary>
-    public class Whisper : BlogBase<int>
+    public class Whisper : AggregateRoot<int>
     {
         public Whisper(string content, IList<UploadFile> uploadFileList = null)
         {

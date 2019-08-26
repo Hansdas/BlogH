@@ -1,4 +1,5 @@
 ﻿using Blog.Domain.Core;
+using CommonHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,18 +10,19 @@ namespace Blog.Domain
     /// <summary>
     /// 文章
     /// </summary>
-    public class Article : BlogBase<int>
+    public class Article : AggregateRoot<int>
     {
-        public Article(string title, string content, ArticleType articleType, bool isDraft,IList<UploadFile> uploadFiles)
+        public Article(string title,string textSection, string content, ArticleType articleType, bool isDraft,IList<string> relatedFileList)
         {
             Title = title;
+            TextSection = textSection;
             Content = content;
             ArticleType = articleType;
             IsDraft = isDraft;
-            FileList = uploadFiles;
+            RelatedFileList = relatedFileList;
         }
-        public Article(int id, string title, string content, ArticleType articleType, bool isDraft, IList<UploadFile> uploadFiles, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
-         : this(title, content, articleType, isDraft, uploadFiles)
+        public Article(int id, string title,string textSection, string content, ArticleType articleType, bool isDraft, IList<string> relatedFileList, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
+         : this(title,textSection, content, articleType, isDraft, relatedFileList)
         {
             Id = id;
             PraiseCount = praiseCount;
@@ -30,6 +32,10 @@ namespace Blog.Domain
         /// 标题
         /// </summary>
         public string Title { get; private set; }
+        /// <summary>
+        /// 文本截取显示
+        /// </summary>
+        public string TextSection { get; private set; }
         /// <summary>
         /// 内容
         /// </summary>
@@ -55,22 +61,23 @@ namespace Blog.Domain
         /// </summary>
         public string FileGuids { get; private set; }
         /// <summary>
-        /// 相关文件（业务临时使用）
+        /// 相关文件
         /// </summary>
-        public IList<UploadFile> FileList { get; private set; }
+        public IList<string> RelatedFileList {
+            get
+            {
+                if (string.IsNullOrEmpty(RelatedFiles))
+                    return new List<string>();
+                return RelatedFiles.Split(',');
+            }
+            private set
+            {
+                RelatedFiles = value.ConvertTostring(",");
+            }
+        }
         /// <summary>
-        /// 获取附件guid集合
+        /// 相关文件,数据库持久化，存放附件路径
         /// </summary>
-        /// <param name="whisper"></param>
-        /// <returns></returns>
-        public static IList<string> FileGuidList(Article article)
-        {
-            return article.FileList.Select(s => s.GUID).ToList();
-        }
-        public static void SetUploadFileGuids(Article article)
-        {
-            IList<string> uploadFileGuidList = FileGuidList(article);
-            article.FileGuids = string.Join(",", uploadFileGuidList);
-        }
+        private string RelatedFiles { get;  set; }
     }
 }

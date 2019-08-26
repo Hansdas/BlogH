@@ -110,7 +110,7 @@
                     size: 1024 * 10,
                     done: function (res) {
                         if (res.code == 0) {
-                            imgUrls = imgUrls + res.data + ",";
+                            imgUrls = imgUrls + res.data.src + ",";
                         }
                     }
                 },
@@ -214,6 +214,8 @@
                     form.on('submit(save)', function (data) {
                         var articleData = data.field;
                         var content = layedit.getContent(index);
+                        var text = layedit.getText(index).substring(-1, 30);
+                        var index = layer.load(2)
                         $.ajax({
                             url: '/article/addarticle',
                             type: 'post',
@@ -222,11 +224,19 @@
                                 'articletype': articleData.type,
                                 'title': articleData.title,
                                 'content': content,
-                                'imgSrc': imgUrls
+                                'imgSrc': imgUrls,
+                                'text': text
                             },
                             async: false,
                             success: function (response) {
-                               
+                                if (response.message == "ok") {
+                                    window.location.href = "../home/index";
+
+                                }
+                                else {
+                                    layer.close(index)
+                                    layer.msg(response.message, { icon: 5 });
+                                }
                             },
                         });
                     })

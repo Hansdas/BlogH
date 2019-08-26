@@ -22,10 +22,10 @@ namespace Blog.Controllers
     public class PublishController : Controller
     {
         private readonly  IOptions<ApiSettingModel> _settings;
-        private readonly  IBlogService _blogService;
+        private readonly  IArticleService _blogService;
 
         private readonly object _obj = new object();
-        public PublishController(IOptions<ApiSettingModel> settings, IBlogService blogService)
+        public PublishController(IOptions<ApiSettingModel> settings, IArticleService blogService)
         {
             _settings = settings;
             _blogService = blogService;
@@ -50,9 +50,10 @@ namespace Blog.Controllers
                     {
                         int index = srcArray[m].LastIndexOf("\\") + 1;
                         string fileName = srcArray[m].Substring(index);
-                        dynamic d = await UploadHelper.Upload(srcArray[m], fileName, userModel.Account);
+                        string uploadSavePath;
+                        long fileSize = UploadHelper.Upload(srcArray[m], fileName, userModel.Account,out uploadSavePath);
                         string guid = Guid.NewGuid().ToString();
-                        UploadFile uploadFile = new UploadFile(userModel.Account, guid, d.path, fileName, d.size);
+                        UploadFile uploadFile = new UploadFile(userModel.Account, guid, uploadSavePath, fileName, fileSize);
                         lock (_obj)
                         {
                             uploadFiles.Add(uploadFile);

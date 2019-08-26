@@ -39,6 +39,15 @@ namespace Blog.Application.ViewModel
         public IList<CommentDataModel> Commentdatas { get; set; }
     }
     /// <summary>
+    /// 文章模型
+    /// </summary>
+    public class ArticleModel
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public string ArticleType { get; set; }
+    }
+    /// <summary>
     /// 评论模型
     /// </summary>
     public class CommentDataModel

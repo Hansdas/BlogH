@@ -9,7 +9,7 @@ namespace Blog.Dapper
 {
   public  class DapperProvider
     {           
-        private IDbConnection connection;
+        public static IDbConnection connection;
         private static string connStr = "";
         private DapperProvider()
         {
@@ -17,13 +17,10 @@ namespace Blog.Dapper
         }
         public DapperProvider(string conn)
         {
-            if (connection == null)
-            {
-                connStr = conn;
-                connection = CreateConnection();
-            }
+            connStr = conn;
+            connection = CreateConnection();
         }
-        public static IDbConnection CreateConnection()
+        private  IDbConnection CreateConnection()
         {
             return new MySqlConnection(connStr);
         }

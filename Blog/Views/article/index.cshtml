@@ -22,76 +22,28 @@
                 <input type="search" name="keyword" autocomplete="off" class="layui-input" placeholder="输入完后按回车" />
                 <i class="layui-icon layui-icon-search"></i>
             </div>
-            <a href="../article/addarticle" target="_blank" class="layui-btn" style="color:white !important;font-size:14px !important">写一写</a>
+            <a href="../article/add" target="_blank" class="layui-btn" style="color:white !important;font-size:14px !important">写一写</a>
         </div>
         <hr class="bor" />
         <div class="list-item box-left">
-            <div class="item">
-                <div class="layui-fluid">
-                    <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
-                            <div class="item-cont item-title">
-                                <h3>空间立体效果图，完美呈现最终效果 <button class="layui-btn layui-btn-danger new-icon">new</button><button class="layui-btn new-icon w62">散文礼记</button></h3>
+            <script type="text/html" id="article-item-id">
+                {{# layui.each(d.list,function(index,item){}}
+                <div class="item">
+                    <div class="layui-fluid">
+                        <div class="layui-row">
+                            <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
+                                <div class="item-cont item-title">
+                                    <h3>{{item.title}}<button class="layui-btn layui-btn-danger new-icon">new</button><button class="layui-btn new-icon w62">{{item.articletype}}</button></h3>
 
-                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
+                                    <p>{{item.content}}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <hr class="bor item-bottom" />
-            <div class="item">
-                <div class="layui-fluid">
-                    <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
-                            <div class="item-cont item-title">
-                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
-                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr class="bor item-bottom" />
-            <div class="item">
-                <div class="layui-fluid">
-                    <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
-                            <div class="item-cont item-title">
-                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
-                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr class="bor item-bottom" style="" />
-            <div class="item">
-                <div class="layui-fluid">
-                    <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
-                            <div class="item-cont item-title">
-                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
-                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr class="bor item-bottom" />
-            <div class="item">
-                <div class="layui-fluid">
-                    <div class="layui-row">
-                        <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
-                            <div class="item-cont item-title">
-                                <h3>空间立体效果图，完美呈现最终效果<button class="layui-btn layui-btn-danger new-icon">new</button></h3>
-                                <p>室内设计作为一门新兴的学科，尽管还只是近数十年的事，但是人们有意识地对自己生活、生产活动的室内进行安排布置，甚至美化装饰，赋予室内环境以所祈使的气氛，却早巳从人类文明伊始的时期就已存在</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <hr class="bor item-bottom" />
+                <hr class="bor item-bottom" />
+                {{# }); }}
+            </script>
             <div id="page" style="text-align: center;"></div>
         </div>
         <div class="box-right">
@@ -177,6 +129,7 @@
     }).use(['element', 'laypage', 'jquery', 'menu'], function () {
         element = layui.element, laypage = layui.laypage, $ = layui.$, menu = layui.menu;
         menu.init();
+        var whisper = document.getElementById("whisper-item").innerHTML;
         laypage.render({
             elem: 'page'
             , count: 1000

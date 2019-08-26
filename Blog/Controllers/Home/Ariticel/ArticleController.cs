@@ -9,6 +9,7 @@ using Blog.Common;
 using Blog.Common.AppSetting;
 using Blog.Domain;
 using Blog.Domain.Core;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -17,16 +18,22 @@ namespace Blog.Controllers.Home.Ariticel
     public class ArticleController : Controller
     {
         private readonly object _obj = new object();
-        private readonly IBlogService _blogService;
-        public ArticleController(IBlogService blogService)
+        private IWebHostEnvironment _webHostEnvironment;
+        private readonly IArticleService _articleService;
+        public ArticleController(IArticleService articleService, IWebHostEnvironment webHostEnvironment)
         {
-            _blogService = blogService;
+            _articleService = articleService;
+            _webHostEnvironment = webHostEnvironment;
         }
         public IActionResult Index()
         {
             return View();
         }
         [PermissionFilter]
+        public IActionResult Add()
+        {
+            return View();
+        }
         public IActionResult AddArticle()
         {
             try
@@ -34,32 +41,18 @@ namespace Blog.Controllers.Home.Ariticel
                 ArticleType articleType = Enum.Parse<ArticleType>(Request.Form["articletype"]);
                 string title = Request.Form["title"];
                 string content = Request.Form["content"];
-                string[] srcArray = Request.Form["imgUrls"].ToString().Trim(',').Split(',');
+                string imgSrc = Request.Form["imgSrc"];
+                string textSection = Request.Form["text"];
+                string[] srcArray = { };
+                if (!string.IsNullOrEmpty(imgSrc))
+                    srcArray = imgSrc.Trim(',').Split(',');
                 UserModel userModel = Auth.GetLoginUser();
-                IList<UploadFile> uploadFiles = new List<UploadFile>();
+                IList<string> filePaths = new List<string>();
                 try
                 {
-                    Task[] tasks = new Task[srcArray.Length];
-                    for (int i = 0; i < srcArray.Length; i++)
-                    {
-                        int m = i;
-                        tasks[m] = Task.Run(async () =>
-                        {
-                            int index = srcArray[m].LastIndexOf("\\") + 1;
-                            string fileName = srcArray[m].Substring(index);
-                            dynamic d = await UploadHelper.Upload(srcArray[m], fileName,userModel.Account);
-                            string guid = Guid.NewGuid().ToString();
-                            UploadFile uploadFile = new UploadFile(userModel.Account, guid, d.path, fileName, d.size);
-                            lock (_obj)
-                            {
-                                uploadFiles.Add(uploadFile);
-                            }
-                        });
-                    }
-                    Task.WaitAll(tasks);
-                    Article article = new Article(title,content, articleType, true, uploadFiles);
-                    Domain.Blog blog = new Domain.Blog(userModel.Account, BlogType.文章, article);
-                    _blogService.PublishBlog(blog);
+                    UploadFile(srcArray, userModel, filePaths);
+                    Article article = new Article(title,textSection, content, articleType, true, filePaths);
+                    //_articleService.(blog);
                 }
                 catch (AggregateException)
                 {
@@ -72,6 +65,31 @@ namespace Blog.Controllers.Home.Ariticel
 
             }
             return View();
+        }
+
+        private void UploadFile(string[] srcArray, UserModel userModel, IList<string> filePaths)
+        {
+            Task[] tasks = new Task[srcArray.Length];
+            for (int i = 0; i < srcArray.Length; i++)
+            {
+                int m = i;
+                tasks[m] = Task.Run(() =>
+                {
+                    int index = srcArray[m].IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length;
+                    string path = _webHostEnvironment.ContentRootPath + "/TempFile" + srcArray[m].Substring(index);
+                    path = path.Replace("/", @"\");
+                    string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
+                    string uploadSavePath;
+                    long fileSzie = UploadHelper.Upload(path, fileName, userModel.Account, out uploadSavePath);
+                    filePaths.Add(uploadSavePath);
+                });
+            }
+            Task.WaitAll(tasks);
+        }
+
+        public int LoadTotal()
+        {
+            return 0;
         }
     }
 }

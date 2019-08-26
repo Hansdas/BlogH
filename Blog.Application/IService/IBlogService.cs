@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Blog.Application
 {
-   public interface IBlogService
+   public interface IArticleService
     {
-        void PublishBlog(Domain.Blog blog);
+        //void PublishBlog(Domain.Blog blog);
 
-        IList<BlogModel> GetBlogModels(int pageIndex, int pageSize);
+        //IList<BlogModel> GetBlogModels(int pageIndex, int pageSize);
     }
 }
