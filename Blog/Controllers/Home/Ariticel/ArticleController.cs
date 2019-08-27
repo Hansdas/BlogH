@@ -19,11 +19,13 @@ namespace Blog.Controllers.Home.Ariticel
     {
         private readonly object _obj = new object();
         private IWebHostEnvironment _webHostEnvironment;
-        private readonly IArticleService _articleService;
-        public ArticleController(IArticleService articleService, IWebHostEnvironment webHostEnvironment)
+        private  IArticleService _articleService;
+        private IArticleRepository _articleRepository;
+        public ArticleController(IArticleService articleService, IWebHostEnvironment webHostEnvironment,IArticleRepository articleRepository)
         {
             _articleService = articleService;
             _webHostEnvironment = webHostEnvironment;
+            _articleRepository = articleRepository;
         }
         public IActionResult Index()
         {
@@ -31,6 +33,10 @@ namespace Blog.Controllers.Home.Ariticel
         }
         [PermissionFilter]
         public IActionResult AddArticle()
+        {
+            return View();
+        }
+        public IActionResult Detail()
         {
             return View();
         }
@@ -48,7 +54,9 @@ namespace Blog.Controllers.Home.Ariticel
             IList<string> filePaths = new List<string>();
             try
             {
-                UploadFile(srcArray, userModel, filePaths);
+                //UploadFile(srcArray, userModel, filePaths);
+                if(srcArray.Length>0)
+                    UploadHelper.Upload(userModel.Account, srcArray, _webHostEnvironment.ContentRootPath);
                 Article article = new Article(userModel.Username, title, textSection, content, articleType, true, filePaths);
                 _articleService.Publish(article);
             }
@@ -79,10 +87,28 @@ namespace Blog.Controllers.Home.Ariticel
             }
             Task.WaitAll(tasks);
         }
-
         public int LoadTotal()
         {
-            return 0;
+            int count = _articleRepository.SelectCount();
+            return count;
+        }
+        public JsonResult LoadArticle(int pageIndex, int pageSize)
+        {
+            PageResult pageResult = new PageResult();
+            try
+            {
+                IList<ArticleModel> articleModels = _articleService.SelectByPage(pageIndex, pageSize);
+                pageResult.Data = articleModels;
+                pageResult.Code = "200";
+                pageResult.Message = "ok";
+            }
+            catch (Exception e)
+            {
+                pageResult.Data = null;
+                pageResult.Code = "500";
+                pageResult.Message = e.Message;
+            }
+            return new JsonResult(pageResult);
         }
     }
 }

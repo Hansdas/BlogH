@@ -29,14 +29,14 @@ namespace Blog.Infrastruct
                 return _dbConnection;
             }
         }
-        public  void Dispose()
-        {
-            if (_dbConnection == null)
-                return;
-            if (_dbConnection.State != ConnectionState.Closed)
-                _dbConnection.Close();
-            _dbConnection.Dispose();
-        }
+        //public  void Dispose()
+        //{
+        //    if (_dbConnection == null)
+        //        return;
+        //    if (_dbConnection.State != ConnectionState.Closed)
+        //        _dbConnection.Close();
+        //    _dbConnection.Dispose();
+        //}
         /// <summary>
         /// 查询所有
         /// </summary>
@@ -44,7 +44,6 @@ namespace Blog.Infrastruct
         public IEnumerable<dynamic> SelectAll(string sql)
         {
                 IEnumerable<dynamic> dynamics = DbConnection.Query(sql);
-                Dispose();
                 return dynamics;
         }
         /// <summary>
@@ -56,7 +55,6 @@ namespace Blog.Infrastruct
         public IEnumerable<dynamic> Select(string sql,object param)
         {
             IEnumerable<dynamic> dynamics = DbConnection.Query(sql,param);
-            Dispose();
             return dynamics;
         }
         /// <summary>
@@ -66,7 +64,6 @@ namespace Blog.Infrastruct
         public dynamic SelectSingle(string sql, object param)
         {
             dynamic dynamic = DbConnection.Query(sql, param).FirstOrDefault();
-            Dispose();
             return dynamic;
         }  
         /// <summary>
@@ -76,7 +73,6 @@ namespace Blog.Infrastruct
         public void Insert(string sql, T t)
         {
             DbConnection.Execute(sql,t);
-            Dispose();
         }
         /// <summary>
         /// 更新数据
@@ -85,7 +81,6 @@ namespace Blog.Infrastruct
         public void Update(string sql, T t)
         {
             DbConnection.Execute(sql, t);
-            Dispose();
         }
         /// <summary>
         /// 删除数据
@@ -94,14 +89,7 @@ namespace Blog.Infrastruct
         public void Delete(string sql, object param)
         {
             DbConnection.Execute(sql, param);
-            Dispose();
         }
 
-        public T SelectSingle1(string sql, object param)
-        {
-            T t = DbConnection.Query<T>(sql, param).FirstOrDefault();
-            Dispose();
-            return t;
-        }
     }
 }

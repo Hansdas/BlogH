@@ -1,5 +1,6 @@
 ﻿using Blog.Common.AppSetting;
 using Blog.Domain.Core;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using System;
@@ -36,6 +37,37 @@ namespace Blog.Common
             string ip= GetConfigurationSection("webapi").GetSection("HttpAddresss").Value;
             string http = "http://" + ip;
             return http;
+        }
+        /// <summary>
+        /// 上传附件
+        /// </summary>
+        /// <param name="userAccount">账号</param>
+        /// <param name="localFilePath">本地图片相对路径</param>
+        /// <param name="contentRootPath">程序路径</param>
+        /// <returns></returns>
+        public static IList<string>  Upload(string userAccount,string[] localFilePath,string contentRootPath)
+        {
+            IList<string> savePathList = new List<string>();
+            Task[] tasks = new Task[localFilePath.Length];
+            for (int i = 0; i < localFilePath.Length; i++)
+            {
+                int m = i;
+                tasks[m] = Task.Run(() =>
+                {
+                    int index = localFilePath[m].IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length;
+                    string path = contentRootPath + "/TempFile" + localFilePath[m].Substring(index);
+                    path = path.Replace("/", @"\");
+                    string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
+                    string uploadSavePath;
+                    long fileSzie = Upload(path, fileName, userAccount, out uploadSavePath);
+                    lock (obj)
+                    {
+                        savePathList.Add(uploadSavePath);
+                    }
+                });
+            }
+            Task.WaitAll(tasks);
+            return savePathList;
         }
         /// <summary>
         /// 使用HttpClient上传附件

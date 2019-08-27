@@ -10,6 +10,6 @@ namespace Blog.Application
     {
         void Publish(Article article);
 
-        //IList<BlogModel> GetBlogModels(int pageIndex, int pageSize);
+        IList<ArticleModel> SelectByPage(int pageIndex, int pageSize);
     }
 }

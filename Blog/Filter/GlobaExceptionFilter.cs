@@ -23,15 +23,15 @@ namespace Blog
         }
         public override void OnException(ExceptionContext context)
         {
-            string message = context.Exception.Message;
-            //Task.Factory.StartNew(() =>
-            //{
-            //    //_logger.Log(LogLevel.Error, context.Exception, message);
-            //    _logger.Error(context.Exception, message);
-            //});
-            ReturnResult returnResult = new ReturnResult("500", "响应服务器错误");
-            context.Result = new JsonResult(returnResult);
-            context.ExceptionHandled = true;
+            //string message = context.Exception.Message;
+            ////Task.Factory.StartNew(() =>
+            ////{
+            ////    //_logger.Log(LogLevel.Error, context.Exception, message);
+            ////    _logger.Error(context.Exception, message);
+            ////});
+            //ReturnResult returnResult = new ReturnResult("500", "响应服务器错误");
+            //context.Result = new JsonResult(returnResult);
+            //context.ExceptionHandled = true;
         }
     }
 }

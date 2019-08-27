@@ -29,11 +29,6 @@ namespace Blog.Domain
         /// <returns></returns>
         dynamic SelectSingle(string sql, object param);
         /// <summary>
-        /// 查询单条数据
-        /// </summary>
-        /// <returns></returns>
-        T SelectSingle1(string sql, object param);
-        /// <summary>
         /// 插入数据
         /// </summary>
         /// <param name="t"></param>

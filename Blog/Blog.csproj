@@ -9,15 +9,22 @@
     <DocumentationFile></DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Views\publish\**" />
+    <Compile Remove="Views\User\**" />
     <Compile Remove="wwwroot\TemporaryPhoto\**" />
+    <Content Remove="Views\publish\**" />
+    <Content Remove="Views\User\**" />
     <Content Remove="wwwroot\TemporaryPhoto\**" />
+    <EmbeddedResource Remove="Views\publish\**" />
+    <EmbeddedResource Remove="Views\User\**" />
     <EmbeddedResource Remove="wwwroot\TemporaryPhoto\**" />
+    <None Remove="Views\publish\**" />
+    <None Remove="Views\User\**" />
     <None Remove="wwwroot\TemporaryPhoto\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Remove="nlog.config" />
-    <Content Remove="Views\publish\publish.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -83,8 +90,6 @@
 
   <ItemGroup>
     <Folder Include="TempFile\2019\" />
-    <Folder Include="Views\publish\" />
-    <Folder Include="Views\User\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>

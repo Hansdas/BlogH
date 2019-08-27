@@ -12,20 +12,34 @@ namespace Blog.Domain
     /// </summary>
     public class Article : AggregateRoot<int>
     {
-        public Article(string author, string title,string textSection, string content, ArticleType articleType, bool isDraft,IList<string> relatedFileList)
+        public Article(int id,string title,string textSection, ArticleType articleType)
         {
-            Author = author;
+            Id = id;
             Title = title;
             TextSection = textSection;
-            Content = content;
             ArticleType = articleType;
+        }
+
+        public Article(string author, string title,string textSection, string content, ArticleType articleType, bool isDraft,IList<string> relatedFileList)
+        {
+            Title = title;
+            TextSection = textSection;
+            ArticleType = articleType;
+            Author = author;          
+            Content = content;
             IsDraft = isDraft;
             RelatedFileList = relatedFileList;
         }
-        public Article(string author,int id, string title,string textSection, string content, ArticleType articleType, bool isDraft, IList<string> relatedFileList, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
-         : this(author,title,textSection, content, articleType, isDraft, relatedFileList)
+        public Article(string author,int id, string title,string textSection, string content, ArticleType articleType, bool isDraft, string relatedfiles, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
         {
             Id = id;
+            Title = title;
+            TextSection = textSection;
+            ArticleType = articleType;
+            Author = author;
+            Content = content;
+            IsDraft = isDraft;
+            RelatedFileList = relatedfiles.Split(',');
             PraiseCount = praiseCount;
             BrowserCount = browserCount;
             CreateTime = createTime;
