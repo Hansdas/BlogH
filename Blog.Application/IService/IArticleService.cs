@@ -11,5 +11,7 @@ namespace Blog.Application
         void Publish(Article article);
 
         IList<ArticleModel> SelectByPage(int pageIndex, int pageSize,ArticleCondition condition=null);
+
+        ArticleModel Select(ArticleCondition articleCondition = null);
     }
 }

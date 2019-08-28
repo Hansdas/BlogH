@@ -17,7 +17,14 @@ namespace Blog.Domain
             TextSection = textSection;
             ArticleType = articleType;
         }
-
+        public Article(int id,string title,string content, ArticleType articleType,DateTime createTime)
+        {
+            Id = id;
+            Title = title;
+            Content = content;
+            ArticleType = articleType;
+            CreateTime = createTime;
+        }
         public Article(string author, string title,string textSection, string content, ArticleType articleType, bool isDraft,IList<string> relatedFileList)
         {
             Title = title;
@@ -28,7 +35,7 @@ namespace Blog.Domain
             IsDraft = isDraft;
             RelatedFileList = relatedFileList;
         }
-        public Article(string author,int id, string title,string textSection, string content, ArticleType articleType, bool isDraft, string relatedfiles, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
+        public Article(int id, string author, string title,string textSection, string content, ArticleType articleType, bool isDraft, string relatedfiles, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
         {
             Id = id;
             Title = title;

@@ -63,7 +63,7 @@ namespace Blog.Infrastruct
         /// <returns></returns>
         public dynamic SelectSingle(string sql, object param)
         {
-            dynamic dynamic = DbConnection.Query(sql, param).FirstOrDefault();
+            dynamic dynamic = DbConnection.QuerySingle(sql, param);
             return dynamic;
         }  
         /// <summary>

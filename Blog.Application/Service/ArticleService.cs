@@ -47,5 +47,18 @@ namespace Blog.Application
             }
             return articleModels;
         }
+
+        public ArticleModel Select(ArticleCondition articleCondition = null)
+        {
+            Article article = _articleRepository.Select(articleCondition);
+            ArticleModel articleModel = new ArticleModel() {
+                Id = article.Id
+                , Title = article.Title
+                , ArticleType = article.ArticleType.GetEnumText<ArticleType>()
+                , CreateTime = article.CreateTime.ToString("yyyy/MM/dd")
+                ,Content=article.Content
+            };
+            return articleModel;
+        }
     }
 }

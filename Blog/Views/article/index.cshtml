@@ -6,8 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>微语</title>
     <link href="~/layui/css/layui.css" rel="stylesheet" />
-    <link href="~/css/main.css?v=201908021513" rel="stylesheet" />
-    <link href="~/css/common.css?v=201908151934" rel="stylesheet" />
+    <link href="~/css/main.css?v=201908282045" rel="stylesheet" />
+    <link href="~/css/common.css?v=201908282045" rel="stylesheet" />
 </head>
 <div class="content">
     <div class="cont h1370">
@@ -136,15 +136,11 @@
         var article = document.getElementById('article-item').innerHTML;
         laypage.render({
             elem: 'page'
-            , count: total, limit: 1
+            , count: total 
             , jump: function (obj) {
                 var index = layer.load(3);
                 var pageSize = obj.limit;
                 var pageIndex = obj.curr;
-                //$('.title-type a').each(function () {
-                //    var className = $(this).attr('class');
-                //    articletype = className;
-                //});
                 loadarticle(pageIndex, pageSize, article, index, articletype);
             }
         });
@@ -210,7 +206,7 @@
             if (thisItem.innerText == '游戏人生') {
                 articletype = '4';
             }
-            loadarticle(1, 1, article, index, articletype);
+            loadarticle(1, 10, article, index, articletype);
         });
     });
 </script>

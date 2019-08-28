@@ -26,12 +26,12 @@ namespace Blog.Infrastruct
                 dynamicParameters.Add("articleType", condition.ArticleType, DbType.Int32);
                 sqlList.Add(" article_articletype = @articleType ");
             }
-            if(condition.Id.HasValue)
+            if (condition.Id.HasValue)
             {
                 dynamicParameters.Add("article_id", condition.Id.Value);
                 sqlList.Add(" article_id = @article_id ");
             }
-            if (sqlList.Count==0)
+            if (sqlList.Count == 0)
                 return "";
             string sql = string.Join("and", sqlList);
             stringBuilder.Append(sql);
@@ -91,7 +91,7 @@ namespace Blog.Infrastruct
             string sql = "";
             if (string.IsNullOrEmpty(where))
             {
-                sql = 
+                sql =
                     "SELECT article_id,article_title,article_textsection,article_articletype " +
                     "FROM Article  " +
                     "WHERE  article_id <=(" +
@@ -104,11 +104,11 @@ namespace Blog.Infrastruct
             }
             else
             {
-                sql = 
+                sql =
                     "SELECT article_id,article_title,article_textsection,article_articletype " +
-                    "FROM Article " + where + 
+                    "FROM Article " + where +
                          "AND  article_id <=(" +
-                         "SELECT article_id FROM Article " 
+                         "SELECT article_id FROM Article "
                          + where + " " +
                          "ORDER BY article_id DESC " +
                          "LIMIT @pageId, 1) " +
@@ -116,7 +116,7 @@ namespace Blog.Infrastruct
                          "LIMIT @pageSize";
 
             }
-            IEnumerable<dynamic> dynamics = DbConnection.Query(sql,dynamicParameters);
+            IEnumerable<dynamic> dynamics = Select(sql, dynamicParameters);
             IList<Article> articles = new List<Article>();
             foreach (var d in dynamics)
             {
@@ -134,7 +134,19 @@ namespace Blog.Infrastruct
 
         public Article Select(ArticleCondition articleCondition = null)
         {
-            throw new NotImplementedException();
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            string where = Where(articleCondition, ref dynamicParameters);
+            string sql = "SELECT article_id,article_title,article_content,article_articletype,article_createtime " +
+                         "FROM Article " + where;
+            dynamic d = base.SelectSingle(sql, dynamicParameters);
+            Article article = new Article(
+                d.article_id
+                , d.article_title
+                , d.article_content
+                , (ArticleType)d.article_articletype
+                , d.article_createtime
+                );
+            return article;
         }
     }
 }

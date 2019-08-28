@@ -118,8 +118,23 @@ namespace Blog.Controllers.Home.Ariticel
         }
         public IActionResult LoadArticleDetail(int id)
         {
-          string queryString=  Request.QueryString.Value;
-            return View();
+            PageResult pageResult = new PageResult();
+            ArticleCondition condition = new ArticleCondition();
+            condition.Id = id;
+            try
+            {
+                ArticleModel articleModel = _articleService.Select(condition);
+                pageResult.Data = articleModel;
+                pageResult.Code = "200";
+                pageResult.Message = "ok";
+            }
+            catch (Exception e)
+            {
+                pageResult.Data = null;
+                pageResult.Code = "500";
+                pageResult.Message = e.Message;
+            }
+            return new JsonResult(pageResult);
         }
     }
 }

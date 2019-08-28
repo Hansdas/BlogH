@@ -3,19 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <title>Document</title>
-    @*<link rel="stylesheet" type="text/css" href="../res/layui/css/layui.css">
-        <link rel="stylesheet" type="text/css" href="../res/css/main.css">*@
+    <title>MyBlog</title>
     <link href="~/layui/css/layui.css" rel="stylesheet" />
-    <link href="~/css/main.css" rel="stylesheet" />
-    <!--加载meta IE兼容文件-->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
-    <![endif]-->
+    <link href="~/css/main.css?v=201908282045" rel="stylesheet" />
 </head>
 <body>
-
     <div class="content whisper-content leacots-content details-content">
         <div class="cont w1000">
             <div class="whisper-list">
@@ -24,17 +16,12 @@
                         <div class="form-box">
                             <div class="article-cont" id="detail">
                                 <script type="text/html" id="buildview">
+                                    <div class="title">
+                                        <h3>{{d.title}}</h3>
+                                        <p class="cont-info"><span class="data">{{d.createtime}}</span><span class="types">{{d.articletype}}</span></p>
+                                    </div>
+                                    {{d.content}}
                                 </script>
-                                <div class="title">
-                                    <h3>{{d.title}}</h3>
-                                    <p class="cont-info"><span class="data">{{d.createtime}}</span><span class="types">{{d.articletype}}</span></p>
-                                </div>
-                                @*<p>爷每天5点起床，去鸡行里选鸡，选的是大小均匀的老母鸡，送到家里从杀鸡放血开始，鸡血要留着，倒在有盐水的碗里，烧好开水拔了毛连鸡嘴巴鼻子里的粘液都要挤出来。鸡洗干净六只鸡放到一个锅里炖，要炖一个上午，要注意火候鸡皮不能裂。</p>
-                                    <img src="../res/img/wz_img1.jpg">
-                                    <p>炖好的鸡挂在架子上晾干，再一片片剁开，每只鸡剁的块数都是一样，然后把鸡肉放到提前调好的水中腌两个小时，水里面的调料也是爷爷自己去市场买来磨成粉的。锅里还有剩的鸡汤，用鸡汤煮好面叶上面漂着一层绿油油的葱花。</p>
-                                    <p>以前爷爷都是用扁担一头面叶一头板鸡挑到街上摊位上卖，现在爷爷年纪大了，只能用三轮车推着。摊位摆好奶奶就会慢悠悠的拎着一个保温桶和一个小红桶过来，保温桶里装的是卤鸡蛋，小红桶留着装别人吃剩的骨头喂狗。他们只有晚上出摊，收完摊已经要9点钟了，回去还要洗一天用的抹布和衣服，爷爷奶奶都非常爱干净，摊上的所有抹布纱布都是白色的每天洗的一个油点都看不到。9年前奶奶去世了，爷爷奶奶青梅竹马感情非常好，奶奶去世的时候爷爷甚至还要求过把奶奶埋在院子里。现在爷爷有时候会偷偷跟我说，你奶奶昨天回来看我了，她还给我掖被子，我知道是她，我跟她说你别挂念我，我好的很 跑题了。</p>
-                                    <p>昨天我给爷爷打电话，他跟我说他卖板鸡有人给他拍照，他问别人你拍我干嘛，那个人回答他说我给你照片放到网上，你生意会更好，我爷爷说你不用放网上我都不够卖的。</p>*@
-                                {{d.content}}
                                 <div class="btn-box">
                                     <button class="layui-btn layui-btn-primary">上一篇</button>
                                     <button class="layui-btn layui-btn-primary">下一篇</button>
@@ -116,11 +103,17 @@
     <script src="~/js/util.js?v=201908281635"></script>
     <script src="~/js/jquery.js"></script>
     <script type="text/javascript">
-        $(function () {
+        layui.config({
+            base: '/js/'
+        }).use(['element','jquery', 'menu', 'laytpl'], function () {
+            element = layui.element, $ = layui.$, menu = layui.menu, laytpl = layui.laytpl,
+            menu.init();
+            var article = document.getElementById('buildview').innerHTML;
             var para = getSearchString('id');
-            loadarticle(para);
-        });
-        function loadarticle(id) {
+            loadarticle(para, article)
+        })
+
+        function loadarticle(id, article) {
             $.ajax({
                 url: '/article/loadarticledetail',
                 type: 'get',
@@ -130,16 +123,21 @@
                 },
                 async: false,
                 success: function (response) {
-                    //var data = { 'list': response.data };
-                    //articleview = document.getElementById('article-item-id');
-                    //laytpl(article).render(data, function (html) {
-                    //    articleview.innerHTML = html;
-                    //});
-                    layer.close(index)
+                    var data = {
+                        'title': response.data.title,
+                        'createtime': response.data.createTime,
+                        'articletype': response.data.articleType,
+                        'content': response.data.content
+                    };
+                    articleview = document.getElementById('detail');
+                    laytpl(article).render(data, function (html) {
+                        articleview.innerHTML = html;
+                    });
+                    //layer.close(index)
                 },
                 error: function () {
-                    layer.close(index)
-                    layer.msg('响应服务器失败', { icon: 7 });
+                    // layer.close(index)
+                    //layer.msg('响应服务器失败', { icon: 7 });
                 }
             });
         }
