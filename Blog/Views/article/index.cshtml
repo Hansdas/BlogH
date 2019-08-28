@@ -35,9 +35,9 @@
                             <div class="layui-row">
                                 <div class="layui-col-xs12 layui-col-sm8 layui-col-md7">
                                     <div class="item-cont item-title">
-                                        <h3><a target="_blank" href="../article/detail?Id={{item.id}}">{{item.title}}</a> <button class="layui-btn layui-btn-danger new-icon">new</button><button class="layui-btn new-icon w62">{{item.articleType}}</button></h3>
+                                        <h3><a target="_blank" href="../article/detail?id={{item.id}}">{{item.title}}</a> <button class="layui-btn layui-btn-danger new-icon">new</button><button class="layui-btn new-icon w62">{{item.articleType}}</button></h3>
 
-                                        <p><a target="_blank" href="../article/detail?Id={{item.id}}">{{item.textSection}}</a></p>
+                                        <p><a target="_blank" href="../article/detail?id={{item.id}}">{{item.textSection}}</a></p>
                                     </div>
                                 </div>
                             </div>
@@ -126,25 +126,25 @@
 <script src="~/js/jquery.js"></script>
 <script src="~/layui/layui.js?v=123"></script>
 <script type="text/javascript">
+    var articletype = '';
     layui.config({
         base: '/js/'
     }).use(['element', 'laypage', 'form', 'jquery', 'menu', 'laytpl'], function () {
         element = layui.element, laypage = layui.laypage, $ = layui.$, menu = layui.menu, laytpl = layui.laytpl, form = layui.form;
         menu.init();
-        var articletype = "";
         var total = loadtotal(articletype);
-        var article = document.getElementById("article-item").innerHTML;
+        var article = document.getElementById('article-item').innerHTML;
         laypage.render({
             elem: 'page'
-            , count: total
+            , count: total, limit: 1
             , jump: function (obj) {
                 var index = layer.load(3);
                 var pageSize = obj.limit;
                 var pageIndex = obj.curr;
-                $(".title-type a").each(function () {
-                    var className = $(this).attr('class');
-                    articletype = className;
-                });
+                //$('.title-type a').each(function () {
+                //    var className = $(this).attr('class');
+                //    articletype = className;
+                //});
                 loadarticle(pageIndex, pageSize, article, index, articletype);
             }
         });
@@ -155,6 +155,9 @@
             url: "/article/loadtotal",
             type: "get",
             async: false,
+            data: {
+                'articletype': articletype
+            },
             success: function (response) {
                 total = response;
             },
@@ -163,41 +166,51 @@
     }
     function loadarticle(pageIndex, pageSize, article, index, articletype) {
         $.ajax({
-            url: "/article/loadarticle",
-            type: "get",
+            url: '/article/loadarticle',
+            type: 'get',
             data: {
-                "pageIndex": pageIndex,
-                "pageSize": pageSize
+                'pageIndex': pageIndex,
+                'pageSize': pageSize,
+                'articletype': articletype
             },
-            datatype: "json",
+            datatype: 'json',
             success: function (response) {
-                var data = { "list": response.data };
-                articleview = document.getElementById("article-item-id");
+                var data = { 'list': response.data };
+                articleview = document.getElementById('article-item-id');
                 laytpl(article).render(data, function (html) {
                     articleview.innerHTML = html;
                 });
-                form.render();
-                menu.init();
-                menu.off();
-                menu.submit();
                 layer.close(index)
             },
-            error: function (response) {
+            error: function () {
                 layer.close(index)
-                layer.msg("响应服务器失败", { icon: 7 });
+                layer.msg('响应服务器失败', { icon: 7 });
             }
         });
     }
     $(function () {
-        $(".title-type a").click(function () {
-            $(".title-type a").each(function () {
-                $(this).removeClass("active");
+        var article = document.getElementById('article-item').innerHTML;
+        $('.title-type a').click(function () {
+            $('.title-type a').each(function () {
+                $(this).removeClass('active');
             });
             var thisItem = $(this)[0];
-            $(this).addClass("active");
-            if (thisItem.innerText == "全部") {
-                loadarticle(1, 10, article, index, articletype);
+            articletype = '';
+            $(this).addClass('active');
+            var index = layer.load(3);
+            if (thisItem.innerText == '散文礼记') {
+                articletype = '1';
             }
+            if (thisItem.innerText == '编程世界') {
+                articletype = '2';
+            }
+            if (thisItem.innerText == '旅游杂记') {
+                articletype = '3';
+            }
+            if (thisItem.innerText == '游戏人生') {
+                articletype = '4';
+            }
+            loadarticle(1, 1, article, index, articletype);
         });
     });
 </script>

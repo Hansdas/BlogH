@@ -32,9 +32,9 @@ namespace Blog.Application
             }
         }
 
-        public IList<ArticleModel> SelectByPage(int pageIndex, int pageSize)
+        public IList<ArticleModel> SelectByPage(int pageIndex, int pageSize, ArticleCondition condition = null)
         {
-            IEnumerable<Article> articles = _articleRepository.SelectByPage(pageSize,pageIndex);
+            IEnumerable<Article> articles = _articleRepository.SelectByPage(pageSize,pageIndex, condition);
             IList<ArticleModel> articleModels = new List<ArticleModel>();
             foreach(var item in articles)
             {

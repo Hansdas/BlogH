@@ -36,11 +36,11 @@ namespace CommonHelper
         {
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
-            services.AddScoped<IRequestHandler<CreateUserCommand, Unit>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<CreateUserCommand, Unit>, UserCommandHandler>();
 
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IArticleService,ArticleService>();
-            services.AddScoped<IRequestHandler<CreateArticleCommand, Unit>, ArticleCommandHandler>();
+            services.AddTransient<IRequestHandler<CreateArticleCommand, Unit>, ArticleCommandHandler>();
 
             //services.AddTransient<IUploadFileRepository, UploadFileRepository>();
 
@@ -78,7 +78,7 @@ namespace CommonHelper
         /// <param name="services"></param>
         public static void ConfigSettings(this IServiceCollection services,IConfiguration configuration)
         {
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(new ServiceDescriptor(typeof(DapperProvider), new DapperProvider(configuration.GetConnectionString("MySqlConnection"))));
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));

@@ -22,5 +22,13 @@ namespace Blog.Application.ViewModel
         /// 专栏
         /// </summary>
         public string ArticleType { get; set; }
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public string CreateTime { get; set; }
+        /// <summary>
+        /// 内容
+        /// </summary>
+        public string Content { get; set; }
     }
 }

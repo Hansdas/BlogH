@@ -10,7 +10,9 @@ using Blog.Common.AppSetting;
 using Blog.Domain;
 using Blog.Domain.Core;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 
 namespace Blog.Controllers.Home.Ariticel
@@ -87,17 +89,21 @@ namespace Blog.Controllers.Home.Ariticel
             }
             Task.WaitAll(tasks);
         }
-        public int LoadTotal()
+        public int LoadTotal(string articleType)
         {
-            int count = _articleRepository.SelectCount();
+            ArticleCondition condition = new ArticleCondition();
+            condition.ArticleType = articleType;
+            int count = _articleRepository.SelectCount(condition);
             return count;
         }
-        public JsonResult LoadArticle(int pageIndex, int pageSize)
+        public JsonResult LoadArticle(int pageIndex, int pageSize, string articleType)
         {
             PageResult pageResult = new PageResult();
+            ArticleCondition condition = new ArticleCondition();
+            condition.ArticleType = articleType;
             try
             {
-                IList<ArticleModel> articleModels = _articleService.SelectByPage(pageIndex, pageSize);
+                IList<ArticleModel> articleModels = _articleService.SelectByPage(pageIndex, pageSize, condition);
                 pageResult.Data = articleModels;
                 pageResult.Code = "200";
                 pageResult.Message = "ok";
@@ -109,6 +115,11 @@ namespace Blog.Controllers.Home.Ariticel
                 pageResult.Message = e.Message;
             }
             return new JsonResult(pageResult);
+        }
+        public IActionResult LoadArticleDetail(int id)
+        {
+          string queryString=  Request.QueryString.Value;
+            return View();
         }
     }
 }

@@ -6,12 +6,37 @@ using System.Text;
 using Dapper;
 using System.Data;
 using Blog.Domain.Core;
+using System.Linq;
 using System.Dynamic;
+using System.Collections;
 
 namespace Blog.Infrastruct
 {
     public class ArticleRepository : Repository<Article, int>, IArticleRepository, IInterceptorHandler
     {
+        private string Where(ArticleCondition condition, ref DynamicParameters dynamicParameters)
+        {
+            if (condition == null)
+                return "";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append("WHERE");
+            IList<string> sqlList = new List<string>();
+            if (!string.IsNullOrEmpty(condition.ArticleType))
+            {
+                dynamicParameters.Add("articleType", condition.ArticleType, DbType.Int32);
+                sqlList.Add(" article_articletype = @articleType ");
+            }
+            if(condition.Id.HasValue)
+            {
+                dynamicParameters.Add("article_id", condition.Id.Value);
+                sqlList.Add(" article_id = @article_id ");
+            }
+            if (sqlList.Count==0)
+                return "";
+            string sql = string.Join("and", sqlList);
+            stringBuilder.Append(sql);
+            return stringBuilder.ToString();
+        }
         private Article Map(dynamic d)
         {
             return new Article(
@@ -40,28 +65,58 @@ namespace Blog.Infrastruct
         }
         public void Insert(Article article)
         {
-            string sql = "INSERT INTO Article(article_author,article_title,article_textsection, article_content, article_articletype, article_praisecount, article_browsercount, article_isdraft, article_relatedfiles, article_createtime)" +
+            string sql = "INSERT INTO Article(" +
+                "article_author,article_title,article_textsection, article_content, article_articletype, article_praisecount, article_browsercount, article_isdraft, article_relatedfiles, article_createtime)" +
                    " VALUES (@Author,@Title,@TextSection, @Content, @ArticleType, @PraiseCount,@BrowserCount,@IsDraft,@RelatedFiles, NOW())";
             DbConnection.Execute(sql, article);
         }
 
-        public int SelectCount()
+        public int SelectCount(ArticleCondition condition = null)
         {
-            string sql = "SELECT COUNT(*) FROM Article";
-            int count = DbConnection.ExecuteScalar<int>(sql);
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            string where = Where(condition, ref dynamicParameters);
+            string sql = "SELECT COUNT(*) FROM Article " + where;
+            int count = DbConnection.ExecuteScalar<int>(sql, dynamicParameters);
             return count;
         }
 
-        public IEnumerable<Article> SelectByPage(int pageSize, int pageIndex)
+        public IEnumerable<Article> SelectByPage(int pageSize, int pageIndex, ArticleCondition condition = null)
         {
             int pageId = pageSize * (pageIndex - 1);
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("pageId", pageId, DbType.Int32);
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
+            string where = Where(condition, ref dynamicParameters);
             //string sql = "SELECT * FROM s_log WHERE Id <=(SELECT Id FROM s_log   ORDER BY Id desc LIMIT 35000, 1) ORDER BY Id DESC LIMIT 10";
-            string sql = "SELECT article_id,article_title,article_textsection,article_articletype FROM Article WHERE article_id <=" +
-                "(SELECT article_id FROM Article   ORDER BY article_id desc LIMIT " + pageId + ", 1) ORDER BY article_id DESC LIMIT " + pageSize;
-            IEnumerable<dynamic> dynamics = DbConnection.Query(sql);
+            string sql = "";
+            if (string.IsNullOrEmpty(where))
+            {
+                sql = 
+                    "SELECT article_id,article_title,article_textsection,article_articletype " +
+                    "FROM Article  " +
+                    "WHERE  article_id <=(" +
+                            "SELECT article_id " +
+                            "FROM Article  " +
+                            "ORDER BY article_id DESC " +
+                            "LIMIT @pageId, 1) " +
+                    "ORDER BY article_id DESC " +
+                    "LIMIT @pageSize";
+            }
+            else
+            {
+                sql = 
+                    "SELECT article_id,article_title,article_textsection,article_articletype " +
+                    "FROM Article " + where + 
+                         "AND  article_id <=(" +
+                         "SELECT article_id FROM Article " 
+                         + where + " " +
+                         "ORDER BY article_id DESC " +
+                         "LIMIT @pageId, 1) " +
+                         "ORDER BY article_id DESC " +
+                         "LIMIT @pageSize";
+
+            }
+            IEnumerable<dynamic> dynamics = DbConnection.Query(sql,dynamicParameters);
             IList<Article> articles = new List<Article>();
             foreach (var d in dynamics)
             {
@@ -75,6 +130,11 @@ namespace Blog.Infrastruct
                 articles.Add(article);
             }
             return articles;
+        }
+
+        public Article Select(ArticleCondition articleCondition = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

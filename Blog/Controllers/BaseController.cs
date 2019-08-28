@@ -6,7 +6,7 @@ namespace Blog.Controllers
     /// <summary>
     /// 控制器基类
     /// </summary>
-    [GlobaExceptionFilter()]
+    //[GlobaExceptionFilter()]
     public class BaseController : Controller
     {
        
