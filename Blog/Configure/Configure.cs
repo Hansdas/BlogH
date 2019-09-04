@@ -32,7 +32,7 @@ namespace CommonHelper
         /// 服务集合
         /// </summary>
         /// <param name="services"></param>
-        public static void ConfigServices(this IServiceCollection services)
+        public static void AddServices(this IServiceCollection services)
         {
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
@@ -52,19 +52,19 @@ namespace CommonHelper
             services.AddTransient<ITransactionInterceptor, TransactionInterceptor>();
         }
         /// <summary>
-        /// 基础框架
+        /// 基础设施
         /// </summary>
         /// <param name="services"></param>
-        public static void ConfigFrame(this IServiceCollection services)
+        public static void AddInfrastructure(this IServiceCollection services)
         {
             //注册全局过滤器
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
             //注册中介工具 https://github.com/jbogard/MediatR/wiki
             services.AddMediatR(typeof(Startup));
             //注册发布订阅中介处理
-            services.AddScoped<IMediatorHandler, InMemoryBus>();
+            services.AddTransient<IMediatorHandler, InMemoryBus>();
             //注册领域通知
-            services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
+            services.AddTransient<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
             //注册仓储接口
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
             //注册Redis
@@ -76,7 +76,7 @@ namespace CommonHelper
         /// 配置集合
         /// </summary>
         /// <param name="services"></param>
-        public static void ConfigSettings(this IServiceCollection services,IConfiguration configuration)
+        public static void AddSettings(this IServiceCollection services,IConfiguration configuration)
         {
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton(new ServiceDescriptor(typeof(DapperProvider), new DapperProvider(configuration.GetConnectionString("MySqlConnection"))));

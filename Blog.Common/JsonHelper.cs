@@ -29,5 +29,15 @@ namespace Blog.Common
             T t = JsonConvert.DeserializeObject<T>(json);
             return t;
         }
+        /// <summary>
+        /// 将json转为dynamic
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public static dynamic DeserializeObject(string json)
+        {
+            return JsonConvert.DeserializeObject(json);
+        }
     }
 }

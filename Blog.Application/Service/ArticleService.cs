@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Domain;
@@ -56,9 +57,24 @@ namespace Blog.Application
                 , Title = article.Title
                 , ArticleType = article.ArticleType.GetEnumText<ArticleType>()
                 , CreateTime = article.CreateTime.ToString("yyyy/MM/dd")
-                ,Content=article.Content
+                , Content = RegexContent(article.Content)
             };
             return articleModel;
+        }
+        private string RegexContent(string input)
+        {
+            string pattern = @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>";
+            Regex regex = new Regex(pattern);
+            MatchCollection matches = regex.Matches(input);
+            for (int i = 0; i < matches.Count; i++)
+            {
+                string s = matches[i].Value;
+                string path = s.Substring(s.IndexOf(ConstantKey.STATIC_FILE)+ConstantKey.STATIC_FILE.Length);
+                string loaclPath=UploadHelper.DownFileAsync(path).Result;
+                string imgsrc = string.Format("<img src={0}>", loaclPath);
+                input = input.Replace(matches[i].Value, imgsrc);
+            }
+            return input;
         }
     }
 }

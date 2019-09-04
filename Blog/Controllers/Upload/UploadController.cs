@@ -38,6 +38,7 @@ namespace Blog.Controllers.Upload
             }
             return Json(new ReturnResult("0", "", value.imgSrc));
         }
+
         [Consumes("multipart/form-data")]
         public IActionResult UploadImage()
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Blog.Application;
 using Blog.Application.ViewModel;
@@ -56,38 +57,37 @@ namespace Blog.Controllers.Home.Ariticel
             IList<string> filePaths = new List<string>();
             try
             {
-                //UploadFile(srcArray, userModel, filePaths);
                 if(srcArray.Length>0)
-                    UploadHelper.Upload(userModel.Account, srcArray, _webHostEnvironment.ContentRootPath);
+                    filePaths=UploadHelper.Upload(srcArray, _webHostEnvironment.ContentRootPath);
+                RegexContent(filePaths, content);
                 Article article = new Article(userModel.Username, title, textSection, content, articleType, true, filePaths);
                 _articleService.Publish(article);
             }
-            catch (AggregateException)
+            catch (AggregateException ex)
             {
                 return Json(new ReturnResult() { Code = "500", Message ="服务器异常" });
                 //todo 有异常删除所有本次所传的附件
             }
             return Json(new ReturnResult() { Code = "200", Message = "ok" });
         }
-
-        private void UploadFile(string[] srcArray, UserModel userModel, IList<string> filePaths)
+        private void RegexContent(IList<string> savePaths,string input)
         {
-            Task[] tasks = new Task[srcArray.Length];
-            for (int i = 0; i < srcArray.Length; i++)
+            string pattern = @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>";
+            Regex regex = new Regex(pattern);
+            MatchCollection matches =regex.Matches(pattern);
+            for (int i = 0; i < matches.Count; i++)
             {
-                int m = i;
-                tasks[m] = Task.Run(() =>
+                foreach (string item in savePaths)
                 {
-                    int index = srcArray[m].IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length;
-                    string path = _webHostEnvironment.ContentRootPath + "/TempFile" + srcArray[m].Substring(index);
-                    path = path.Replace("/", @"\");
-                    string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
-                    string uploadSavePath;
-                    long fileSzie = UploadHelper.Upload(path, fileName, userModel.Account, out uploadSavePath);
-                    filePaths.Add(uploadSavePath);
-                });
+                    string fileName = item.Substring(item.LastIndexOf(@"\") + 1);
+                    if (matches[i].Value.IndexOf(fileName) > 0)
+                    {
+                        string imgsrc = string.Format("<img src={0}>", item);
+                        input = input.Replace(matches[i].Value,imgsrc);
+                    }
+
+                }
             }
-            Task.WaitAll(tasks);
         }
         public int LoadTotal(string articleType)
         {

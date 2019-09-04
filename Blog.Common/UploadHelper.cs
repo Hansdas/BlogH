@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -41,11 +42,10 @@ namespace Blog.Common
         /// <summary>
         /// 上传附件
         /// </summary>
-        /// <param name="userAccount">账号</param>
         /// <param name="localFilePath">本地图片相对路径</param>
         /// <param name="contentRootPath">程序路径</param>
         /// <returns></returns>
-        public static IList<string>  Upload(string userAccount,string[] localFilePath,string contentRootPath)
+        public static IList<string>  Upload(string[] localFilePath,string contentRootPath)
         {
             IList<string> savePathList = new List<string>();
             Task[] tasks = new Task[localFilePath.Length];
@@ -59,7 +59,7 @@ namespace Blog.Common
                     path = path.Replace("/", @"\");
                     string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
                     string uploadSavePath;
-                    long fileSzie = Upload(path, fileName, userAccount, out uploadSavePath);
+                    long fileSzie = Upload(path, fileName, out uploadSavePath);
                     lock (obj)
                     {
                         savePathList.Add(uploadSavePath);
@@ -74,78 +74,74 @@ namespace Blog.Common
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static long Upload(string filePath, string fileName,string userAccount,out string uploadSavePath)
+        public static long Upload(string localFilePath, string fileName,out string uploadSavePath)
         {
-            if (!File.Exists(filePath))
+            if (!File.Exists(localFilePath))
                 throw new IOException("文件不存在");
-            DateTime dateTime = DateTime.Now;
-            ApiSettingModel apiSettingMode=ConfigurationProvider.GetSettingModel<ApiSettingModel>("webapi");
-            string savePath  = string.Format("{0}{1}/{2}/{3}/{4}", apiSettingMode.UploadSavePathBase, userAccount, dateTime.Year.ToString()
-               , dateTime.Month.ToString(), dateTime.Day.ToString());
-            FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            FileStream fileStream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             long fileSize = fileStream.Length;
             HttpContent httpContent = new StreamContent(fileStream);
             httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+            string httpResult = "";
             using (MultipartFormDataContent mulContent = new MultipartFormDataContent("----WebKitFormBoundaryrXRBKlhEeCbfHIY"))
             {
                 mulContent.Add(httpContent, "file", fileName);
-                mulContent.Add(new StringContent(savePath), "savePath");
-                mulContent.Add(new StringContent(fileName), "fileName");
+                //mulContent.Add(new StringContent("test"), "test");
                 string url = GetIP() + controller;
-                HttpHelper.PostHttpClient(url, mulContent);
+                httpResult = HttpHelper.PostHttpClient(url, mulContent);
             }
             //上传成功后删除本地文件
-            File.Delete(filePath);
-            uploadSavePath = savePath+"/"+fileName;
+            File.Delete(localFilePath);
+            dynamic result = JsonHelper.DeserializeObject(httpResult);
+            if (result.code == "500")
+                throw new FrameworkException("webapi请求错误:" + result.message);
+            uploadSavePath = result.savepath;
             return fileSize;
         }
-        /// <summary>
-        /// WebClinet下载附件
-        /// </summary>
-        /// <param name="httpUrl">原始文件地址</param>
-        /// <param name="savePath">保存至本地地址</param>
-        /// <returns></returns>
-        public static string DownFile(string httpUrl, string saveLocalPath = "")
+        public static async Task<string> DownFileAsync(string uploadPath)
         {
             DateTime dateTime = DateTime.Now;
             IConfigurationSection section = GetConfigurationSection("webapi");
-            if (string.IsNullOrEmpty(saveLocalPath))
-            {
-                saveLocalPath = string.Format(@"{0}\TempFile\{1}\{2}\", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString());
-
-            }
-            string fileName = Path.GetFileName(httpUrl);
-            if (!Directory.Exists(saveLocalPath))
-                Directory.CreateDirectory(saveLocalPath);
-            WebClient webClient = new WebClient();
-            saveLocalPath = saveLocalPath + fileName;
-            webClient.DownloadFile(httpUrl, saveLocalPath);
-            int subIndex = saveLocalPath.IndexOf("Down") + 4;
-            return string.Format("{0}{1}", ConstantKey.STATIC_FILE, saveLocalPath.Substring(subIndex).Replace(@"\", "/"));
+            string ip = "http://" + section.GetSection("HttpAddresss").Value;
+            string loaclPath = string.Format(@"{0}\TempFile\{1}\{2}\", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString());
+            string url = ip + uploadPath;
+            string fileName = Path.GetFileName(url);
+            if (!Directory.Exists(loaclPath))
+                Directory.CreateDirectory(loaclPath);
+            HttpClient httpClient = new HttpClient();
+            loaclPath = loaclPath + fileName;
+            HttpResponseMessage httpResponseMessage=await httpClient.GetAsync(url);
+            httpResponseMessage.EnsureSuccessStatusCode();
+            Stream stream = await httpResponseMessage.Content.ReadAsStreamAsync();
+            stream.Position = 0;
+            Image img = Image.FromStream(stream);
+            img.Save(loaclPath);
+            int subIndex = loaclPath.IndexOf("Down") + 4;
+            return  string.Format("{0}{1}", ConstantKey.STATIC_FILE, loaclPath.Substring(subIndex).Replace(@"\", "/"));
         }
-        /// <summary>
-        /// WebClinet下载附件
-        /// </summary>
-        /// <param name="httpUrl">原始文件地址</param>
-        /// <param name="savePath">保存至本地地址</param>
-        /// <returns></returns>
-        public static IList<string> DownFile(IList<string> savePaths)
-        {
-            DateTime dateTime = DateTime.Now;
-            IConfigurationSection section = GetConfigurationSection("webapi");
-            string saveLocalPath = saveLocalPath = string.Format(@"{0}\TempFile\{1}\{2}\", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString()); ;
-            IList<string> localSavePaths = new List<string>();
-            string ip ="http://"+section.GetSection("HttpAddresss").Value;
-            string UploadSavePathBase = ConfigurationProvider.configuration.GetSection("webapi:UploadSavePathBase").Value;
-            Parallel.For(0, savePaths.Count, s =>
-            {
-                string str = DownFile(ip + "/" + savePaths[s].Replace(UploadSavePathBase, ""), saveLocalPath);
-                lock (obj)
-                {
-                    localSavePaths.Add(str);
-                }
-            });
-            return localSavePaths;
-        }
+        ///// <summary>
+        ///// WebClinet下载附件
+        ///// </summary>
+        ///// <param name="httpUrl">原始文件地址</param>
+        ///// <param name="savePath">保存至本地地址</param>
+        ///// <returns></returns>
+        //public static IList<string> DownFile(IList<string> savePaths)
+        //{
+        //    DateTime dateTime = DateTime.Now;
+        //    IConfigurationSection section = GetConfigurationSection("webapi");
+        //    string saveLocalPath = saveLocalPath = string.Format(@"{0}\TempFile\{1}\{2}\", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString()); ;
+        //    IList<string> localSavePaths = new List<string>();
+        //    string ip ="http://"+section.GetSection("HttpAddresss").Value;
+        //    string UploadSavePathBase = ConfigurationProvider.configuration.GetSection("webapi:UploadSavePathBase").Value;
+        //    Parallel.For(0, savePaths.Count, s =>
+        //    {
+        //        string str = DownFile(ip + "/" + savePaths[s].Replace(UploadSavePathBase, ""), saveLocalPath);
+        //        lock (obj)
+        //        {
+        //            localSavePaths.Add(str);
+        //        }
+        //    });
+        //    return localSavePaths;
+        //}
     }
 }
