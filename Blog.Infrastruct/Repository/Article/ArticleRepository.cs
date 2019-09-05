@@ -24,16 +24,21 @@ namespace Blog.Infrastruct
             if (!string.IsNullOrEmpty(condition.ArticleType))
             {
                 dynamicParameters.Add("articleType", condition.ArticleType, DbType.Int32);
-                sqlList.Add(" article_articletype = @articleType ");
+                sqlList.Add("article_articletype = @articleType");
             }
             if (condition.Id.HasValue)
             {
                 dynamicParameters.Add("article_id", condition.Id.Value);
-                sqlList.Add(" article_id = @article_id ");
+                sqlList.Add("article_id = @article_id");
+            }
+            if(!string.IsNullOrEmpty(condition.Account))
+            {
+                dynamicParameters.Add("article_author", condition.Id.Value);
+                sqlList.Add("article_author = @article_author");
             }
             if (sqlList.Count == 0)
                 return "";
-            string sql = string.Join("and", sqlList);
+            string sql = string.Join(" and ", sqlList);
             stringBuilder.Append(sql);
             return stringBuilder.ToString();
         }

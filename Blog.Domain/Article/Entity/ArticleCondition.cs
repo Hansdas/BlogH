@@ -14,5 +14,9 @@ namespace Blog.Domain
         /// id查询
         /// </summary>
         public int? Id { get; set; }
+        /// <summary>
+        /// 根据提交人查询
+        /// </summary>
+        public string Account { get; set; }
     }
 }

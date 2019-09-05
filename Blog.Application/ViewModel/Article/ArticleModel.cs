@@ -30,5 +30,13 @@ namespace Blog.Application.ViewModel
         /// 内容
         /// </summary>
         public string Content { get; set; }
+        /// <summary>
+        /// 上一篇
+        /// </summary>
+        public int Before { get; set; }
+        /// <summary>
+        /// 下一篇
+        /// </summary>
+        public int Next { get; set; }
     }
 }

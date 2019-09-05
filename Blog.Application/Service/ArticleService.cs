@@ -63,16 +63,22 @@ namespace Blog.Application
         }
         private string RegexContent(string input)
         {
-            string pattern = @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>";
+            string pattern = @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgsrc>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>";
             Regex regex = new Regex(pattern);
             MatchCollection matches = regex.Matches(input);
             for (int i = 0; i < matches.Count; i++)
             {
-                string s = matches[i].Value;
-                string path = s.Substring(s.IndexOf(ConstantKey.STATIC_FILE)+ConstantKey.STATIC_FILE.Length);
-                string loaclPath=UploadHelper.DownFileAsync(path).Result;
-                string imgsrc = string.Format("<img src={0}>", loaclPath);
-                input = input.Replace(matches[i].Value, imgsrc);
+                string src = matches[i].Groups["imgsrc"].Value;
+                string path = src.Substring(src.IndexOf(ConstantKey.STATIC_FILE)+ConstantKey.STATIC_FILE.Length);
+                try
+                {
+                    string loaclPath = UploadHelper.DownFileAsync(path).Result;
+                    input = input.Replace(src, loaclPath);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
             }
             return input;
         }

@@ -98,26 +98,31 @@ namespace Blog.Common
             uploadSavePath = result.savepath;
             return fileSize;
         }
+        /// <summary>
+        /// 下载图片
+        /// </summary>
+        /// <param name="uploadPath">远程文件存放相对路径</param>
+        /// <returns></returns>
         public static async Task<string> DownFileAsync(string uploadPath)
         {
             DateTime dateTime = DateTime.Now;
             IConfigurationSection section = GetConfigurationSection("webapi");
             string ip = "http://" + section.GetSection("HttpAddresss").Value;
-            string loaclPath = string.Format(@"{0}\TempFile\{1}\{2}\", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString());
+            string loaclPath = string.Format(@"{0}/TempFile/Down/{1}/{2}/", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString());
             string url = ip + uploadPath;
             string fileName = Path.GetFileName(url);
             if (!Directory.Exists(loaclPath))
                 Directory.CreateDirectory(loaclPath);
             HttpClient httpClient = new HttpClient();
             loaclPath = loaclPath + fileName;
-            HttpResponseMessage httpResponseMessage=await httpClient.GetAsync(url);
+            HttpResponseMessage httpResponseMessage=await httpClient.GetAsync(url.Replace(@"\","/"));
             httpResponseMessage.EnsureSuccessStatusCode();
             Stream stream = await httpResponseMessage.Content.ReadAsStreamAsync();
             stream.Position = 0;
             Image img = Image.FromStream(stream);
             img.Save(loaclPath);
             int subIndex = loaclPath.IndexOf("Down") + 4;
-            return  string.Format("{0}{1}", ConstantKey.STATIC_FILE, loaclPath.Substring(subIndex).Replace(@"\", "/"));
+            return  string.Format("{0}{1}", ConstantKey.STATIC_FILE, loaclPath.Substring(subIndex));
         }
         ///// <summary>
         ///// WebClinet下载附件

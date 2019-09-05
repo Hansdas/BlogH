@@ -82,8 +82,8 @@ namespace Blog.Controllers.Home.Ariticel
                     string fileName = item.Substring(item.LastIndexOf(@"\") + 1);
                     if (matches[i].Value.IndexOf(fileName) > 0)
                     {
-                        string imgsrc = string.Format("<img src={0}>", item);
-                        input = input.Replace(matches[i].Value,imgsrc);
+                        string oldSrc = matches[i].Groups["imgsrc"].Value;
+                        input = input.Replace(oldSrc, item);
                     }
 
                 }
