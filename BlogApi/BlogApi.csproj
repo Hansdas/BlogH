@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="TempFile\2019\8\15\**" />
+    <Compile Remove="TempFile\2019\9\5\**" />
+    <Content Remove="TempFile\2019\8\15\**" />
+    <Content Remove="TempFile\2019\9\5\**" />
+    <EmbeddedResource Remove="TempFile\2019\8\15\**" />
+    <EmbeddedResource Remove="TempFile\2019\9\5\**" />
+    <None Remove="TempFile\2019\8\15\**" />
+    <None Remove="TempFile\2019\9\5\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Configs\nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Configs\nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.9.2" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
+    <PackageReference Include="Autofac.Extras.DynamicProxy" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="NLog" Version="4.6.7" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.5.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.8.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Blog.Application\Blog.Application.csproj" />
+    <ProjectReference Include="..\Blog.Domain\Blog.Domain.csproj" />
+    <ProjectReference Include="..\Blog.Infrastruct\Blog.Infrastruct.csproj" />
+  </ItemGroup>
+
+</Project>

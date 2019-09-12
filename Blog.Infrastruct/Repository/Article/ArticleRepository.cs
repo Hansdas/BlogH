@@ -19,7 +19,7 @@ namespace Blog.Infrastruct
             if (condition == null)
                 return "";
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("WHERE");
+            stringBuilder.Append("WHERE ");
             IList<string> sqlList = new List<string>();
             if (!string.IsNullOrEmpty(condition.ArticleType))
             {
@@ -31,7 +31,7 @@ namespace Blog.Infrastruct
                 dynamicParameters.Add("article_id", condition.Id.Value);
                 sqlList.Add("article_id = @article_id");
             }
-            if(!string.IsNullOrEmpty(condition.Account))
+            if (!string.IsNullOrEmpty(condition.Account))
             {
                 dynamicParameters.Add("article_author", condition.Id.Value);
                 sqlList.Add("article_author = @article_author");
@@ -42,21 +42,21 @@ namespace Blog.Infrastruct
             stringBuilder.Append(sql);
             return stringBuilder.ToString();
         }
+        
         private Article Map(dynamic d)
         {
-            return new Article(
-                d.article_id
-                , d.article_author
-                , d.article_title
-                , d.article_textsection
-                , d.article_content
-                , (ArticleType)d.article_articletype
-                , d.article_isdraft
-                , d.article_relatedfiles
-                , d.article_praisecount
-                , d.article_browsercount
-                , d.article_createtime
-                , d.updatetime);
+            return new Article(d.article_id,
+                               d.article_author,
+                               d.article_title,
+                               d.article_textsection,
+                               d.article_content,
+                               (ArticleType)d.article_articletype,
+                               d.article_isdraft,
+                               d.article_relatedfiles,
+                               d.article_praisecount,
+                               d.article_browsercount,
+                               d.article_createtime,
+                               d.updatetime);
         }
         private IList<Article> Map(IEnumerable<dynamic> dynamics)
         {
