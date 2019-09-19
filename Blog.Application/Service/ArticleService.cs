@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Domain;
@@ -48,7 +49,21 @@ namespace Blog.Application
             }
             return articleModels;
         }
-
+        public async Task<IList<ArticleModel>> SelectByPageAsync(int pageIndex, int pageSize, ArticleCondition condition = null)
+        {
+            IEnumerable<Article> articles = await _articleRepository.SelectByPageAsync(pageSize, pageIndex, condition);
+            IList<ArticleModel> articleModels = new List<ArticleModel>();
+            foreach (var item in articles)
+            {
+                ArticleModel articleModel = new ArticleModel();
+                articleModel.Id = item.Id;
+                articleModel.ArticleType = item.ArticleType.GetEnumText<ArticleType>();
+                articleModel.TextSection = item.TextSection;
+                articleModel.Title = item.Title;
+                articleModels.Add(articleModel);
+            }
+            return articleModels;
+        }
         public ArticleModel Select(ArticleCondition articleCondition = null)
         {
             Article article = _articleRepository.Select(articleCondition);

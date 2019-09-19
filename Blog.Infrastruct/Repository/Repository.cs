@@ -19,14 +19,12 @@ namespace Blog.Infrastruct
     public class Repository<T, U> : IRepository<T, U>
     {
         private IDbConnection _dbConnection;
+        private static object obj = new object();
         public IDbConnection DbConnection
         {
             get
             {
-                _dbConnection = DapperProvider.connection;
-                if (_dbConnection.State != ConnectionState.Open)
-                    _dbConnection.Open();
-                return _dbConnection;
+                return DapperProvider.connection();
             }
         }
         //public  void Dispose()

@@ -6,22 +6,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<IEnumerable<string>> Get(string str)
         {
-            return new string[] { "value1", "value2" };
+            return new string[] { "value1", str };
         }
 
         // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        [HttpGet("{a}/{b}")]
+        public ActionResult<string> Get(int a,int b)
         {
-            return "value";
+            return (a.ToString() + ":" + b.ToString());
         }
 
         // POST api/values

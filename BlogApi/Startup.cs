@@ -1,24 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Autofac;
+﻿using Autofac;
 using Blog.Domain.Core;
-using Blog.Common.AppSetting;
 using BlogApi.Configure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.FileProviders;
-using NLog;
 using System.IO;
 using NLog.Extensions.Logging;
 using NLog.Web;
+using System.Net;
+using Microsoft.AspNetCore.Http;
 
 namespace BlogApi
 {
@@ -36,33 +30,30 @@ namespace BlogApi
         {
             containerBuilder.GetAutofacServiceProvider();
         }
+        readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(s=>s.EnableEndpointRouting=false).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            services.AddControllers();
+            services.AddCors(s => {
+            s.AddPolicy(AllowSpecificOrigins, build => {
+                build.WithOrigins("http://127.0.0.1:8080", "https://127.0.0.1:5001");
+            });
+            });
             services.AddServices();
             services.AddInfrastructure();
             services.AddSettings(Configuration);
-            //services.GetAutofacServiceProvider();
+        //services.GetAutofacServiceProvider();
 
-        }
+    }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddNLog();
             loggerFactory.ConfigureNLog("Configs/nlog.config");
-            //if(env)
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts();
-            //}
-            app.UseCors();
+            //启用中间件服务生成Swagger作为JSON终结点
+            app.UseCors(AllowSpecificOrigins);
             ConstantKey.WebRoot = env.ContentRootPath;
-            app.UseRouting();
             app.UseAuthentication();
             //自定义使用资源目录
             app.UseStaticFiles(new StaticFileOptions()
@@ -73,7 +64,13 @@ namespace BlogApi
             app.UseSession();
             app.UseStaticHttpContext();
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseRouting();
+            //app.UseMvc();
+            app.UseEndpoints(endpoints =>
+            {
+                
+                endpoints.MapControllers();
+            });
             //app.UseMvc();
         }
     }

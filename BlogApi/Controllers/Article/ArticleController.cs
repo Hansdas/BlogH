@@ -5,15 +5,17 @@ using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Domain;
 using Blog.Domain.Core;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace Blog.Controllers.Home.Ariticel
+namespace BlogApi
 {
-    [Route("api/article")]
+    [Route("blogh/[controller]/[action]")]
     public class ArticleController : ControllerBase
     {
         private readonly object _obj = new object();
@@ -26,7 +28,6 @@ namespace Blog.Controllers.Home.Ariticel
             _webHostEnvironment = webHostEnvironment;
             _articleRepository = articleRepository;
         }
-        [Route("/addarticle")]
         [HttpPost]
         public object AddArticle()
         {
@@ -74,21 +75,22 @@ namespace Blog.Controllers.Home.Ariticel
                 }
             }
         }
-        [Route("{articleType}")]
+        [EnableCors("AllowSpecificOrigins")]
         [HttpGet]
         public int LoadTotal(string articleType)
         {
             ArticleCondition condition = new ArticleCondition();
-            condition.ArticleType = articleType;
-            int count = _articleRepository.SelectCount(condition);
+                condition.ArticleType = articleType;
+            int count =_articleRepository.SelectCount(condition);
             return count;
         }
+        [EnableCors("AllowSpecificOrigins")]
         [HttpGet]
         public JsonResult LoadArticle(int pageIndex, int pageSize, string articleType)
         {
             PageResult pageResult = new PageResult();
             ArticleCondition condition = new ArticleCondition();
-            condition.ArticleType = articleType;
+                condition.ArticleType = articleType;
             try
             {
                 IList<ArticleModel> articleModels = _articleService.SelectByPage(pageIndex, pageSize, condition);
@@ -105,7 +107,7 @@ namespace Blog.Controllers.Home.Ariticel
             return new JsonResult(pageResult);
         }
         [HttpGet("{id}")]
-        public IActionResult LoadArticleDetail(int id)
+        public IActionResult Detail(int id)
         {
             PageResult pageResult = new PageResult();
             ArticleCondition condition = new ArticleCondition();

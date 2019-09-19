@@ -9,7 +9,7 @@ using Blog.Domain;
 using Blog.Application.ViewModel;
 using Blog.Common;
 
-namespace Blog
+namespace BlogApi
 {
     public static class Auth
     {

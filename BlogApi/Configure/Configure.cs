@@ -21,7 +21,6 @@ using Autofac.Extras.DynamicProxy;
 using Blog.Dapper;
 using Blog.AOP.Transaction;
 using Blog.AOP;
-using BlogApi;
 
 namespace BlogApi.Configure
 {
@@ -68,6 +67,7 @@ namespace BlogApi.Configure
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
             //注册Redis
             services.AddSingleton(new CacheProvider());
+
             //注册AOP拦截器
             //return GetAutofacServiceProvider(services);
         }
@@ -78,17 +78,11 @@ namespace BlogApi.Configure
         public static void AddSettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton(new ServiceDescriptor(typeof(DapperProvider), new DapperProvider(configuration.GetConnectionString("MySqlConnection"))));
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
             services.AddSession(s => {
-                s.IdleTimeout = TimeSpan.FromDays(30);
-            });
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(s => {
-                s.LoginPath = "/Login/Login";
-                s.ExpireTimeSpan = TimeSpan.FromDays(30);
-                s.SlidingExpiration = false;
-            });
+                s.IdleTimeout = TimeSpan.FromDays(7);
+            });            
         }
         /// <summary>
         /// 添加对HttpContext的扩展支持

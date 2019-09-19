@@ -9,6 +9,7 @@ using Blog.Domain.Core;
 using System.Linq;
 using System.Dynamic;
 using System.Collections;
+using System.Threading.Tasks;
 
 namespace Blog.Infrastruct
 {
@@ -19,7 +20,7 @@ namespace Blog.Infrastruct
             if (condition == null)
                 return "";
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("WHERE ");
+            stringBuilder.Append(" WHERE ");
             IList<string> sqlList = new List<string>();
             if (!string.IsNullOrEmpty(condition.ArticleType))
             {
@@ -85,6 +86,15 @@ namespace Blog.Infrastruct
             return count;
         }
 
+        public async Task<int> SelectCountAsync(ArticleCondition condition = null)
+        {
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            string where = Where(condition, ref dynamicParameters);
+            string sql = "SELECT COUNT(*) FROM Article " + where;
+            int count = await DbConnection.ExecuteScalarAsync<int>(sql, dynamicParameters);
+            return count;
+        }
+
         public IEnumerable<Article> SelectByPage(int pageSize, int pageIndex, ArticleCondition condition = null)
         {
             int pageId = pageSize * (pageIndex - 1);
@@ -112,7 +122,7 @@ namespace Blog.Infrastruct
                 sql =
                     "SELECT article_id,article_title,article_textsection,article_articletype " +
                     "FROM Article " + where +
-                         "AND  article_id <=(" +
+                         " AND  article_id <=(" +
                          "SELECT article_id FROM Article "
                          + where + " " +
                          "ORDER BY article_id DESC " +
@@ -122,6 +132,58 @@ namespace Blog.Infrastruct
 
             }
             IEnumerable<dynamic> dynamics = Select(sql, dynamicParameters);
+            IList<Article> articles = new List<Article>();
+            foreach (var d in dynamics)
+            {
+
+                Article article = new Article(
+                  d.article_id
+                , d.article_title
+                , d.article_textsection
+                , (ArticleType)d.article_articletype
+                );
+                articles.Add(article);
+            }
+            return articles;
+        }
+
+        public async Task<IEnumerable<Article>> SelectByPageAsync(int pageSize, int pageIndex, ArticleCondition condition = null)
+        {
+            int pageId = pageSize * (pageIndex - 1);
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.Add("pageId", pageId, DbType.Int32);
+            dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
+            string where = Where(condition, ref dynamicParameters);
+            //string sql = "SELECT * FROM s_log WHERE Id <=(SELECT Id FROM s_log   ORDER BY Id desc LIMIT 35000, 1) ORDER BY Id DESC LIMIT 10";
+            string sql;
+            if (string.IsNullOrEmpty(where))
+            {
+                sql =
+                    "SELECT article_id,article_title,article_textsection,article_articletype " +
+                    "FROM Article  " +
+                    "WHERE  article_id <=(" +
+                            "SELECT article_id " +
+                            "FROM Article  " +
+                            "ORDER BY article_id DESC " +
+                            "LIMIT @pageId, 1) " +
+                    "ORDER BY article_id DESC " +
+                    "LIMIT @pageSize";
+            }
+            else
+            {
+                sql =
+                    "SELECT article_id,article_title,article_textsection,article_articletype " +
+                    "FROM Article " + where +
+                         " AND  article_id <=(" +
+                         "SELECT article_id FROM Article "
+                         + where + " " +
+                         "ORDER BY article_id DESC " +
+                         "LIMIT @pageId, 1) " +
+                         "ORDER BY article_id DESC " +
+                         "LIMIT @pageSize";
+
+            }
+            IEnumerable<dynamic> dynamics = await DbConnection.QueryAsync<dynamic>(sql, dynamicParameters);
             IList<Article> articles = new List<Article>();
             foreach (var d in dynamics)
             {

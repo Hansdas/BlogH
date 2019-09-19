@@ -1,4 +1,5 @@
 ﻿
+using Blog.Common;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -9,20 +10,14 @@ namespace Blog.Dapper
 {
   public  class DapperProvider
     {           
-        public static IDbConnection connection;
-        private static string connStr = "";
+        public static IDbConnection connection()
+        {
+            return new MySqlConnection(connStr);
+        }
+        private static string connStr = ConfigurationProvider.configuration.GetSection("ConnectionStrings:MySqlConnection").Value;
         private DapperProvider()
         {
 
-        }
-        public DapperProvider(string conn)
-        {
-            connStr = conn;
-            connection = CreateConnection();
-        }
-        private  IDbConnection CreateConnection()
-        {
-            return new MySqlConnection(connStr);
         }
     }
 }

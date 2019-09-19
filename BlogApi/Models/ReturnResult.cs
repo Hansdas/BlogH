@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Blog
+namespace BlogApi
 {      /// <summary>
        /// 控制器返回前端结果
        /// </summary>
