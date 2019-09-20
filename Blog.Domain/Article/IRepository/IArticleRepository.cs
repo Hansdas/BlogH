@@ -15,5 +15,12 @@ namespace Blog.Domain
         IEnumerable<Article> SelectByPage(int pageSize, int pageIndex, ArticleCondition condition=null);
         Task<IEnumerable<Article>> SelectByPageAsync(int pageSize, int pageIndex, ArticleCondition condition = null);
         Article Select(ArticleCondition articleCondition = null);
+        /// <summary>
+        /// 查询上一篇和下一篇
+        /// </summary>
+        /// <param name="articleCondition"></param>
+        /// <returns></returns>
+
+        IEnumerable<dynamic> SelectNextUp(int id, ArticleCondition articleCondition = null);
     }
 }

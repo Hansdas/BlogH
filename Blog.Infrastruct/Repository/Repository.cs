@@ -18,15 +18,7 @@ namespace Blog.Infrastruct
     /// <typeparam name="U"></typeparam>
     public class Repository<T, U> : IRepository<T, U>
     {
-        private IDbConnection _dbConnection;
-        private static object obj = new object();
-        public IDbConnection DbConnection
-        {
-            get
-            {
-                return DapperProvider.connection();
-            }
-        }
+        public IDbConnection DbConnection => DapperProvider.connection();
         //public  void Dispose()
         //{
         //    if (_dbConnection == null)

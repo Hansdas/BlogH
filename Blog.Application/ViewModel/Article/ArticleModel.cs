@@ -30,13 +30,25 @@ namespace Blog.Application.ViewModel
         /// 内容
         /// </summary>
         public string Content { get; set; }
+       
+    }
+    public class PageInfoMode
+    {
         /// <summary>
         /// 上一篇
         /// </summary>
-        public int Before { get; set; }
+        public int BeforeId { get; set; }
         /// <summary>
         /// 下一篇
         /// </summary>
-        public int Next { get; set; }
+        public int NextId { get; set; }
+        /// <summary>
+        /// 上一篇标题
+        /// </summary>
+        public int BeforeTitle { get; set; }
+        /// <summary>
+        /// 下一篇标题
+        /// </summary>
+        public int NextTitle { get; set; }
     }
 }

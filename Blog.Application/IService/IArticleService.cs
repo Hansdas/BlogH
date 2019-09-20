@@ -15,5 +15,6 @@ namespace Blog.Application
         Task<IList<ArticleModel>> SelectByPageAsync(int pageIndex, int pageSize, ArticleCondition condition = null);
 
         ArticleModel Select(ArticleCondition articleCondition = null);
+        PageInfoMode SelectNextUp(int id, ArticleCondition articleCondition = null);
     }
 }

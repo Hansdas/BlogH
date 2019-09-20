@@ -20,7 +20,6 @@ namespace Blog.Infrastruct
             if (condition == null)
                 return "";
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append(" WHERE ");
             IList<string> sqlList = new List<string>();
             if (!string.IsNullOrEmpty(condition.ArticleType))
             {
@@ -37,13 +36,14 @@ namespace Blog.Infrastruct
                 dynamicParameters.Add("article_author", condition.Id.Value);
                 sqlList.Add("article_author = @article_author");
             }
+            sqlList.Add(" 1=1 ");
             if (sqlList.Count == 0)
                 return "";
             string sql = string.Join(" and ", sqlList);
             stringBuilder.Append(sql);
             return stringBuilder.ToString();
         }
-        
+
         private Article Map(dynamic d)
         {
             return new Article(d.article_id,
@@ -103,34 +103,17 @@ namespace Blog.Infrastruct
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condition, ref dynamicParameters);
             //string sql = "SELECT * FROM s_log WHERE Id <=(SELECT Id FROM s_log   ORDER BY Id desc LIMIT 35000, 1) ORDER BY Id DESC LIMIT 10";
-            string sql = "";
-            if (string.IsNullOrEmpty(where))
-            {
-                sql =
-                    "SELECT article_id,article_title,article_textsection,article_articletype " +
-                    "FROM Article  " +
-                    "WHERE  article_id <=(" +
-                            "SELECT article_id " +
-                            "FROM Article  " +
-                            "ORDER BY article_id DESC " +
-                            "LIMIT @pageId, 1) " +
-                    "ORDER BY article_id DESC " +
-                    "LIMIT @pageSize";
-            }
-            else
-            {
-                sql =
-                    "SELECT article_id,article_title,article_textsection,article_articletype " +
-                    "FROM Article " + where +
+
+            string sql = "SELECT article_id,article_title,article_textsection,article_articletype " +
+                         "FROM Article WHERE " + where +
                          " AND  article_id <=(" +
-                         "SELECT article_id FROM Article "
-                         + where + " " +
+                         "SELECT article_id FROM Article WHERE "
+                         + where +
                          "ORDER BY article_id DESC " +
                          "LIMIT @pageId, 1) " +
                          "ORDER BY article_id DESC " +
                          "LIMIT @pageSize";
 
-            }
             IEnumerable<dynamic> dynamics = Select(sql, dynamicParameters);
             IList<Article> articles = new List<Article>();
             foreach (var d in dynamics)
@@ -155,34 +138,15 @@ namespace Blog.Infrastruct
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condition, ref dynamicParameters);
             //string sql = "SELECT * FROM s_log WHERE Id <=(SELECT Id FROM s_log   ORDER BY Id desc LIMIT 35000, 1) ORDER BY Id DESC LIMIT 10";
-            string sql;
-            if (string.IsNullOrEmpty(where))
-            {
-                sql =
-                    "SELECT article_id,article_title,article_textsection,article_articletype " +
-                    "FROM Article  " +
-                    "WHERE  article_id <=(" +
-                            "SELECT article_id " +
-                            "FROM Article  " +
-                            "ORDER BY article_id DESC " +
-                            "LIMIT @pageId, 1) " +
-                    "ORDER BY article_id DESC " +
-                    "LIMIT @pageSize";
-            }
-            else
-            {
-                sql =
-                    "SELECT article_id,article_title,article_textsection,article_articletype " +
-                    "FROM Article " + where +
-                         " AND  article_id <=(" +
-                         "SELECT article_id FROM Article "
-                         + where + " " +
-                         "ORDER BY article_id DESC " +
-                         "LIMIT @pageId, 1) " +
-                         "ORDER BY article_id DESC " +
-                         "LIMIT @pageSize";
-
-            }
+            string sql = "SELECT article_id,article_title,article_textsection,article_articletype " +
+                       "FROM Article WHERE " + where +
+                       " AND  article_id <=(" +
+                       "SELECT article_id FROM Article WHERE"
+                       + where + " AND " +
+                       "ORDER BY article_id DESC " +
+                       "LIMIT @pageId, 1) " +
+                       "ORDER BY article_id DESC " +
+                       "LIMIT @pageSize";
             IEnumerable<dynamic> dynamics = await DbConnection.QueryAsync<dynamic>(sql, dynamicParameters);
             IList<Article> articles = new List<Article>();
             foreach (var d in dynamics)
@@ -204,7 +168,7 @@ namespace Blog.Infrastruct
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(articleCondition, ref dynamicParameters);
             string sql = "SELECT article_id,article_title,article_content,article_articletype,article_createtime " +
-                         "FROM Article " + where;
+                         "FROM Article WHERE 1=1 AND " + where;
             dynamic d = base.SelectSingle(sql, dynamicParameters);
             Article article = new Article(
                 d.article_id
@@ -214,6 +178,26 @@ namespace Blog.Infrastruct
                 , d.article_createtime
                 );
             return article;
+        }
+
+        public IEnumerable<dynamic> SelectNextUp(int id,ArticleCondition articleCondition = null)
+        {
+
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.Add("article_id", id, DbType.Int32);
+            string where = Where(articleCondition, ref dynamicParameters);
+            string sql = "SELECT article_id,article_title FROM Article "
+                       + "WHERE article_id IN( "
+                             + "SELECT MAX(article_id) "
+                             + "FROM Article "
+                             + "WHERE article_id <@article_id  AND " + where
+                             + "UNION "
+                             + "SELECT MIN(article_id) "
+                             + "FROM Article "
+                             + "WHERE article_id >@article_id  AND " + where
+                             + ")";
+            IEnumerable<dynamic> dynamics = DbConnection.Query(sql, dynamicParameters);
+            return dynamics;
         }
     }
 }

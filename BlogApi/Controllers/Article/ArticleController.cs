@@ -46,7 +46,7 @@ namespace BlogApi
                 if(srcArray.Length>0)
                     filePaths=UploadHelper.Upload(srcArray, _webHostEnvironment.ContentRootPath);
                 RegexContent(filePaths, content);
-                Article article = new Article(userModel.Username, title, textSection, content, articleType, true, filePaths);
+                Article article = new Article(userModel.Account, title, textSection, content, articleType, true, filePaths);
                 _articleService.Publish(article);
             }
             catch (AggregateException)
@@ -126,6 +126,28 @@ namespace BlogApi
                 pageResult.Message = e.Message;
             }
             return new JsonResult(pageResult);
+        }
+        [HttpGet("{id}/{articletype}")]
+        public IActionResult NextUp(int id,string articletype)
+        {   
+            ReturnResult returnResult = new ReturnResult();
+            ArticleCondition condition = new ArticleCondition();
+
+            condition.ArticleType = Enum.Parse(typeof(ArticleType), articletype).ToString();
+            try
+            {
+                PageInfoMode result = _articleService.SelectNextUp(id,condition);
+                returnResult.Data = result;
+                returnResult.Code = "200";
+                returnResult.Message = "ok";
+            }
+            catch (Exception e)
+            {
+                returnResult.Data = null;
+                returnResult.Code = "500";
+                returnResult.Message = e.Message;
+            }
+            return new JsonResult(returnResult);
         }
     }
 }

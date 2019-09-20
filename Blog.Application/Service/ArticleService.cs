@@ -15,7 +15,7 @@ namespace Blog.Application
     {
         private IArticleRepository _articleRepository;
         private readonly IMediatorHandler _mediatorHandler;
-        public ArticleService(IMediatorHandler mediatorHandler,IArticleRepository articleRepository)
+        public ArticleService(IMediatorHandler mediatorHandler, IArticleRepository articleRepository)
         {
             _mediatorHandler = mediatorHandler;
             _articleRepository = articleRepository;
@@ -36,9 +36,9 @@ namespace Blog.Application
 
         public IList<ArticleModel> SelectByPage(int pageIndex, int pageSize, ArticleCondition condition = null)
         {
-            IEnumerable<Article> articles = _articleRepository.SelectByPage(pageSize,pageIndex, condition);
+            IEnumerable<Article> articles = _articleRepository.SelectByPage(pageSize, pageIndex, condition);
             IList<ArticleModel> articleModels = new List<ArticleModel>();
-            foreach(var item in articles)
+            foreach (var item in articles)
             {
                 ArticleModel articleModel = new ArticleModel();
                 articleModel.Id = item.Id;
@@ -67,14 +67,39 @@ namespace Blog.Application
         public ArticleModel Select(ArticleCondition articleCondition = null)
         {
             Article article = _articleRepository.Select(articleCondition);
-            ArticleModel articleModel = new ArticleModel() {
+            ArticleModel articleModel = new ArticleModel()
+            {
                 Id = article.Id
-                , Title = article.Title
-                , ArticleType = article.ArticleType.GetEnumText<ArticleType>()
-                , CreateTime = article.CreateTime.ToString("yyyy/MM/dd")
-                , Content = RegexContent(article.Content)
+                ,
+                Title = article.Title
+                ,
+                ArticleType = article.ArticleType.GetEnumText<ArticleType>()
+                ,
+                CreateTime = article.CreateTime.ToString("yyyy/MM/dd")
+                ,
+                Content = RegexContent(article.Content)
             };
             return articleModel;
+        }
+        public PageInfoMode SelectNextUp(int id, ArticleCondition articleCondition = null)
+        {
+            IEnumerable<dynamic> dynamics = _articleRepository.SelectNextUp(id,articleCondition);
+            PageInfoMode pageInfoMode = new PageInfoMode();
+            int i = 0;
+            foreach (dynamic d in dynamics)
+            {
+                if (i == 0)
+                {
+                    pageInfoMode.BeforeId = d.article_id;
+                    pageInfoMode.BeforeTitle = d.article_title;
+                }
+                else
+                {
+                    pageInfoMode.NextId = d.article_id;
+                    pageInfoMode.NextTitle = d.article_title;
+                }
+            }
+            return pageInfoMode;
         }
         private string RegexContent(string input)
         {
@@ -84,7 +109,7 @@ namespace Blog.Application
             for (int i = 0; i < matches.Count; i++)
             {
                 string src = matches[i].Groups["imgsrc"].Value;
-                string path = src.Substring(src.IndexOf(ConstantKey.STATIC_FILE)+ConstantKey.STATIC_FILE.Length);
+                string path = src.Substring(src.IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length);
                 try
                 {
                     string loaclPath = UploadHelper.DownFileAsync(path).Result;

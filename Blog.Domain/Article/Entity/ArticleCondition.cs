@@ -15,6 +15,14 @@ namespace Blog.Domain
         /// </summary>
         public int? Id { get; set; }
         /// <summary>
+        /// 大于id
+        /// </summary>
+        public int? ThanId { get; set; }
+        /// <summary>
+        /// 小于id
+        /// </summary>
+        public int LessId { get; set; }
+        /// <summary>
         /// 根据提交人查询
         /// </summary>
         public string Account { get; set; }

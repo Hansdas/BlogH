@@ -9,8 +9,9 @@ using System.Text;
 namespace Blog.Dapper
 {
   public  class DapperProvider
-    {           
-        public static IDbConnection connection()
+    {
+       
+        public  static IDbConnection connection()
         {
             return new MySqlConnection(connStr);
         }
