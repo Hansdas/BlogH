@@ -21,16 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Configs\nlog.config" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Configs\nlog.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.2" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
     <PackageReference Include="Autofac.Extras.DynamicProxy" Version="4.5.0" />

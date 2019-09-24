@@ -53,10 +53,18 @@ namespace BlogApi.Controllers
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
-            HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
+            try
             {
-                ExpiresUtc = DateTimeOffset.Now.AddDays(7)
-            });
+                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
+                {
+                    ExpiresUtc = DateTimeOffset.Now.AddDays(7)
+                });
+            }
+            catch (AggregateException)
+            {
+
+                throw;
+            }
             return new JsonResult(new ReturnResult() { Code = "200", Message = "OK" });
         }
 

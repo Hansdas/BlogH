@@ -81,7 +81,7 @@ namespace Blog.Infrastruct
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(condition, ref dynamicParameters);
-            string sql = "SELECT COUNT(*) FROM Article " + where;
+            string sql = "SELECT COUNT(*) FROM Article WHERE" + where;
             int count = DbConnection.ExecuteScalar<int>(sql, dynamicParameters);
             return count;
         }
