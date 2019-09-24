@@ -41,8 +41,7 @@ namespace BlogApi
             });
             });
             services.AddServices();
-            services.AddInfrastructure();
-            services.AddSettings(Configuration);
+            services.AddInfrastructure(Configuration);
         //services.GetAutofacServiceProvider();
 
     }

@@ -88,15 +88,15 @@ namespace Blog.Application
             int i = 0;
             foreach (dynamic d in dynamics)
             {
-                if (i == 0)
-                {
-                    pageInfoMode.BeforeId = d.article_id;
-                    pageInfoMode.BeforeTitle = d.article_title;
-                }
-                else
+                if(d.article_id>id)
                 {
                     pageInfoMode.NextId = d.article_id;
                     pageInfoMode.NextTitle = d.article_title;
+                }
+                else
+                {
+                    pageInfoMode.BeforeId = d.article_id;
+                    pageInfoMode.BeforeTitle = d.article_title;
                 }
             }
             return pageInfoMode;

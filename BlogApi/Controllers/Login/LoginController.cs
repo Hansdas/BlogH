@@ -17,6 +17,8 @@ using Microsoft.Extensions.Caching.Distributed;
 
 namespace BlogApi.Controllers
 {
+    [Route("blogh/[controller]/[action]")]
+    [ApiController]
     public class LoginController : Controller
     {
         protected IUserService _userService;
@@ -28,16 +30,8 @@ namespace BlogApi.Controllers
             _domainNotificationHandler = (DomainNotificationHandler)notifications;
             _cacheClient = cacheClient;
         }
-        public IActionResult Login()
-        {
-            return View();
-        }
-        public IActionResult Register()
-        {
-            return View();
-        }
         [HttpPost]
-        public ActionResult LoginIn()
+        public ActionResult Login()
         {
             string account = Request.Form["Account"];
             string passWord = Request.Form["Password"];
@@ -61,7 +55,7 @@ namespace BlogApi.Controllers
 
             HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
             {
-                ExpiresUtc = DateTimeOffset.Now.AddDays(30)
+                ExpiresUtc = DateTimeOffset.Now.AddDays(7)
             });
             return new JsonResult(new ReturnResult() { Code = "200", Message = "OK" });
         }

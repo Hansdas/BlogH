@@ -45,10 +45,10 @@ namespace Blog.Application.ViewModel
         /// <summary>
         /// 上一篇标题
         /// </summary>
-        public int BeforeTitle { get; set; }
+        public string BeforeTitle { get; set; }
         /// <summary>
         /// 下一篇标题
         /// </summary>
-        public int NextTitle { get; set; }
+        public string NextTitle { get; set; }
     }
 }

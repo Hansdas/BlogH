@@ -53,7 +53,7 @@ namespace BlogApi.Configure
         /// 基础设施
         /// </summary>
         /// <param name="services"></param>
-        public static void AddInfrastructure(this IServiceCollection services)
+        public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             //注册全局过滤器
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
@@ -68,22 +68,17 @@ namespace BlogApi.Configure
             //注册Redis
             services.AddSingleton(new CacheProvider());
 
-            //注册AOP拦截器
-            //return GetAutofacServiceProvider(services);
-        }
-        /// <summary>
-        /// 配置集合
-        /// </summary>
-        /// <param name="services"></param>
-        public static void AddSettings(this IServiceCollection services, IConfiguration configuration)
-        {
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
             services.AddSession(s => {
                 s.IdleTimeout = TimeSpan.FromDays(7);
-            });            
+            });
+            //注册AOP拦截器
+            //return GetAutofacServiceProvider(services);
         }
+
         /// <summary>
         /// 添加对HttpContext的扩展支持
         /// </summary>

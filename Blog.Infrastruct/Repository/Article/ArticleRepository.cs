@@ -23,7 +23,7 @@ namespace Blog.Infrastruct
             IList<string> sqlList = new List<string>();
             if (!string.IsNullOrEmpty(condition.ArticleType))
             {
-                dynamicParameters.Add("articleType", condition.ArticleType, DbType.Int32);
+                dynamicParameters.Add("articleType",Convert.ToInt32(condition.ArticleType), DbType.Int32);
                 sqlList.Add("article_articletype = @articleType");
             }
             if (condition.Id.HasValue)

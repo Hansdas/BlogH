@@ -133,7 +133,7 @@ namespace BlogApi
             ReturnResult returnResult = new ReturnResult();
             ArticleCondition condition = new ArticleCondition();
 
-            condition.ArticleType = Enum.Parse(typeof(ArticleType), articletype).ToString();
+            condition.ArticleType = Enum.Parse<ArticleType>(articletype).GetEnumValue().ToString();
             try
             {
                 PageInfoMode result = _articleService.SelectNextUp(id,condition);

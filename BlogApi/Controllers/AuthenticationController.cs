@@ -26,6 +26,7 @@ namespace BlogApi.Controllers
             {
                 returnResult.Code = "200";
                 returnResult.Message = "ok";
+                returnResult.Data = userModel;
             }
             return new JsonResult(returnResult);
         }
