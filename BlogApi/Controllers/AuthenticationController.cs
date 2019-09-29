@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Blog.Application.ViewModel;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +15,9 @@ namespace BlogApi.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        [Authorize(Roles = CookieAuthenticationDefaults.AuthenticationScheme)]
         [HttpGet]
+        [EnableCors("AllowSpecificOrigins")]
         public JsonResult Authenticate()
         {
             UserModel userModel = Auth.GetLoginUser();

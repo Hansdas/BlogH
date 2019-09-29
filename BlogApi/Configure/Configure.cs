@@ -50,7 +50,7 @@ namespace BlogApi.Configure
             services.AddTransient<ITransactionInterceptor, TransactionInterceptor>();
         }
         /// <summary>
-        /// 基础设施
+        /// 基础配置
         /// </summary>
         /// <param name="services"></param>
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -98,7 +98,6 @@ namespace BlogApi.Configure
         {
             //containerBuilder.Populate(services);
             var assembly = Assembly.Load("Blog.Infrastruct");
-            //var assembly = typeof(Blog.AOP.).GetType().GetTypeInfo().Assembly;
             containerBuilder.RegisterType<Interceptor>();
             containerBuilder.RegisterAssemblyTypes(assembly)
                          .Where(type => typeof(IInterceptorHandler).IsAssignableFrom(type) && !type.GetTypeInfo().IsAbstract)

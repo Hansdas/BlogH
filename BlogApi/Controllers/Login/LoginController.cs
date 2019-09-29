@@ -31,7 +31,7 @@ namespace BlogApi.Controllers
             _cacheClient = cacheClient;
         }
         [HttpPost]
-        public ActionResult Login()
+        public async Task<ActionResult> Login()
         {
             string account = Request.Form["Account"];
             string passWord = Request.Form["Password"];
@@ -52,20 +52,11 @@ namespace BlogApi.Controllers
                 };
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-            try
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
             {
-                HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
-                {
-                    ExpiresUtc = DateTimeOffset.Now.AddDays(7)
-                });
-            }
-            catch (AggregateException)
-            {
-
-                throw;
-            }
-            return new JsonResult(new ReturnResult() { Code = "200", Message = "OK" });
+                ExpiresUtc = DateTimeOffset.Now.AddDays(7)
+            });
+            return new JsonResult(new ReturnResult() { Code = "200", Message = "ok" });
         }
 
         [HttpPost]
