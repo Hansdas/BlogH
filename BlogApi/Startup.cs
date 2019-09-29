@@ -62,15 +62,12 @@ namespace BlogApi
             });
             app.UseSession();
             app.UseStaticHttpContext();
-            app.UseHttpsRedirection();
             app.UseRouting();
-            //app.UseMvc();
             app.UseEndpoints(endpoints =>
             {
                 
                 endpoints.MapControllers();
             });
-            //app.UseMvc();
         }
     }
 }
