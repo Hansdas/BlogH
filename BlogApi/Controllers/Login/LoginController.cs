@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BlogApi.Controllers
 {
@@ -31,7 +33,7 @@ namespace BlogApi.Controllers
             _cacheClient = cacheClient;
         }
         [HttpPost]
-        public async Task<ActionResult> Login()
+        public ActionResult Login()
         {
             string account = Request.Form["Account"];
             string passWord = Request.Form["Password"];
@@ -50,13 +52,25 @@ namespace BlogApi.Controllers
                 {
                     new Claim("account", user.Account)
                 };
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
-            {
-                ExpiresUtc = DateTimeOffset.Now.AddDays(7)
-            });
-            return new JsonResult(new ReturnResult() { Code = "200", Message = "ok" });
+            //ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
+            //{
+            //    ExpiresUtc = DateTimeOffset.Now.AddDays(7)
+            //});
+            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("abcdefg1234567890"));
+
+
+            var expires = DateTime.Now.AddDays(28);//
+            var token = new JwtSecurityToken(
+                        claims: claims,
+                        notBefore: DateTime.Now,
+                        expires: expires,
+                        signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature));
+
+            //生成Token
+            string jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return new JsonResult(new ReturnResult() { Code = "200", Message = jwtToken});
         }
 
         [HttpPost]

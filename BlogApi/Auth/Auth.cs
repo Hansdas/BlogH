@@ -24,7 +24,8 @@ namespace BlogApi
         public static UserModel GetLoginUser()
         {
             string userName = "";
-            if(Http.httpContext.User.Identity.IsAuthenticated)
+           var v=  Http.httpContext.User.FindFirst("account");
+            if (Http.httpContext.User.Identity.IsAuthenticated)
             {
                 userName = Http.httpContext.User.Claims.First().Value;
             }
