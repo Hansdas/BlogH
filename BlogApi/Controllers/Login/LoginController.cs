@@ -41,8 +41,6 @@ namespace BlogApi.Controllers
             try
             {
                 user = _userService.SelectUser(account, passWord);
-                if (user != null)
-                    HttpContext.Login(user);
             }
             catch (ValidationException e)
             {
@@ -50,18 +48,13 @@ namespace BlogApi.Controllers
             }
             IList<Claim> claims = new List<Claim>()
                 {
-                    new Claim("account", user.Account)
+                    new Claim("account", user.Account),
+                    new Claim("username", user.Username)
                 };
-            //ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal, new AuthenticationProperties()
-            //{
-            //    ExpiresUtc = DateTimeOffset.Now.AddDays(7)
-            //});
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("abcdefg1234567890"));
 
 
-            var expires = DateTime.Now.AddDays(28);//
+            var expires = DateTime.Now.AddDays(7);//
             var token = new JwtSecurityToken(
                         claims: claims,
                         notBefore: DateTime.Now,
