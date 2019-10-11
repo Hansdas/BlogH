@@ -29,7 +29,7 @@ namespace Blog.Application.ViewModel
         /// <summary>
         /// 出生日期
         /// </summary>
-        public DateTime? BirthdayDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         /// <summary>
         /// 邮箱
         /// </summary>
