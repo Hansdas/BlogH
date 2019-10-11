@@ -30,24 +30,17 @@ namespace BlogApi.Controllers
         public JsonResult Authenticate()
         {
             ReturnResult returnResult = new ReturnResult();
-            bool IsAuthorized = _context.HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
-            if (!IsAuthorized)
+            try
+            {
+                string json= new JWT(_context).ResolveToken();
+                UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
+                returnResult.Code = "200";
+                returnResult.Data = userModel;
+            }
+            catch (ValidationException)
             {
                 returnResult.Code = "500";
                 returnResult.Message = "checkfail";
-            }
-            else
-            {
-                string token = authStr.ToString().Substring("Bearer ".Length).Trim();
-                IJsonSerializer serializer = new JsonNetSerializer();
-                IDateTimeProvider provider = new UtcDateTimeProvider();
-                IJwtValidator validator = new JwtValidator(serializer, provider);
-                IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-                IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder);
-                var json = decoder.Decode(token);
-                UserModel userModel= JsonHelper.DeserializeObject<UserModel>(json);
-                returnResult.Code = "200";
-                returnResult.Data = userModel;
             }
             return new JsonResult(returnResult);
         }

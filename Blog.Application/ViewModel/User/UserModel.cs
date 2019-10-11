@@ -26,5 +26,17 @@ namespace Blog.Application.ViewModel
         /// 性别
         /// </summary>
         public Sex Sex { get; set; }
+        /// <summary>
+        /// 出生日期
+        /// </summary>
+        public DateTime? BirthdayDate { get; set; }
+        /// <summary>
+        /// 邮箱
+        /// </summary>
+        public string Email { get; set; }
+        /// <summary>
+        /// 个性签名
+        /// </summary>
+        public string Sign { get; set; }
     }
 }

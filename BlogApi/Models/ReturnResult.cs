@@ -20,7 +20,11 @@ namespace BlogApi
         {
             Message = message;
         }
-        public ReturnResult(string code, string message,string data):this(code,message)
+        public ReturnResult(string code, dynamic data) : this(code)
+        {
+            Data = data;
+        }
+        public ReturnResult(string code, string message,dynamic data):this(code,message)
         {
             Data = data;
         }

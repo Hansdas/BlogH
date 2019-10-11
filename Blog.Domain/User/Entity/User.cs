@@ -26,7 +26,8 @@ namespace Blog.Domain
             Sex = sex;
             IsValid = isvalid;
         }
-        public User(int id,string username, string account, string password, Sex sex, bool isvalid,string email,string phone, DateTime createtime,DateTime? updatetime)
+        public User(int id,string username, string account, string password, Sex sex, bool isvalid,string email
+            ,string phone,DateTime? birthdayDate,string sign, DateTime createtime,DateTime? updatetime)
         :this(username, account, password,sex,isvalid)
         {
             Id = id;
@@ -39,6 +40,8 @@ namespace Blog.Domain
             UpdateTime = updatetime;
             Email = email;
             Phone = phone;
+            BirthdayDate = birthdayDate;
+            Sign = sign;
         }
         /// <summary>
         /// 用户名
@@ -69,9 +72,12 @@ namespace Blog.Domain
         /// </summary>
         public string Phone { get;private set; }
         /// <summary>
-        /// 结果转换
+        /// 出生日期
         /// </summary>
-        /// <param name="result"></param>
-        /// <returns></returns>
+        public DateTime? BirthdayDate { get; private set; }
+        /// <summary>
+        /// 个性签名
+        /// </summary>
+        public string Sign { get; private set; }
     }
 }

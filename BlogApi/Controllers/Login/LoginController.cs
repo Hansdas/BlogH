@@ -49,21 +49,14 @@ namespace BlogApi.Controllers
             IList<Claim> claims = new List<Claim>()
                 {
                     new Claim("account", user.Account),
-                    new Claim("username", user.Username)
+                    new Claim("username", user.Username),
+                    new Claim("sex", user.Sex.GetEnumText<Sex>()),
+                    new Claim("birthdayDate", user.BirthdayDate.HasValue?user.BirthdayDate.Value.ToString("yyyy-MM-dd"):""),
+                    new Claim("email", string.IsNullOrEmpty(user.Email)?"":user.Email),
+                    new Claim("sign", string.IsNullOrEmpty(user.Sign)?"":user.Sign),
                 };
-            var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("abcdefg1234567890"));
-
-
-            var expires = DateTime.Now.AddDays(7);//
-            var token = new JwtSecurityToken(
-                        claims: claims,
-                        notBefore: DateTime.Now,
-                        expires: expires,
-                        signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature));
-
-            //生成Token
-            string jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return new JsonResult(new ReturnResult() { Code = "200", Message = jwtToken});
+            string jwtToken = JWT.CreateToken(claims);
+            return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
         }
 
         [HttpPost]

@@ -2,44 +2,35 @@
 using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Blog.Domain;
-                             
+using Microsoft.AspNetCore.Http;
+using Blog.Application.ViewModel;
+using Blog.Common;
+
 namespace BlogApi.Controllers.User
 {
+
+    [Route("blogh/[controller]/[action]")]
+    [ApiController]
     public class UserController : Controller
     {
-        public UserController()
+        private readonly IHttpContextAccessor _context;
+        public UserController(IHttpContextAccessor httpContextAccessor)
         {
-            
+            _context = httpContextAccessor;
         }
+        [HttpGet]
         public IActionResult UserInfo()
         {
-            return View();
-        }
-        [HttpPost]
-        public IActionResult Update()
-        {
-            string userName = Request.Form["username"];
-            string mobilephone = Request.Form["mobilephone"];
-            string email = Request.Form["email"];
-            string sex = Request.Form["sex"];
-            string descript = Request.Form["descript"];
-            var photoImage= Request.Form.Files["uploadImage"];
-            string fileName=photoImage.FileName.Trim();
             try
-            {                
-               // //string path = DirectoryHelper.CreateDirectory() + fileName;
-               // //using (Stream stream=System.IO.File.Create(path))
-               // //{
-               // //    photoImage.CopyToAsync(stream);                    
-               // //    stream.Flush();
-               // //}
-               //User user = new User();
-            }
-            catch (Exception e)
             {
-                return Json(new ReturnResult() {Code="500", Message = e.Message });
+                string json = new JWT(_context).ResolveToken();
+                UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
+                return new JsonResult(new ReturnResult("200", userModel));
             }
-            return Json(new ReturnResult() { Code="200", Message = "更新成功" });
+            catch (Exception ex)
+            {
+                return new JsonResult(new ReturnResult("500", ex.Message));
+            }
         }
     }
 }

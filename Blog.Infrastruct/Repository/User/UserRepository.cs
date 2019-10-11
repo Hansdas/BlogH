@@ -15,7 +15,8 @@ namespace Blog.Infrastruct
         private static User Map(dynamic result)
         {
             return new User(result.user_id, result.user_username, result.user_account, result.user_password, (Sex)result.user_sex
-                , result.IsValid == 0 ? false : true, result.user_email, result.user_phone, result.user_createtime, result.user_updatetime
+                , result.IsValid == 0 ? false : true, result.user_email, result.user_phone,result.user_birthdaydate
+                , result.user_sign, result.user_createtime, result.user_updatetime
                 );
 
         }
