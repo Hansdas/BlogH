@@ -43,7 +43,7 @@ namespace Blog.AOP.Cache
             var methodName = invocation.Method.Name;
             Type methodReturnType=invocation.Method.ReturnType;
             var methodArguments = ParseArgumentsToPartOfCacheKey(invocation.Arguments);
-            var cacheKey = BuildCacheKey(typeName, methodName, methodArguments, mapCacheAttribute.dbNameList);
+            var cacheKey = BuildCacheKey(typeName, methodName, methodArguments, mapCacheAttribute.prefixs);
 
             var cacheValue = _cacheClient.Get(cacheKey);
             if (cacheValue != null)

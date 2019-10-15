@@ -6,8 +6,8 @@ namespace Blog.Common.CacheFactory
 {
    public interface ICacheClient
     {
-        void Set(string key, string value);
-        void Set<T>(string key, T t);
+        void Set(string key, string value, TimeSpan expiry);
+        void Set<T>(string key, T t, TimeSpan? expiry = null);
         T Get<T>(string key);
         string Get(string key);
         void Remove(string key);

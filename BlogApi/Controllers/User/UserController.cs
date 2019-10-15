@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Domain.Core;
+using Blog.Application;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace BlogApi.Controllers.User
 {
@@ -15,9 +18,11 @@ namespace BlogApi.Controllers.User
     public class UserController : Controller
     {
         private readonly IHttpContextAccessor _context;
-        public UserController(IHttpContextAccessor httpContextAccessor)
+        private readonly IUserService _userService;
+        public UserController(IHttpContextAccessor httpContextAccessor, IUserService  userService)
         {
             _context = httpContextAccessor;
+            _userService = userService;
         }
         [HttpGet]
         public IActionResult UserInfo()
@@ -38,18 +43,27 @@ namespace BlogApi.Controllers.User
         {
             try
             {
-                string account = Request.Form["account"];
-                string username = Request.Form["username"];
-                Sex sex = Enum.Parse<Sex>(Request.Form["sex"]);
-                DateTime? birthDate;
-                if (!string.IsNullOrEmpty(Request.Form["birthdate"]))
-                    birthDate = Convert.ToDateTime(Request.Form["birthdate"]);
-                string phone = Request.Form["phone"];
-                string email = Request.Form["email"];
-                string sign = Request.Form["sign"];
-                string json = new JWT(_context).ResolveToken();
-                UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
-                return new JsonResult(new ReturnResult("200", userModel));
+                UserModel userModel = new UserModel();
+                userModel.Account = Request.Form["account"];
+                userModel.Username = Request.Form["username"];
+                userModel.Sex = Request.Form["sex"];
+                userModel.BirthDate = Request.Form["birthdate"];
+                userModel .Phone= Request.Form["phone"];
+                userModel.Email = Request.Form["email"];
+                userModel.Sign = Request.Form["sign"];
+                _userService.Update(userModel);
+                IList<Claim> claims = new List<Claim>()
+                {
+                    new Claim("account", userModel.Account),
+                    new Claim("username", userModel.Username),
+                    new Claim("sex", userModel.Sex),
+                    new Claim("birthDate", string.IsNullOrEmpty(userModel.BirthDate)?"":userModel.BirthDate),
+                    new Claim("email", string.IsNullOrEmpty(userModel.Email)?"":userModel.Email),
+                    new Claim("sign", string.IsNullOrEmpty(userModel.Sign)?"":userModel.Sign),
+                    new Claim("phone",userModel.Phone)
+                };
+                string jwtToken = JWT.CreateToken(claims);
+                return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
             }
             catch (Exception ex)
             {

@@ -25,11 +25,11 @@ namespace Blog.Application.ViewModel
         /// <summary>
         /// 性别
         /// </summary>
-        public Sex Sex { get; set; }
+        public string Sex { get; set; }
         /// <summary>
         /// 出生日期
         /// </summary>
-        public DateTime? BirthDate { get; set; }
+        public string BirthDate { get; set; }
         /// <summary>
         /// 邮箱
         /// </summary>
@@ -38,5 +38,9 @@ namespace Blog.Application.ViewModel
         /// 个性签名
         /// </summary>
         public string Sign { get; set; }
+        /// <summary>
+        /// 联系方式
+        /// </summary>
+        public string Phone { get; set; }
     }
 }

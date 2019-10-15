@@ -51,9 +51,10 @@ namespace BlogApi.Controllers
                     new Claim("account", user.Account),
                     new Claim("username", user.Username),
                     new Claim("sex", user.Sex.GetEnumText<Sex>()),
-                    new Claim("birthdayDate", user.BirthdayDate.HasValue?user.BirthdayDate.Value.ToString("yyyy-MM-dd"):""),
+                    new Claim("birthDate", user.BirthDate.HasValue?user.BirthDate.Value.ToString("yyyy-MM-dd"):""),
                     new Claim("email", string.IsNullOrEmpty(user.Email)?"":user.Email),
                     new Claim("sign", string.IsNullOrEmpty(user.Sign)?"":user.Sign),
+                    new Claim("phone",user.Phone)
                 };
             string jwtToken = JWT.CreateToken(claims);
             return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });

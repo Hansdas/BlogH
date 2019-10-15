@@ -28,21 +28,5 @@ namespace Blog.Domain
         /// </summary>
         /// <returns></returns>
         dynamic SelectSingle(string sql, object param);
-        /// <summary>
-        /// 插入数据
-        /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
-        void Insert(string sql,T t);
-        /// <summary>
-        /// 删除数据
-        /// </summary>
-        /// <param name="primaryKey"></param>
-        void Delete(string sql, object param);
-        /// <summary>
-        /// 更新数据
-        /// </summary>
-        /// <param name="t"></param>
-        void Update(string sql,T t);
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Domain;
 using Blog.Domain.Core;
@@ -42,6 +43,19 @@ namespace Blog.Application
             if (user.Password != password)
                 throw new ValidationException("用户名不存在或密码错误");
             return user;
+        }
+
+        public void Update(UserModel userModel)
+        {
+            User user = _userRepository.SelectUserByAccount(userModel.Account);
+            if (user == null)
+                throw new FrameworkException("不存在用户账号：" + userModel.Account);
+            DateTime? birthDate = null;
+            if (!string.IsNullOrEmpty(userModel.BirthDate))
+                birthDate = Convert.ToDateTime(userModel.BirthDate);
+            User newUser = new User(userModel.Username,userModel.Account,user.Password,Enum.Parse<Sex>(userModel.Sex),user.IsValid,userModel.Email
+                ,userModel.Phone, birthDate, userModel.Sign,DateTime.Now);
+            _userRepository.UpdateUser(newUser);
         }
     }
 }

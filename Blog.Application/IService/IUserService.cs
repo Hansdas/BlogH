@@ -1,4 +1,5 @@
-﻿using Blog.Domain;
+﻿using Blog.Application.ViewModel;
+using Blog.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -19,6 +20,11 @@ namespace Blog.Application
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        void Insert(User user);
+        void Insert(User userModel);
+        /// <summary>
+        /// 更新用户
+        /// </summary>
+        /// <param name="userModel"></param>
+        void Update(UserModel userModel);
     }
 }

@@ -10,7 +10,7 @@ using Blog.AOP;
 
 namespace Blog.Infrastruct
 {
-    public class UserRepository : Repository<User, int>, IUserRepository, IInterceptorHandler
+    public class UserRepository : Repository<User, int>, IUserRepository
     {
         private static User Map(dynamic result)
         {
@@ -20,12 +20,6 @@ namespace Blog.Infrastruct
                 );
 
         }
-        /// <summary>
-        /// 根据账号查询
-        /// </summary>
-        /// <param name="account"></param>
-        /// <returns></returns>
-        [Cache("User")]
         public User SelectUserByAccount(string account)
         {
 
@@ -58,9 +52,9 @@ namespace Blog.Infrastruct
         /// <param name="user"></param>
         public void Insert(User user)
         {
-            string sql = "INSERT INTO User(user_id, user_username, user_account, user_password, user_sex, user_phone, user_email, user_isvalid, user_createtime, user_updatetime)" +
-                  " VALUES (@Id, @Username, @Account, @Password, @Sex,@Phone,@Email, @IsValid,NOW())";
-            Insert(sql, user);
+            string sql = "INSERT INTO User(user_id, user_username, user_account, user_password, user_sex, user_phone, user_email,user_birthdate,user_sign, user_isvalid, user_createtime, user_updatetime)" +
+                  " VALUES (@Id, @Username, @Account, @Password, @Sex,@Phone,@Email,@Birthdate,@Sign, @IsValid,NOW())";
+            DbConnection.Execute(sql,user);
         }
 
         public Dictionary<string,string> SelectUserByAccounts(IList<string> accounts)
@@ -75,6 +69,13 @@ namespace Blog.Infrastruct
                 accountAndName.Add(d.user_account, d.user_username);
             }
             return accountAndName;
+        }
+        public void UpdateUser(User user)
+        {
+            string sql= "UPDATE User SET user_username = @Username, user_account = @Account, user_password = @Password, user_sex = @Sex" +
+                ", user_phone = @Phone, user_email = @Email, user_birthdate = @BirthDate, user_sign = @Sign, user_isvalid = @IsValid" +
+                ", user_updatetime = @UpdateTime WHERE user_account = @Account";
+            DbConnection.Execute(sql, user);
         }
     }
 }

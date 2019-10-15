@@ -11,17 +11,17 @@ namespace Blog.Common.CacheFactory
         /// <summary>
         /// 过期时间
         /// </summary>
-        private const double ExpireTime = 1D;
+        private  TimeSpan ExpireTime = new TimeSpan(24,0,0);
         private IDatabase database => CacheProvider.database;
         private IServer server => CacheProvider.server;
-        public void Set(string key, string value)
+        public void Set(string key, string value,TimeSpan expiry)
         {
-            database.StringSet(key, value,TimeSpan.FromDays(ExpireTime));
+            database.StringSet(key, value, expiry);
         }
-        public void Set<T>(string key, T t)
+        public void Set<T>(string key, T t, TimeSpan? expiry = null)
         {
             string json = JsonHelper.Serialize(t);
-            Set(key, json);
+            Set(key, json, expiry??ExpireTime);
         }
         public string Get(string key)
         {

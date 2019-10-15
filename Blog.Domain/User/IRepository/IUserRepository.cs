@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Blog.Domain
 {
-  public  interface IUserRepository:IRepository<User,int>
+  public  interface IUserRepository : IRepository<User,int>
     {
         /// <summary>
         /// 根据账号查询
@@ -30,6 +30,11 @@ namespace Blog.Domain
         /// <param name="condition"></param>
         /// <returns></returns>
         Dictionary<string, string> SelectUserByAccounts(IList<string> accounts);
+        /// <summary>
+        /// 更新用户
+        /// </summary>
+        /// <param name="user"></param>
+        public void UpdateUser(User user);
 
     }
 }

@@ -22,7 +22,7 @@ namespace Blog.Common
         /// <typeparam name="T"></typeparam>
         /// <param name="enumValue"></param>
         /// <returns></returns>
-        public static string GetEnumText<T>(this object enumValue)
+        public static string GetEnumText<T>(this T enumValue)
         {
            return Enum.GetName(typeof(T), enumValue);
         }

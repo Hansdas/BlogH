@@ -3,6 +3,7 @@
 using Blog.Application;
 using Blog.Application.ViewModel;
 using Blog.Common;
+using Blog.Common.CacheFactory;
 using Blog.Domain;
 using Blog.Domain.Core;
 using Microsoft.AspNetCore.Cors;
@@ -22,11 +23,14 @@ namespace BlogApi
         private IWebHostEnvironment _webHostEnvironment;
         private  IArticleService _articleService;
         private IArticleRepository _articleRepository;
-        public ArticleController(IArticleService articleService, IWebHostEnvironment webHostEnvironment,IArticleRepository articleRepository)
+        private ICacheClient _cacheClient;
+        public ArticleController(IArticleService articleService, IWebHostEnvironment webHostEnvironment
+            ,IArticleRepository articleRepository, ICacheClient cacheClient)
         {
             _articleService = articleService;
             _webHostEnvironment = webHostEnvironment;
             _articleRepository = articleRepository;
+            _cacheClient = cacheClient;
         }
         [HttpPost]
         public object AddArticle()
@@ -88,6 +92,7 @@ namespace BlogApi
         [HttpGet]
         public JsonResult LoadArticle(int pageIndex, int pageSize, string articleType)
         {
+            _cacheClient.Set("test", "test");
             PageResult pageResult = new PageResult();
             ArticleCondition condition = new ArticleCondition();
                 condition.ArticleType = articleType;
