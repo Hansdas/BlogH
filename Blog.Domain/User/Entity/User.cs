@@ -15,6 +15,11 @@ namespace Blog.Domain
         {
 
         }
+        public User(string account,string password)
+        {
+            Account = account;
+            Password = password;
+        }
         public User(string username, string account, string password)
         {
             Username = username;

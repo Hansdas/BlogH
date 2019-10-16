@@ -19,7 +19,7 @@ namespace Blog.Domain.Core
         private IList<DomainNotification> domainNotificationList;
         public DomainNotificationHandler()
         {
-            domainNotificationList = new List<DomainNotification>();
+             domainNotificationList = new List<DomainNotification>();
         }
         public Task Handle(DomainNotification notification, CancellationToken cancellationToken)
         {

@@ -35,6 +35,7 @@ namespace BlogApi.Configure
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<IRequestHandler<CreateUserCommand, Unit>, UserCommandHandler>();
+            services.AddTransient<IRequestHandler<UpdateUserCommand, Unit>, UserCommandHandler>();
 
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IArticleService, ArticleService>();
@@ -62,7 +63,7 @@ namespace BlogApi.Configure
             //注册发布订阅中介处理
             services.AddTransient<IMediatorHandler, InMemoryBus>();
             //注册领域通知
-            services.AddTransient<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
+            services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
             //注册仓储接口
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
             //注册Redis

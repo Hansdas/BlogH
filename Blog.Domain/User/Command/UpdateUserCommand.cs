@@ -14,6 +14,12 @@ namespace Blog.Domain
         {
             User = user;
         }
+        public UpdateUserCommand(User user,string oldPassowrd)
+        {
+            User = user;
+            OldPassword = oldPassowrd;
+        }
         public User User { get; private set; }
+        public string OldPassword { get; private set; }
     }
 }

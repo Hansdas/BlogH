@@ -26,5 +26,10 @@ namespace Blog.Application
         /// </summary>
         /// <param name="userModel"></param>
         void Update(UserModel userModel);
+        /// <summary>
+        /// 更新密码
+        /// </summary>
+        /// <param name="userModel"></param>
+        void UpdatePassword(string account, string password, string oldPassword);
     }
 }

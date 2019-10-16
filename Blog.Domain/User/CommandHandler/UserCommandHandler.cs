@@ -1,4 +1,5 @@
-﻿using Blog.Domain.Core;
+﻿using Blog.Common;
+using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;
 using MediatR;
 using System;
@@ -35,11 +36,23 @@ namespace Blog.Domain
 
         public Task<Unit> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
         {
-            int count = _userRepository.SelectCountByAccount(command.User.Account);
-            if (count > 0)
+            if (!string.IsNullOrEmpty(command.OldPassword))
             {
-                _mediatorHandler.RaiseEvent(new DomainNotification(ConstantKey.CHECK_KEY, "该账号已存在"));
-                return Task.FromResult(new Unit());
+                string password = _userRepository.SelectPassword(command.User.Account);
+                if (password != command.OldPassword)
+                {
+                    _mediatorHandler.RaiseEvent(new DomainNotification(ConstantKey.CHECK_KEY, "原始密码错误"));
+                    return Task.FromResult(new Unit());
+                }
+            }
+            else
+            {
+                User user = _userRepository.SelectUserByAccount(command.User.Account);
+                if (user == null)
+                {
+                    _mediatorHandler.RaiseEvent(new DomainNotification(ConstantKey.CHECK_KEY, "不存在用户账号：" + command.User.Account));
+                    return Task.FromResult(new Unit());
+                }
             }
             _userRepository.UpdateUser(command.User);
             return Task.FromResult(new Unit());

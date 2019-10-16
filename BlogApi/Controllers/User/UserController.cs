@@ -9,6 +9,8 @@ using Blog.Domain.Core;
 using Blog.Application;
 using System.Collections.Generic;
 using System.Security.Claims;
+using MediatR;
+using System.Linq;
 
 namespace BlogApi.Controllers.User
 {
@@ -19,10 +21,12 @@ namespace BlogApi.Controllers.User
     {
         private readonly IHttpContextAccessor _context;
         private readonly IUserService _userService;
-        public UserController(IHttpContextAccessor httpContextAccessor, IUserService  userService)
+        private DomainNotificationHandler _domainNotificationHandler;
+        public UserController(IHttpContextAccessor httpContextAccessor, IUserService  userService, INotificationHandler<DomainNotification> notifications)
         {
             _context = httpContextAccessor;
             _userService = userService;
+            _domainNotificationHandler=  (DomainNotificationHandler)notifications;
         }
         [HttpGet]
         public IActionResult UserInfo()
@@ -52,6 +56,9 @@ namespace BlogApi.Controllers.User
                 userModel.Email = Request.Form["email"];
                 userModel.Sign = Request.Form["sign"];
                 _userService.Update(userModel);
+                string domainNotification =  _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
+                if (!string.IsNullOrEmpty(domainNotification))
+                    return new JsonResult(new ReturnResult() { Code = "500", Data = domainNotification});
                 IList<Claim> claims = new List<Claim>()
                 {
                     new Claim("account", userModel.Account),
@@ -69,6 +76,19 @@ namespace BlogApi.Controllers.User
             {
                 return new JsonResult(new ReturnResult("500", ex.Message));
             }
+        }
+        [HttpPost]
+        public IActionResult UpdatePassword()
+        {
+             string password= Request.Form["password"];
+            string OldPawword = Request.Form["oldpassword"];
+            string json = new JWT(_context).ResolveToken();
+            UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
+            _userService.UpdatePassword(userModel.Account,password, OldPawword);
+            string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
+            if (!string.IsNullOrEmpty(domainNotification))
+                return new JsonResult(new ReturnResult() { Code = "500", Message = domainNotification });
+            return new JsonResult(new ReturnResult() { Code = "200" });
         }
     }
 }

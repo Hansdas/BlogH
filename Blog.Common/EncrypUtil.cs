@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Blog.Common
 {
-   public class SecretUtil
+   public class EncrypUtil
     {
-        public string MD5Encry(string strs)
+        public static string MD5Encry(string strs)
         {
             MD5 md5 = new MD5CryptoServiceProvider();
             byte[] bytes = Encoding.Default.GetBytes(strs);//将要加密的字符串转换为字节数组

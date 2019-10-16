@@ -35,6 +35,12 @@ namespace Blog.Domain
         /// </summary>
         /// <param name="user"></param>
         public void UpdateUser(User user);
+        /// <summary>
+        /// 查询密码
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        string SelectPassword(string account);
 
     }
 }

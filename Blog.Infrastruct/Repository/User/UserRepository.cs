@@ -56,7 +56,14 @@ namespace Blog.Infrastruct
                   " VALUES (@Id, @Username, @Account, @Password, @Sex,@Phone,@Email,@Birthdate,@Sign, @IsValid,NOW())";
             DbConnection.Execute(sql,user);
         }
-
+        public string SelectPassword(string account)
+        {
+            string sql = "SELECT user_password FROM User where user_account=@Account";
+            DynamicParameters dynamicParameters = new DynamicParameters();
+            dynamicParameters.Add("Account", account);
+            string password = DbConnection.ExecuteScalar<string>(sql, dynamicParameters);
+            return password;
+        }
         public Dictionary<string,string> SelectUserByAccounts(IList<string> accounts)
         {
             Dictionary<string, string> accountAndName = new Dictionary<string, string>();
