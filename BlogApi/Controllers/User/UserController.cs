@@ -15,7 +15,7 @@ using System.Linq;
 namespace BlogApi.Controllers.User
 {
 
-    [Route("blogh/[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UserController : Controller
     {

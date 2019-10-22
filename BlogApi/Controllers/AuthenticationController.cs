@@ -16,7 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BlogApi.Controllers
 {
-    [Route("blogh/Auth")]
+    [Route("api/Auth")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {

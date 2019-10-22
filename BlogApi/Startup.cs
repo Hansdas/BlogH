@@ -15,6 +15,8 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
 
 namespace BlogApi
 {
@@ -57,16 +59,29 @@ namespace BlogApi
             {
                 jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
                 {
+                    
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("abcdefg1234567890")),//秘钥
+                    IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(JWT.SecurityKey)),//秘钥
                     ValidateIssuer = true,
+                    ValidIssuer=JWT.issuer,
                     ValidateAudience = true,
+                    ValidAudience=JWT.audience,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.FromMinutes(5)
                 };
+                jwtBearerOptions.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if(context.Exception.GetType()==typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("act", "expire");
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
             services.AddMvc();
-            //services.GetAutofacServiceProvider();
 
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -86,24 +101,6 @@ namespace BlogApi
             app.UseStaticHttpContext();
             app.UseRouting();
             app.UseAuthentication();
-            app.UseStatusCodePages(new StatusCodePagesOptions()
-            {
-                HandleAsync = (context) =>
-                {
-                    if (context.HttpContext.Response.StatusCode == 401)
-                    {
-                        using (System.IO.StreamWriter sw = new System.IO.StreamWriter(context.HttpContext.Response.Body))
-                        {
-                            sw.Write(Newtonsoft.Json.JsonConvert.SerializeObject(new
-                            {
-                                status = 401,
-                                message = "access denied!",
-                            }));
-                        }
-                    }
-                    return System.Threading.Tasks.Task.Delay(0);
-                }
-            });
             app.UseEndpoints(endpoints =>
             {
 

@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApi.Controllers.Upload
 {
-    [Route("blogh/[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     [EnableCors("AllowSpecificOrigins")]
     [ApiController]
     public class UploadController : Controller

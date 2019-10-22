@@ -19,7 +19,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BlogApi.Controllers
 {
-    [Route("blogh/[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class LoginController : Controller
     {
@@ -44,7 +44,7 @@ namespace BlogApi.Controllers
             }
             catch (ValidationException e)
             {
-                return new JsonResult(new ReturnResult() { Code = "200", Message = e.Message });
+                return new JsonResult(new ReturnResult() { Code = "500", Message = e.Message });
             }
             IList<Claim> claims = new List<Claim>()
                 {

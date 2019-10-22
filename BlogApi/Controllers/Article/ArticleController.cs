@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace BlogApi
 {
-    [Route("blogh/[controller]/[action]")]
+    [Route("api/[controller]/[action]")]
     public class ArticleController : ControllerBase
     {
         private readonly object _obj = new object();
