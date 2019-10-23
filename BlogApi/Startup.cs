@@ -59,15 +59,15 @@ namespace BlogApi
             {
                 jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
                 {
-                    
+
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(JWT.SecurityKey)),//秘钥
                     ValidateIssuer = true,
-                    ValidIssuer=JWT.issuer,
+                    ValidIssuer = JWT.issuer,
                     ValidateAudience = true,
-                    ValidAudience=JWT.audience,
+                    ValidAudience = JWT.audience,
                     ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(5)
+                    ClockSkew = TimeSpan.Zero
                 };
                 jwtBearerOptions.Events = new JwtBearerEvents
                 {
@@ -75,7 +75,7 @@ namespace BlogApi
                     {
                         if(context.Exception.GetType()==typeof(SecurityTokenExpiredException))
                         {
-                            context.Response.Headers.Add("act", "expire");
+                            context.Response.Headers.Add("isExpires", "true");
                         }
                         return Task.CompletedTask;
                     }
@@ -98,9 +98,9 @@ namespace BlogApi
                 RequestPath = ConstantKey.STATIC_FILE
             });
             app.UseSession();
-            app.UseStaticHttpContext();
             app.UseRouting();
             app.UseAuthentication();
+            app.UseAuthMiddleware();
             app.UseEndpoints(endpoints =>
             {
 

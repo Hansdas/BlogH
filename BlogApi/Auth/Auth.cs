@@ -14,42 +14,15 @@ namespace BlogApi
     public static class Auth
     {
         /// <summary>
-        /// 登录账号
+        /// 获取登录人基本信息
         /// </summary>
-        private const string SESSION_LOGIN_ACCOUNT = "Account";
-        /// <summary>
-        /// 从Session获取登录信息
-        /// </summary>
+        /// <param name="httpContextAccessor"></param>
         /// <returns></returns>
-        public static UserModel GetLoginUser()
+        public static UserModel GetLoginUser(IHttpContextAccessor httpContextAccessor)
         {
-            string userName = "";
-           var v=  Http.httpContext.User.FindFirst("account");
-            if (Http.httpContext.User.Identity.IsAuthenticated)
-            {
-                userName = Http.httpContext.User.Claims.First().Value;
-            }
-            UserModel userModel = Http.GetSession<UserModel>(userName);
+            string json = new JWT(httpContextAccessor).ResolveToken();
+            UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
             return userModel;
-        }
-        /// <summary>
-        /// 用户登录
-        /// </summary>
-        public  static void Login(this HttpContext httpContext, User user)
-        {
-            Http.SetSession(user.Account, user);
-        }
-         /// <summary>
-        /// 退出操作
-        /// </summary>
-        public static void LoginOut()
-        {
-             string userName = "";
-            if(Http.httpContext.User.Identity.IsAuthenticated)
-            {
-                userName = Http.httpContext.User.Claims.First().Value;
-            }
-            Http.ClearSession(userName);
         }
     }
 }

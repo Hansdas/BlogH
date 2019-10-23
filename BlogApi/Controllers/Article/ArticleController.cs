@@ -8,6 +8,7 @@ using Blog.Domain;
 using Blog.Domain.Core;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -24,13 +25,15 @@ namespace BlogApi
         private  IArticleService _articleService;
         private IArticleRepository _articleRepository;
         private ICacheClient _cacheClient;
+        private IHttpContextAccessor _httpContext;
         public ArticleController(IArticleService articleService, IWebHostEnvironment webHostEnvironment
-            ,IArticleRepository articleRepository, ICacheClient cacheClient)
+            ,IArticleRepository articleRepository, ICacheClient cacheClient, IHttpContextAccessor httpContext)
         {
             _articleService = articleService;
             _webHostEnvironment = webHostEnvironment;
             _articleRepository = articleRepository;
             _cacheClient = cacheClient;
+            _httpContext = httpContext;
         }
         [HttpPost]
         public object AddArticle()
@@ -43,7 +46,7 @@ namespace BlogApi
             string[] srcArray = { };
             if (!string.IsNullOrEmpty(imgSrc))
                 srcArray = imgSrc.Trim(',').Split(',');
-            UserModel userModel = Auth.GetLoginUser();
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
             IList<string> filePaths = new List<string>();
             try
             {

@@ -63,7 +63,7 @@ namespace BlogApi.Controllers.Upload
         public string GetIp()
         {
             string ip = "";
-            var connectionInfo = Http.httpContext.Connection;
+            var connectionInfo = _accessor.HttpContext.Connection;
             ip = connectionInfo.LocalIpAddress.ToString();
             if (ip == "::1")
             {

@@ -25,9 +25,9 @@ namespace BlogApi.Controllers
         {
             _context = httpContext;
         }
-        [HttpGet]
+        [HttpPost]
         [EnableCors("AllowSpecificOrigins")]
-        public JsonResult Authenticate()
+        public JsonResult IsLogin()
         {
             ReturnResult returnResult = new ReturnResult();
             try

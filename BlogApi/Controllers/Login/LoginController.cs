@@ -84,10 +84,11 @@ namespace BlogApi.Controllers
                 return Json(new ReturnResult() { Code = "500", Message = message });
             return Json(new ReturnResult() { Code = "200", Message = "注册成功" });
         }
-        public IActionResult LoginOut()
+        public string LoginOut(string token)
         {
-            Auth.LoginOut();
-            return RedirectToAction("login", "login");
+            _cacheClient.Remove(token);
+            return "200";
         }
+
     }
 }

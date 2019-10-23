@@ -83,18 +83,6 @@ namespace BlogApi.Configure
             //注册AOP拦截器
             //return GetAutofacServiceProvider(services);
         }
-
-        /// <summary>
-        /// 添加对HttpContext的扩展支持
-        /// </summary>
-        /// <param name="app"></param>
-        /// <returns></returns>
-        public static IApplicationBuilder UseStaticHttpContext(this IApplicationBuilder app)
-        {
-            var httpContextAccessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
-            Http.Configure(httpContextAccessor);
-            return app;
-        }
         /// <summary>
         /// 3.0不支持返回IServiceProvider
         /// </summary>
