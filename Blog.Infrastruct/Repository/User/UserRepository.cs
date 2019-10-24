@@ -79,10 +79,28 @@ namespace Blog.Infrastruct
         }
         public void UpdateUser(User user)
         {
-            string sql= "UPDATE User SET user_username = @Username, user_account = @Account, user_password = @Password, user_sex = @Sex" +
-                ", user_phone = @Phone, user_email = @Email, user_birthdate = @BirthDate, user_sign = @Sign, user_isvalid = @IsValid" +
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("Account", user.Account);
+            parameters.Add("Username", user.Username);
+            parameters.Add("Sex", user.Sex);
+            parameters.Add("Phone", user.Phone);
+            parameters.Add("Email", user.Email);
+            parameters.Add("BirthDate", user.BirthDate);
+            parameters.Add("Sign", user.Sign);
+            parameters.Add("UpdateTime", DateTime.Now);
+            string sql= "UPDATE User SET user_username = @Username, user_sex = @Sex" +
+                ", user_phone = @Phone, user_email = @Email, user_birthdate = @BirthDate, user_sign = @Sign" +
                 ", user_updatetime = @UpdateTime WHERE user_account = @Account";
-            DbConnection.Execute(sql, user);
+            DbConnection.Execute(sql, parameters);
+        }
+
+        public void UpdatePassword(string account, string password)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("Password", password);
+            parameters.Add("Account", account);
+            string sql = "UPDATE User SET user_password = @Password WHERE user_account = @Account";
+            DbConnection.Execute(sql, parameters);
         }
     }
 }

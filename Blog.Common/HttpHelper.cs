@@ -20,7 +20,7 @@ namespace Blog.Common
         /// <param name="RequestHeaders"></param>
         /// <param name="multipartFormDataContent"></param>
         /// <returns></returns>
-        public static  string PostHttpClient(string url,
+        public static string PostHttpClient(string url,
              HttpContent httpContent, NameValueCollection RequestHeaders = null)
         {
             var handler = new HttpClientHandler();

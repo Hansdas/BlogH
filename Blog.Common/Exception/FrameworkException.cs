@@ -5,19 +5,19 @@ using System.Text;
 namespace Blog.Common
 {
     /// <summary>
-    /// 框架异常
+    /// 服务异常
     /// </summary>
-  public  class FrameworkException:Exception
+  public  class ServiceException:Exception
     {
-        public FrameworkException()
+        public ServiceException()
         {
 
         }
-        public FrameworkException(string message):base(message)
+        public ServiceException(string message):base(message)
         {
 
         }
-        public FrameworkException(string message, Exception innerException):base(message,innerException)
+        public ServiceException(string message, Exception innerException):base(message,innerException)
         {
 
         }

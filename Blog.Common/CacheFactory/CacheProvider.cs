@@ -16,7 +16,7 @@ namespace Blog.Common.CacheFactory
         public CacheProvider()
         {
             connectionDic = new ConcurrentDictionary<string, ConnectionMultiplexer>();
-            database = GetConnection().GetDatabase(_defaultDB);
+            database =GetConnection().GetDatabase(_defaultDB);
         }
         private ConnectionMultiplexer GetConnection()
         {
@@ -33,10 +33,6 @@ namespace Blog.Common.CacheFactory
             options.ClientName = model.InstanceName;
             return connectionDic.GetOrAdd(connStr, s => ConnectionMultiplexer.Connect(options));
         }
-        /// <summary>
-        /// 并不是使用频繁，所以没有再构造函数添加
-        /// </summary>
-        /// <returns></returns>
         private IServer GetServer()
         {
             if (server == null)

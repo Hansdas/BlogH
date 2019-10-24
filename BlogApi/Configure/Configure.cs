@@ -72,14 +72,6 @@ namespace BlogApi.Configure
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, s =>
-            //    {
-            //        new CookieOptions() { Domain = "http://127.0.0.1:8080" };
-            //    });
-            services.AddSession(s => {
-                s.IdleTimeout = TimeSpan.FromDays(7);
-            });
             //注册AOP拦截器
             //return GetAutofacServiceProvider(services);
         }

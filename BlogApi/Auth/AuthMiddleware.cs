@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BlogApi
@@ -16,13 +17,15 @@ namespace BlogApi
         private RequestDelegate _next;
         private IHttpContextAccessor _httpContext;
         private ICacheClient _cacheClient;
-        public AuthMiddleware(IHttpContextAccessor httpContext, RequestDelegate next, ICacheClient cacheClient)
+        private IList<string> _requestPaths;
+        public AuthMiddleware(IHttpContextAccessor httpContext, RequestDelegate next, ICacheClient cacheClient,IList<string> requestPaths)
         {
             _httpContext = httpContext;
             _next = next;
             _cacheClient = cacheClient;
+            _requestPaths = requestPaths;
         }
-        public Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
             try
             {
@@ -32,12 +35,25 @@ namespace BlogApi
                 //每次访问都更新token有效期
                 new JWT(_cacheClient).RefreshToken(token, isExpires);
                 context.Response.Headers.Add("refreshTokne", token);
-                return _next(context);
             }
-            catch (Exception)
-            {               
-                return _next(context);
+            catch (ValidationException)
+            {
+                if (_requestPaths.Contains(context.Request.Path.Value))
+                {
+                    context.Response.ContentType = "text/plain";
+                    await context.Response.WriteAsync("not login");
+                }
             }
+              await _next(context);
         }
+    }
+    public class JwtAuthOption
+    {
+        public IList<string> _requstPaths;
+        public void RequestPaths(IList<string> requestPaths)
+        {
+            _requstPaths = requestPaths;
+        }
+
     }
 }

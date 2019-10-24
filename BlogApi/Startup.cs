@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace BlogApi
 {
@@ -45,7 +46,7 @@ namespace BlogApi
                 {
                     build.WithOrigins("http://127.0.0.1:8080", "https://127.0.0.1:5001").WithHeaders("Authorization");
                 });
-               
+
             });
             services.AddServices();
             services.AddInfrastructure(Configuration);
@@ -73,7 +74,7 @@ namespace BlogApi
                 {
                     OnAuthenticationFailed = context =>
                     {
-                        if(context.Exception.GetType()==typeof(SecurityTokenExpiredException))
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                         {
                             context.Response.Headers.Add("isExpires", "true");
                         }
@@ -97,10 +98,14 @@ namespace BlogApi
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath + "/TempFile")),
                 RequestPath = ConstantKey.STATIC_FILE
             });
-            app.UseSession();
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAuthMiddleware();
+            app.UseAuthMiddleware(s =>
+            {
+                s.RequestPaths(new List<string>() {
+                    "/api/auth/islogin"
+                 });
+            });
             app.UseEndpoints(endpoints =>
             {
 

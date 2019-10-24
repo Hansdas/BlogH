@@ -88,7 +88,7 @@ namespace BlogApi.Controllers.User
             string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
             if (!string.IsNullOrEmpty(domainNotification))
                 return new JsonResult(new ReturnResult() { Code = "500", Message = domainNotification });
-            return new JsonResult(new ReturnResult() { Code = "200" });
+            return new JsonResult(new ReturnResult() { Code = "200"});
         }
     }
 }

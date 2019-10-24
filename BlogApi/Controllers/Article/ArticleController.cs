@@ -95,7 +95,6 @@ namespace BlogApi
         [HttpGet]
         public JsonResult LoadArticle(int pageIndex, int pageSize, string articleType)
         {
-            _cacheClient.Set("test", "test");
             PageResult pageResult = new PageResult();
             ArticleCondition condition = new ArticleCondition();
                 condition.ArticleType = articleType;

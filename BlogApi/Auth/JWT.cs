@@ -42,7 +42,7 @@ namespace BlogApi
         /// </summary>
         /// <param name="claims"></param>
         /// <returns></returns>
-        public static string CreateToken(IEnumerable<Claim> claims)
+        public  string CreateToken(IEnumerable<Claim> claims)
         {
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(SecurityKey));
             var expires = DateTime.Now.AddMinutes(30);
@@ -54,6 +54,10 @@ namespace BlogApi
                         expires: expires,
                         signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature));
             string jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+            TokenModel tokenModel = new TokenModel();
+            tokenModel.ExpireTime = DateTime.Now.AddDays(7);
+            tokenModel.token = jwtToken;
+            _cacheClient.Set(jwtToken, tokenModel, TimeSpan.FromDays(7));
             return jwtToken;
         }
         public  void RemoveToken(string token)
@@ -67,6 +71,8 @@ namespace BlogApi
         /// <param name="isExpires">是否失效</param>
         public  void RefreshToken(string token,bool isExpires=false)
         {
+            if(token==null)
+                throw new ValidationException("expires");
             TokenModel tokenMode = _cacheClient.Get<TokenModel>(token);
             if (tokenMode == null)
                 throw new ValidationException("expires");
@@ -88,6 +94,8 @@ namespace BlogApi
             if (!IsAuthorized)
                 throw new ValidationException("not login");
             string token = authStr.ToString().Substring("Bearer ".Length).Trim();
+            if(token=="null")
+                throw new ValidationException("not login");
             IJsonSerializer serializer = new JsonNetSerializer();
             IDateTimeProvider provider = new UtcDateTimeProvider();
             IJwtValidator validator = new JwtValidator(serializer, provider);

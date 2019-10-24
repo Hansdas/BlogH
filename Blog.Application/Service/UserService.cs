@@ -27,11 +27,10 @@ namespace Blog.Application
             try
             {
                 Task task = _mediatorHandler.SendCommand(command);
-                Task.WaitAll(task);
             }
             catch (AggregateException)
             {
-                throw new FrameworkException("程序内部错误");
+                throw new ServiceException("程序内部错误");
             }
         }
 
@@ -40,7 +39,7 @@ namespace Blog.Application
             User user = _userRepository.SelectUserByAccount(Account);
             if (user == null)
                 throw new ValidationException("用户名不存在或密码错误");
-            if (user.Password != password)
+            if (user.Password != EncrypUtil.MD5Encry(password))
                 throw new ValidationException("用户名不存在或密码错误");
             return user;
         }
@@ -60,7 +59,6 @@ namespace Blog.Application
             User user = new User(account, EncrypUtil.MD5Encry(password));
             var command = new UpdateUserCommand(user, EncrypUtil.MD5Encry(oldPassword));
             Task task= _mediatorHandler.SendCommand(command);
-            Task.WaitAll(task);
         }
     }
 }

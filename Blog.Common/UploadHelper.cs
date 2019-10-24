@@ -87,7 +87,7 @@ namespace Blog.Common
             File.Delete(localFilePath);
             dynamic result = JsonHelper.DeserializeObject(httpResult);
             if (result.code == "500")
-                throw new FrameworkException("webapi请求错误:" + result.message);
+                throw new ServiceException("webapi请求错误:" + result.message);
             uploadSavePath = result.savepath;
             return fileSize;
         }
@@ -117,29 +117,5 @@ namespace Blog.Common
             int subIndex = loaclPath.IndexOf("Down") + 4;
             return  string.Format("{0}{1}", ConstantKey.STATIC_FILE, loaclPath.Substring(subIndex));
         }
-        ///// <summary>
-        ///// WebClinet下载附件
-        ///// </summary>
-        ///// <param name="httpUrl">原始文件地址</param>
-        ///// <param name="savePath">保存至本地地址</param>
-        ///// <returns></returns>
-        //public static IList<string> DownFile(IList<string> savePaths)
-        //{
-        //    DateTime dateTime = DateTime.Now;
-        //    IConfigurationSection section = GetConfigurationSection("webapi");
-        //    string saveLocalPath = saveLocalPath = string.Format(@"{0}\TempFile\{1}\{2}\", ConstantKey.WebRoot, dateTime.Year.ToString(), dateTime.Month.ToString()); ;
-        //    IList<string> localSavePaths = new List<string>();
-        //    string ip ="http://"+section.GetSection("HttpAddresss").Value;
-        //    string UploadSavePathBase = ConfigurationProvider.configuration.GetSection("webapi:UploadSavePathBase").Value;
-        //    Parallel.For(0, savePaths.Count, s =>
-        //    {
-        //        string str = DownFile(ip + "/" + savePaths[s].Replace(UploadSavePathBase, ""), saveLocalPath);
-        //        lock (obj)
-        //        {
-        //            localSavePaths.Add(str);
-        //        }
-        //    });
-        //    return localSavePaths;
-        //}
     }
 }

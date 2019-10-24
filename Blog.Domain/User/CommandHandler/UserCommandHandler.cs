@@ -44,6 +44,7 @@ namespace Blog.Domain
                     _mediatorHandler.RaiseEvent(new DomainNotification(ConstantKey.CHECK_KEY, "原始密码错误"));
                     return Task.FromResult(new Unit());
                 }
+                _userRepository.UpdatePassword(command.User.Account,command.User.Password);
             }
             else
             {
@@ -53,8 +54,8 @@ namespace Blog.Domain
                     _mediatorHandler.RaiseEvent(new DomainNotification(ConstantKey.CHECK_KEY, "不存在用户账号：" + command.User.Account));
                     return Task.FromResult(new Unit());
                 }
+                _userRepository.UpdateUser(command.User);
             }
-            _userRepository.UpdateUser(command.User);
             return Task.FromResult(new Unit());
         }
     }

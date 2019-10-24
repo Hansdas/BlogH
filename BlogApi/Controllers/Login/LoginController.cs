@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
-using Blog;
+using System.Threading;
 using Blog.Application;
 using Blog.Common;
 using Blog.Common.CacheFactory;
 using Blog.Domain.Core;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.IdentityModel.Tokens;
 
 namespace BlogApi.Controllers
 {
@@ -56,7 +48,7 @@ namespace BlogApi.Controllers
                     new Claim("sign", string.IsNullOrEmpty(user.Sign)?"":user.Sign),
                     new Claim("phone",user.Phone)
                 };
-            string jwtToken = JWT.CreateToken(claims);
+            string jwtToken = new JWT(_cacheClient).CreateToken(claims);
             return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
         }
 
@@ -75,7 +67,7 @@ namespace BlogApi.Controllers
                 if (!string.IsNullOrEmpty(domainNotification))
                     message = domainNotification;
             }
-            catch (FrameworkException e)
+            catch (ServiceException e)
             {
                 message = e.Message;
             }

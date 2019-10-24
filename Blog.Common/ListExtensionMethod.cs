@@ -31,18 +31,6 @@ namespace Common
         /// <returns></returns>
         public static string ConvertTostring(this IEnumerable<string> source, string separator)
         {
-            //StringBuilder builder = new StringBuilder();
-            //using (IEnumerator<string> enumerator = source.GetEnumerator())
-            //{
-
-            //}
-            //    foreach (var item in source)
-            //    {
-            //        builder.Append(item);
-            //        builder.Append(separator);
-            //        source.GetEnumerator().MoveNext
-            //    }
-            //return builder.ToString().Trim(separator);
            return string.Join(separator, source);
         }
     }

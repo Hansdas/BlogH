@@ -16,23 +16,23 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BlogApi.Controllers
 {
-    [Route("api/Auth")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly IHttpContextAccessor _context;
-        public AuthenticationController(IHttpContextAccessor httpContext)
+        public AuthController(IHttpContextAccessor httpContext)
         {
             _context = httpContext;
         }
         [HttpPost]
         [EnableCors("AllowSpecificOrigins")]
-        public JsonResult IsLogin()
+        public JsonResult GetLoginUser()
         {
             ReturnResult returnResult = new ReturnResult();
             try
             {
-                string json= new JWT(_context).ResolveToken();
+                string json = new JWT(_context).ResolveToken();
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
                 returnResult.Code = "200";
                 returnResult.Data = userModel;
@@ -43,6 +43,14 @@ namespace BlogApi.Controllers
                 returnResult.Message = "checkfail";
             }
             return new JsonResult(returnResult);
+        }
+        /// <summary>
+        /// 是否登录，通过中间件处理
+        /// </summary>
+        [HttpPost]
+        public void IsLogin()
+        {
+           
         }
     }
 }
