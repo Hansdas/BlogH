@@ -3,6 +3,8 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -116,6 +118,95 @@ namespace Blog.Common
             img.Save(loaclPath);
             int subIndex = loaclPath.IndexOf("Down") + 4;
             return  string.Format("{0}{1}", ConstantKey.STATIC_FILE, loaclPath.Substring(subIndex));
+        }
+
+        /// <summary>
+        /// 重新压缩图片高和宽，如果原图片小于期望值则不变
+        /// </summary>
+        /// <param name="imgStream">图片流</param>
+        /// <param name="heigth">期望最大高度</param>
+        /// <param name="width">期望最大宽度</param>
+        /// <param name="isAbs">如果为true，则压缩为指定大小，否则相对原大小压缩</param>
+        /// <returns></returns>
+        private static Stream CompressImage(Stream imgStream,int maxHeigth,int maxWidth,bool isAbs)
+        {
+            using (Image image = Image.FromStream(imgStream))
+            {
+                int sourceWidth = image.Width;
+                //获取图片高度
+                int sourceHeight = image.Height;
+                int height = image.Height, width = image.Width;
+                if (isAbs)
+                {
+                    height = maxHeigth;
+                    width = maxWidth;
+                }
+                else
+                {
+                    if (image.Height > maxHeigth)
+                        height = maxHeigth;
+                    if (image.Width > maxWidth)
+                        width = maxWidth;
+                }
+                float nPercentW = 0;
+                float nPercentH = 0;
+                //计算宽度的缩放比例
+                nPercentW = ((float)width/ (float)sourceWidth);
+                //计算高度的缩放比例
+                nPercentH = ((float)height / (float)sourceHeight);
+
+                //期望的宽度
+                int destWidth = (int)(sourceWidth * nPercentW);
+                //期望的高度
+                int destHeight = (int)(sourceHeight * nPercentH);
+                using (Bitmap bitmap = new Bitmap(destWidth, destHeight))
+                {
+
+                    using (Graphics graphics = Graphics.FromImage(bitmap))
+                    {
+                        graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                        //绘制图像
+                        graphics.DrawImage(image, 0, 0, destWidth, destHeight);
+                        graphics.Dispose();
+                        MemoryStream memoryStream = new MemoryStream();
+                        if (image.RawFormat == ImageFormat.Jpeg)
+                            bitmap.Save(memoryStream, ImageFormat.Jpeg);
+                        else
+                            bitmap.Save(memoryStream, ImageFormat.Png);
+                        return memoryStream;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 重新压缩图片高和宽，如果原图片小于期望值则不变
+        /// </summary>
+        /// <param name="saveLoacalPath">本地存放路径</param>
+        /// <param name="imgStream">图片流</param>
+        /// <param name="heigth">期望最大高度</param>
+        /// <param name="width">期望最大宽度</param>
+        /// <param name="isAbs">如果为true，则压缩为指定大小，否则相对原大小压缩</param>
+        /// <returns></returns>
+        public static void CompressImage(string saveLoacalPath, Stream imgStream, int maxHeigth, int maxWidth, bool isAbs)
+        {
+            using (FileStream fs = File.Create(saveLoacalPath))
+            {
+                using (Stream stream = CompressImage(imgStream, maxHeigth, maxWidth, false))
+                {
+                    byte[] srcBuf = StreamToBytes(stream);
+
+                    fs.Write(srcBuf, 0, srcBuf.Length);
+                    fs.Flush();
+                }
+            }
+        }
+        private static byte[] StreamToBytes(Stream stream)
+        {
+            byte[] bytes = new byte[stream.Length];
+            // 设置当前流的位置为流的开始 
+            stream.Seek(0, SeekOrigin.Begin);
+            stream.Read(bytes, 0, bytes.Length);
+            return bytes;
         }
     }
 }

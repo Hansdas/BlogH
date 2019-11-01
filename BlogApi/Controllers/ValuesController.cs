@@ -60,8 +60,8 @@ namespace BlogApi.Controllers
                 //   new Claim (JwtRegisteredClaimNames.Exp,$"{new DateTimeOffset(DateTime.Now.AddSeconds(30)).ToUnixTimeSeconds()}"),
 
                 };
-            string jwtToken = JWT.CreateToken(claims);
-            return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
+            //string jwtToken = JWT.CreateToken(claims);
+            return new JsonResult(new ReturnResult() { Code = "200", Data = "" });
         }
 
         // PUT api/values/5

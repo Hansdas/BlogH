@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using MediatR;
 using System.Linq;
+using Blog.Common.CacheFactory;
+using Microsoft.AspNetCore.Cors;
 
 namespace BlogApi.Controllers.User
 {
@@ -22,11 +24,14 @@ namespace BlogApi.Controllers.User
         private readonly IHttpContextAccessor _context;
         private readonly IUserService _userService;
         private DomainNotificationHandler _domainNotificationHandler;
-        public UserController(IHttpContextAccessor httpContextAccessor, IUserService  userService, INotificationHandler<DomainNotification> notifications)
+        private readonly ICacheClient _cacheClient;
+        public UserController(IHttpContextAccessor httpContextAccessor, IUserService  userService
+            , INotificationHandler<DomainNotification> notifications, ICacheClient cacheClient)
         {
             _context = httpContextAccessor;
             _userService = userService;
             _domainNotificationHandler=  (DomainNotificationHandler)notifications;
+            _cacheClient = cacheClient;
         }
         [HttpGet]
         public IActionResult UserInfo()
@@ -69,7 +74,7 @@ namespace BlogApi.Controllers.User
                     new Claim("sign", string.IsNullOrEmpty(userModel.Sign)?"":userModel.Sign),
                     new Claim("phone",userModel.Phone)
                 };
-                string jwtToken = JWT.CreateToken(claims);
+                string jwtToken = new JWT(_cacheClient).CreateToken(claims);
                 return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
             }
             catch (Exception ex)
@@ -77,6 +82,13 @@ namespace BlogApi.Controllers.User
                 return new JsonResult(new ReturnResult("500", ex.Message));
             }
         }
+        //[HttpPost]
+        //[Consumes("multipart/form-data")]
+        //[EnableCors("AllowSpecificOrigins")]
+        //public IActionResult UploadPhoto()
+        //{
+
+        //}
         [HttpPost]
         public IActionResult UpdatePassword()
         {
