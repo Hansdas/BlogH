@@ -13,6 +13,7 @@ using MediatR;
 using System.Linq;
 using Blog.Common.CacheFactory;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BlogApi.Controllers.User
 {
@@ -21,24 +22,24 @@ namespace BlogApi.Controllers.User
     [ApiController]
     public class UserController : Controller
     {
-        private readonly IHttpContextAccessor _context;
-        private readonly IUserService _userService;
+        private  IUserService _userService;
         private DomainNotificationHandler _domainNotificationHandler;
         private readonly ICacheClient _cacheClient;
-        public UserController(IHttpContextAccessor httpContextAccessor, IUserService  userService
-            , INotificationHandler<DomainNotification> notifications, ICacheClient cacheClient)
+        private IHttpContextAccessor _httpContext;
+        public UserController( IUserService  userService, INotificationHandler<DomainNotification> notifications
+            , ICacheClient cacheClient,IHttpContextAccessor httpContext)
         {
-            _context = httpContextAccessor;
             _userService = userService;
             _domainNotificationHandler=  (DomainNotificationHandler)notifications;
             _cacheClient = cacheClient;
+            _httpContext = httpContext;
         }
         [HttpGet]
         public IActionResult UserInfo()
         {
             try
             {
-                string json = new JWT(_context).ResolveToken();
+                string json = new JWT(_httpContext).ResolveToken();
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
                 return new JsonResult(new ReturnResult("200", userModel));
             }
@@ -82,19 +83,24 @@ namespace BlogApi.Controllers.User
                 return new JsonResult(new ReturnResult("500", ex.Message));
             }
         }
-        //[HttpPost]
-        //[Consumes("multipart/form-data")]
-        //[EnableCors("AllowSpecificOrigins")]
-        //public IActionResult UploadPhoto()
-        //{
-
-        //}
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        [EnableCors("AllowSpecificOrigins")]
+        public IActionResult UploadPhoto()
+        {
+            var file = Request.Form.Files[0];
+            PathValue pathValue = UploadHelper.SaveFile(file.FileName);
+            UploadHelper.CompressImage(pathValue.FilePath,file.OpenReadStream(),168,168,true);
+            //使用虚拟静态资源路径，否则无法读取到图片
+            string virtualPath = HttpHelper.GetRequestIP(_httpContext) + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
+            return Json(new { Code = "200", Data = new { Path=virtualPath } });
+        }
         [HttpPost]
         public IActionResult UpdatePassword()
         {
              string password= Request.Form["password"];
             string OldPawword = Request.Form["oldpassword"];
-            string json = new JWT(_context).ResolveToken();
+            string json = new JWT(_httpContext).ResolveToken();
             UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
             _userService.UpdatePassword(userModel.Account,password, OldPawword);
             string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();

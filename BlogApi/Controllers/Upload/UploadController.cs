@@ -41,73 +41,29 @@ namespace BlogApi.Controllers.Upload
             returnResult.Data = pairs;
             return Json(returnResult);
         }
-        [HttpPost]
-        [Consumes("multipart/form-data")]
-        public IActionResult UploadPhoto()
-        {
-            var imgFile = Request.Form.Files[0];
-            if (imgFile == null)
-                return Json(new ReturnResult("1", "附件为null"));
-            if (string.IsNullOrEmpty(imgFile.FileName))
-                return Json(new ReturnResult("1", "附件名称为空"));
-            var value = CombinePath(imgFile);
-            using (FileStream fs = System.IO.File.Create(value.imgSrc))
-            {
-                imgFile.CopyTo(fs);
-                fs.Flush();
-            }
-            return Json(new ReturnResult("0", "", value.imgSrc));
-        }
         [HttpGet]
         public string GetIp()
         {
-            string ip = "";
-            var connectionInfo = _accessor.HttpContext.Connection;
-            ip = connectionInfo.LocalIpAddress.ToString();
-            if (ip == "::1")
-            {
-                ip = "127.0.0.1";
-                ip = string.Format("https://{0}:{1}", ip, connectionInfo.LocalPort);
-            }
-            else
-                ip = string.Format("http://{0}:{1}", ip, connectionInfo.LocalPort);
-            return ip;
-
-
+            return HttpHelper.GetRequestIP(_accessor);
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
         [EnableCors("AllowSpecificOrigins")]
         public IActionResult UploadImage()
-        {
+        {   
+            int height =Convert.ToInt32(Request.Form["height"]);
+            int width = Convert.ToInt32(Request.Form["height"]);
+            bool b = Convert.ToBoolean(Request.Form["isAbs"]);
             var imgFile = Request.Form.Files[0];
             if (imgFile == null)
-                return Json(new ReturnResult("1", "附件为null"));
+                return Json(new ReturnResult("500", "附件为null"));
             if (string.IsNullOrEmpty(imgFile.FileName))
-                return Json(new ReturnResult("1", "附件名称为空"));
-            var value = CombinePath(imgFile);
-            UploadHelper.CompressImage(value.imgSrc, imgFile.OpenReadStream(), 168, 168, false);
+                return Json(new ReturnResult("500", "附件名称为空"));
+            PathValue pathValue =UploadHelper.SaveFile(imgFile.FileName);
+            UploadHelper.CompressImage(pathValue.FilePath, imgFile.OpenReadStream(), height, width, b);
             //使用虚拟静态资源路径，否则无法读取到图片
-            string virtualPath = GetIp() + ConstantKey.STATIC_FILE + value.datePath + value.newFileName;
+            string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
             return Json(new { Code = "200", Data = new { Src = virtualPath, Title = imgFile.FileName } });
-        }
-        /// <summary>
-        /// 组合图片保存路径
-        /// </summary>
-        /// <param name="imgFile"></param>
-        /// <returns></returns>
-        private (string newFileName, string datePath, string imgSrc) CombinePath(IFormFile imgFile)
-        {
-            int index = imgFile.FileName.LastIndexOf('.');
-            string extension = imgFile.FileName.Substring(index, imgFile.FileName.Length - index);//获取后缀名
-            string webpath = _webHostEnvironment.ContentRootPath;//网站根路径
-            string guid = Guid.NewGuid().ToString().Replace("-", "");//生成guid
-            string newFileName = guid + extension;
-            DateTime dateTime = DateTime.Now;
-            string datePath = string.Format(@"\{0}\{1}\{2}\", dateTime.Year, dateTime.Month, dateTime.Day);//路径日期部分
-            string fullPath = string.Format(@"{0}\TempFile{1}", webpath, datePath);//全路径
-            string imgSrc = DirectoryHelper.CreateDirectory(fullPath) + newFileName;
-            return (newFileName, datePath, imgSrc);
         }
     
         public IActionResult DeleteFile(string imgpath)

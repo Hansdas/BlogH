@@ -1,4 +1,5 @@
 ﻿using Blog.Domain.Core;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,29 @@ using System.Threading.Tasks;
 namespace Blog.Common
 {
     /// <summary>
+    /// 文件存储本地结果
+    /// </summary>
+    public struct PathValue
+    {
+        /// <summary>
+        /// 文件路径
+        /// </summary>
+        public string FilePath { get; set; }
+        /// <summary>
+        /// 文件名
+        /// </summary>
+        public string FileName { get; set; }
+        /// <summary>
+        /// 路径日期部分
+        /// </summary>
+        public string DatePath { get; set; }
+    }
+    /// <summary>
     /// 上传帮助类文件
     /// </summary>
     public class UploadHelper
     {
+       
         private static readonly string controller = "/api/Upload";
         private readonly static object obj = new object();
         private static IConfigurationSection GetConfigurationSection(string sctionKey)
@@ -187,7 +207,7 @@ namespace Blog.Common
         /// <param name="width">期望最大宽度</param>
         /// <param name="isAbs">如果为true，则压缩为指定大小，否则相对原大小压缩</param>
         /// <returns></returns>
-        public static void CompressImage(string saveLoacalPath, Stream imgStream, int maxHeigth, int maxWidth, bool isAbs)
+        public static void CompressImage(string saveLoacalPath, Stream imgStream, int maxHeigth, int maxWidth, bool isAbs=false)
         {
             using (FileStream fs = File.Create(saveLoacalPath))
             {
@@ -200,6 +220,34 @@ namespace Blog.Common
                 }
             }
         }
+        /// <summary>
+        /// 保存文件到本地，返回图片路径
+        /// </summary>
+        /// <param name="fileNameWithExtension"></param>
+        /// <returns></returns>
+        public static PathValue SaveFile(string fileNameWithExtension)
+        {
+            int index = fileNameWithExtension.LastIndexOf('.');
+            string extension = fileNameWithExtension.Substring(index, fileNameWithExtension.Length - index);//获取后缀名
+            string webpath = ConstantKey.WebRoot;//网站根路径
+            string guid = Guid.NewGuid().ToString().Replace("-", "");//生成guid
+            string newFileName = guid + extension;
+            DateTime dateTime = DateTime.Now;
+            string datePath = string.Format(@"\{0}\{1}\{2}\", dateTime.Year, dateTime.Month, dateTime.Day);//路径日期部分
+            string fullPath = string.Format(@"{0}\TempFile{1}", webpath, datePath);//全路径
+            DirectoryHelper.CreateDirectory(fullPath);//创建目录
+            PathValue pathValue = new PathValue();
+            pathValue.DatePath = datePath;
+            pathValue.FileName = newFileName;
+            pathValue.FilePath = fullPath + newFileName;
+            return pathValue;
+
+        }
+        /// <summary>
+        /// 将Stream放入byte组
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         private static byte[] StreamToBytes(Stream stream)
         {
             byte[] bytes = new byte[stream.Length];
@@ -208,5 +256,6 @@ namespace Blog.Common
             stream.Read(bytes, 0, bytes.Length);
             return bytes;
         }
+
     }
 }
