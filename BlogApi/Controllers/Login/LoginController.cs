@@ -6,7 +6,7 @@ using Blog.Application;
 using Blog.Common;
 using Blog.Common.CacheFactory;
 using Blog.Domain.Core;
-using MediatR;
+using Blog.Domain.Core.Notifications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApi.Controllers
@@ -18,7 +18,7 @@ namespace BlogApi.Controllers
         protected IUserService _userService;
         protected ICacheClient _cacheClient;
         private readonly DomainNotificationHandler _domainNotificationHandler;
-        public LoginController(IUserService userService, ICacheClient cacheClient, INotificationHandler<DomainNotification> notifications)
+        public LoginController(IUserService userService, ICacheClient cacheClient, INoticficationHandler<DomainNotification> notifications)
         {
             _userService = userService;
             _domainNotificationHandler = (DomainNotificationHandler)notifications;

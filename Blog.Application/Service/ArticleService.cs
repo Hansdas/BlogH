@@ -14,24 +14,16 @@ namespace Blog.Application
     public class ArticleService : IArticleService
     {
         private IArticleRepository _articleRepository;
-        private readonly IMediatorHandler _mediatorHandler;
-        public ArticleService(IMediatorHandler mediatorHandler, IArticleRepository articleRepository)
+        private IEventBus _eventBus;
+        public ArticleService(IEventBus eventBus, IArticleRepository articleRepository)
         {
-            _mediatorHandler = mediatorHandler;
+            _eventBus = eventBus;
             _articleRepository = articleRepository;
         }
         public void Publish(Article article)
         {
-            try
-            {
-                var command = new CreateArticleCommand(article);
-                _mediatorHandler.SendCommand(command);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            var command = new CreateArticleCommand(article);
+            _eventBus.Publish(command);
         }
 
         public IList<ArticleModel> SelectByPage(int pageIndex, int pageSize, ArticleCondition condition = null)
@@ -83,12 +75,11 @@ namespace Blog.Application
         }
         public PageInfoMode SelectNextUp(int id, ArticleCondition articleCondition = null)
         {
-            IEnumerable<dynamic> dynamics = _articleRepository.SelectNextUp(id,articleCondition);
+            IEnumerable<dynamic> dynamics = _articleRepository.SelectNextUp(id, articleCondition);
             PageInfoMode pageInfoMode = new PageInfoMode();
-            int i = 0;
             foreach (dynamic d in dynamics)
             {
-                if(d.article_id>id)
+                if (d.article_id > id)
                 {
                     pageInfoMode.NextId = d.article_id;
                     pageInfoMode.NextTitle = d.article_title;

@@ -8,7 +8,6 @@ using Blog.Domain;
 using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;
 using Blog.Infrastruct;
-using Blog.Infrastruct.EventBus;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -21,6 +20,8 @@ using Autofac.Extras.DynamicProxy;
 using Blog.Dapper;
 using Blog.AOP.Transaction;
 using Blog.AOP;
+using Blog.Domain.Core.Event;
+using Blog.Domain.Core.Notifications;
 
 namespace BlogApi.Configure
 {
@@ -34,14 +35,13 @@ namespace BlogApi.Configure
         {
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
-            services.AddTransient<IRequestHandler<CreateUserCommand, Unit>, UserCommandHandler>();
-            services.AddTransient<IRequestHandler<UpdateUserCommand, Unit>, UserCommandHandler>();
+            services.AddEventDependency<IEventHandler<CreateUserCommand>, CreateUserCommand>();
+            services.AddEventDependency<IEventHandler<UpdateUserCommand>, UpdateUserCommand>();
 
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IArticleService, ArticleService>();
-            services.AddTransient<IRequestHandler<CreateArticleCommand, Unit>, ArticleCommandHandler>();
+            services.AddEventDependency<ArticleCommandHandler, CreateArticleCommand>();
 
-            //services.AddTransient<IUploadFileRepository, UploadFileRepository>();
 
             services.AddTransient<ICommentRepository, CommentRepository>();
 
@@ -58,12 +58,10 @@ namespace BlogApi.Configure
         {
             //注册全局过滤器
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
-            //注册中介工具 https://github.com/jbogard/MediatR/wiki
-            services.AddMediatR(typeof(Startup));
             //注册发布订阅中介处理
-            services.AddTransient<IMediatorHandler, InMemoryBus>();
+            services.AddTransient<IEventBus, EventBus>();
             //注册领域通知
-            services.AddScoped<INotificationHandler<DomainNotification>, DomainNotificationHandler>();
+            services.AddScoped<INoticficationHandler<DomainNotification>, DomainNotificationHandler>();
             //注册仓储接口
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
             //注册Redis

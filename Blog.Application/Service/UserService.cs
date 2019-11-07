@@ -15,23 +15,16 @@ namespace Blog.Application
     public class UserService :IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IMediatorHandler _mediatorHandler;
-        public UserService(IUserRepository userRepository, IMediatorHandler mediatorHandler)
+        private readonly IEventBus _eventBus;
+        public UserService(IUserRepository userRepository, IEventBus eventBus)
         {
             _userRepository = userRepository;
-            _mediatorHandler = mediatorHandler;
+            _eventBus = eventBus;
         }
         public void Insert(User user)
         {
             var command = new CreateUserCommand(user);
-            try
-            {
-                Task task = _mediatorHandler.SendCommand(command);
-            }
-            catch (AggregateException)
-            {
-                throw new ServiceException("程序内部错误");
-            }
+            _eventBus.Publish(command);
         }
 
         public User SelectUser(string Account,string password)
@@ -51,14 +44,14 @@ namespace Blog.Application
                 birthDate = Convert.ToDateTime(userModel.BirthDate);
             User newUser = new User(userModel.Username, userModel.Account, "", Enum.Parse<Sex>(userModel.Sex),false, userModel.Email
               , userModel.Phone, birthDate, userModel.Sign, DateTime.Now);
-            var command = new UpdateUserCommand(newUser);          
-            _mediatorHandler.SendCommand(command);
+            var command = new UpdateUserCommand(newUser);
+            _eventBus.Publish(command);
         }
         public void UpdatePassword(string account, string password,string oldPassword)
         {
             User user = new User(account, EncrypUtil.MD5Encry(password));
             var command = new UpdateUserCommand(user, EncrypUtil.MD5Encry(oldPassword));
-            Task task= _mediatorHandler.SendCommand(command);
+            _eventBus.Publish(command);
         }
     }
 }

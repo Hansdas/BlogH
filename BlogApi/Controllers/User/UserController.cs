@@ -14,6 +14,7 @@ using System.Linq;
 using Blog.Common.CacheFactory;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
+using Blog.Domain.Core.Notifications;
 
 namespace BlogApi.Controllers.User
 {
@@ -26,7 +27,7 @@ namespace BlogApi.Controllers.User
         private DomainNotificationHandler _domainNotificationHandler;
         private readonly ICacheClient _cacheClient;
         private IHttpContextAccessor _httpContext;
-        public UserController( IUserService  userService, INotificationHandler<DomainNotification> notifications
+        public UserController( IUserService  userService, INoticficationHandler<DomainNotification> notifications
             , ICacheClient cacheClient,IHttpContextAccessor httpContext)
         {
             _userService = userService;

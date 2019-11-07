@@ -47,7 +47,7 @@ namespace Blog.Domain
             Sign = sign;
         }
         public User(int id,string username, string account, string password, Sex sex, bool isvalid,string email
-            ,string phone,DateTime? birthDate,string sign, DateTime createtime,DateTime? updatetime)
+            ,string phone,DateTime? birthDate,string sign,string headPhoto, DateTime createtime,DateTime? updatetime)
         :this(username, account, password,sex,isvalid)
         {
             Id = id;
@@ -62,6 +62,7 @@ namespace Blog.Domain
             Phone = phone;
             BirthDate = birthDate;
             Sign = sign;
+            HeadPhoto = headPhoto;
         }
         /// <summary>
         /// 用户名
@@ -99,5 +100,9 @@ namespace Blog.Domain
         /// 个性签名
         /// </summary>
         public string Sign { get; private set; }
+        /// <summary>
+        /// 头像
+        /// </summary>
+        public string HeadPhoto { get; private set; }
     }
 }
