@@ -15,7 +15,7 @@ namespace Blog.Domain.Core.Notifications
     /// 标记领域通知
     /// </summary>
     /// <typeparam name="TNotification"></typeparam>
-    public interface INoticficationHandler<TNotification> where TNotification:DomainNotification
+    public interface INoticficationHandler<TNotification>:INoticficationHandler where TNotification:DomainNotification
     {
         void Handler(TNotification notification);
     }

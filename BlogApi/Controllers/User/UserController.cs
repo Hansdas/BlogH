@@ -74,7 +74,8 @@ namespace BlogApi.Controllers.User
                     new Claim("birthDate", string.IsNullOrEmpty(userModel.BirthDate)?"":userModel.BirthDate),
                     new Claim("email", string.IsNullOrEmpty(userModel.Email)?"":userModel.Email),
                     new Claim("sign", string.IsNullOrEmpty(userModel.Sign)?"":userModel.Sign),
-                    new Claim("phone",userModel.Phone)
+                    new Claim("phone",userModel.Phone),
+                    new Claim("photo",userModel.HeadPhoto)
                 };
                 string jwtToken = new JWT(_cacheClient).CreateToken(claims);
                 return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
@@ -94,7 +95,22 @@ namespace BlogApi.Controllers.User
             UploadHelper.CompressImage(pathValue.FilePath,file.OpenReadStream(),168,168,true);
             //使用虚拟静态资源路径，否则无法读取到图片
             string virtualPath = HttpHelper.GetRequestIP(_httpContext) + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
-            return Json(new { Code = "200", Data = new { Path=virtualPath } });
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            userModel.HeadPhoto = virtualPath;
+            _userService.Update(userModel);
+            IList<Claim> claims = new List<Claim>()
+                {
+                    new Claim("account", userModel.Account),
+                    new Claim("username", userModel.Username),
+                    new Claim("sex", userModel.Sex),
+                    new Claim("birthDate", string.IsNullOrEmpty(userModel.BirthDate)?"":userModel.BirthDate),
+                    new Claim("email", string.IsNullOrEmpty(userModel.Email)?"":userModel.Email),
+                    new Claim("sign", string.IsNullOrEmpty(userModel.Sign)?"":userModel.Sign),
+                    new Claim("phone",userModel.Phone),
+                    new Claim("photo",userModel.HeadPhoto)
+                };
+            string jwtToken = new JWT(_cacheClient).CreateToken(claims);
+            return new JsonResult(new ReturnResult() { Code = "200", Data = new {Path=virtualPath,token=jwtToken } });
         }
         [HttpPost]
         public IActionResult UpdatePassword()
@@ -108,6 +124,12 @@ namespace BlogApi.Controllers.User
             if (!string.IsNullOrEmpty(domainNotification))
                 return new JsonResult(new ReturnResult() { Code = "500", Message = domainNotification });
             return new JsonResult(new ReturnResult() { Code = "200"});
+        }
+        [HttpGet]
+        public string GetPhoto()
+        {
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            return userModel.HeadPhoto;
         }
     }
 }

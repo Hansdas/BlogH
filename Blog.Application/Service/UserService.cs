@@ -12,22 +12,45 @@ using Blog.Domain.Core.Bus;
 
 namespace Blog.Application
 {
-    public class UserService :IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IEventBus _eventBus;
+        /// <summary>
+        /// 根据UserModel转实体
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
+        private User TransferModel(UserModel userModel)
+        {
+            Sex sex = string.IsNullOrEmpty(userModel.Sex) ? Sex.男 : Enum.Parse<Sex>(userModel.Sex);
+            DateTime? birthDate = null;
+            if (!string.IsNullOrEmpty(userModel.BirthDate))
+                birthDate = Convert.ToDateTime(userModel.BirthDate);
+            User user = new User(userModel.Username
+                , userModel.Account
+                , userModel.Password
+                , sex
+                , userModel.IsValid
+                , birthDate
+                , userModel.Email
+                , userModel.Sign
+                ,userModel.Phone
+                ,userModel.HeadPhoto);
+            return user;
+        }
         public UserService(IUserRepository userRepository, IEventBus eventBus)
         {
             _userRepository = userRepository;
             _eventBus = eventBus;
         }
-        public void Insert(User user)
+        public void Insert(UserModel userModel)
         {
-            var command = new CreateUserCommand(user);
+            var command = new CreateUserCommand(TransferModel(userModel));
             _eventBus.Publish(command);
         }
 
-        public User SelectUser(string Account,string password)
+        public User SelectUser(string Account, string password)
         {
             User user = _userRepository.SelectUserByAccount(Account);
             if (user == null)
@@ -39,18 +62,15 @@ namespace Blog.Application
 
         public void Update(UserModel userModel)
         {
-            DateTime? birthDate = null;
-            if (!string.IsNullOrEmpty(userModel.BirthDate))
-                birthDate = Convert.ToDateTime(userModel.BirthDate);
-            User newUser = new User(userModel.Username, userModel.Account, "", Enum.Parse<Sex>(userModel.Sex),false, userModel.Email
-              , userModel.Phone, birthDate, userModel.Sign, DateTime.Now);
-            var command = new UpdateUserCommand(newUser);
+            var command = new UpdateUserCommand(TransferModel(userModel));
             _eventBus.Publish(command);
         }
-        public void UpdatePassword(string account, string password,string oldPassword)
+        public void UpdatePassword(string account, string password, string oldPassword)
         {
-            User user = new User(account, EncrypUtil.MD5Encry(password));
-            var command = new UpdateUserCommand(user, EncrypUtil.MD5Encry(oldPassword));
+            UserModel userModel = new UserModel();
+            userModel.Password = password;
+            userModel.Account = account;
+            var command = new UpdateUserCommand(TransferModel(userModel), EncrypUtil.MD5Encry(oldPassword));
             _eventBus.Publish(command);
         }
     }

@@ -3,6 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Blog.Domain.Core.Event
@@ -11,6 +13,10 @@ namespace Blog.Domain.Core.Event
     {
         private static ConcurrentDictionary<Type, IList<Type>> eventHandlerMapping = new ConcurrentDictionary<Type, IList<Type>>();
         private static ConcurrentDictionary<Type, IList<Type>> notificationMapping = new ConcurrentDictionary<Type, IList<Type>>();
+        /// <summary>
+        /// 临时存储类型数组
+        /// </summary>
+        private static Type[] serviceTypes = Assembly.Load("Blog.Domain").GetTypes();
         public static IList<Type> TryOrGetEventHandlerMapping(this Type eventType)
         {
            return eventHandlerMapping.GetOrAdd(eventType,(Type type)=>new List<Type>());
@@ -25,13 +31,16 @@ namespace Blog.Domain.Core.Event
         /// <typeparam name="TImplementation"></typeparam>
         /// <typeparam name="TService"></typeparam>
         /// <param name="serviceDescriptors"></param>
-        public static void AddEventDependency<TImplementation, TService>(this IServiceCollection serviceDescriptors)
+        public static void AddEventBus<TImplementation, TService>(this IServiceCollection serviceDescriptors)
             where TImplementation:IEventHandler
             where TService:EventData
         {
             Type handler = typeof(TImplementation);
-            Type @interface = handler.GetInterface("IEventHandler`1");
-            serviceDescriptors.AddTransient(@interface, handler);
+             handler.GetInterfaces();
+            Type serviceType = serviceTypes.FirstOrDefault(s => handler.IsAssignableFrom(s));
+            if (serviceType == null)
+                throw new ArgumentNullException(string.Format("类型{0}未找到实现类", handler.FullName));
+            serviceDescriptors.AddTransient(handler, serviceType);
             TryOrGetEventHandlerMapping(typeof(TService)).Add(handler);
         }
         /// <summary>
@@ -40,13 +49,13 @@ namespace Blog.Domain.Core.Event
         /// <typeparam name="TImplementation"></typeparam>
         /// <typeparam name="TService"></typeparam>
         /// <param name="serviceDescriptors"></param>
-        public static void AddNoticficationDependency<TImplementation, TService>(this IServiceCollection serviceDescriptors)
-             where TImplementation : INoticficationHandler
+        public static void AddNoticfication<TNoticficationHandler, TService>(this IServiceCollection serviceDescriptors)
+             where TNoticficationHandler : INoticficationHandler
             where TService : DomainNotification
         {
-            Type handler = typeof(TImplementation);
+            Type handler = typeof(TNoticficationHandler);
             Type @interface = handler.GetInterface("INoticficationHandler`1");
-            serviceDescriptors.AddTransient(@interface, handler);
+            serviceDescriptors.AddScoped(@interface, handler);
             TryOrGetEventHandlerMapping(typeof(TService)).Add(handler);
         }
     }

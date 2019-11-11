@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Blog.Domain.Core.Bus
 {
+    /// <summary>
+    /// 领域中间件
+    /// </summary>
   public  interface  IEventBus
     {
         /// <summary>

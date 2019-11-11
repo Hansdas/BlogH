@@ -42,5 +42,13 @@ namespace Blog.Application.ViewModel
         /// 联系方式
         /// </summary>
         public string Phone { get; set; }
+        /// <summary>
+        /// 是否失效
+        /// </summary>
+        public bool IsValid { get;  set; }
+        /// <summary>
+        /// 头像
+        /// </summary>
+        public string HeadPhoto { get;  set; }
     }
 }

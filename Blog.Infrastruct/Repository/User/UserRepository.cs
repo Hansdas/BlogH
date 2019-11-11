@@ -52,8 +52,9 @@ namespace Blog.Infrastruct
         /// <param name="user"></param>
         public void Insert(User user)
         {
-            string sql = "INSERT INTO User(user_id, user_username, user_account, user_password, user_sex, user_phone, user_email,user_birthdate,user_sign, user_isvalid, user_createtime, user_updatetime)" +
-                  " VALUES (@Id, @Username, @Account, @Password, @Sex,@Phone,@Email,@Birthdate,@Sign, @IsValid,NOW())";
+            string sql = "INSERT INTO User(user_id, user_username, user_account, user_password, user_sex, user_phone, user_email,user_birthdate" +
+                ",user_sign, user_isvalid,user_headphoto, user_createtime, user_updatetime)" +
+                  " VALUES (@Id, @Username, @Account, @Password, @Sex,@Phone,@Email,@Birthdate,@Sign, @IsValid,@HeadPhoto,NOW())";
             DbConnection.Execute(sql,user);
         }
         public string SelectPassword(string account)
@@ -88,9 +89,10 @@ namespace Blog.Infrastruct
             parameters.Add("BirthDate", user.BirthDate);
             parameters.Add("Sign", user.Sign);
             parameters.Add("UpdateTime", DateTime.Now);
+            parameters.Add("HeadPhoto", user.HeadPhoto);
             string sql= "UPDATE User SET user_username = @Username, user_sex = @Sex" +
                 ", user_phone = @Phone, user_email = @Email, user_birthdate = @BirthDate, user_sign = @Sign" +
-                ", user_updatetime = @UpdateTime WHERE user_account = @Account";
+                ", user_updatetime = @UpdateTime, user_headphoto=@HeadPhoto WHERE user_account = @Account";
             DbConnection.Execute(sql, parameters);
         }
 

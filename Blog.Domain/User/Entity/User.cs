@@ -15,32 +15,14 @@ namespace Blog.Domain
         {
 
         }
-        public User(string account,string password)
-        {
-            Account = account;
-            Password = password;
-        }
-        public User(string username, string account, string password)
+        public User(string username, string account, string password, Sex? sex, bool isvalid,DateTime? birthDate,string email,string sign
+            ,string phone,string photo)
         {
             Username = username;
             Account = account;
             Password = password;
-        }
-        public User(string username, string account, string password, Sex sex, bool isvalid):this(username,account,password)
-        {
-            Sex = sex;
+            Sex = sex.HasValue?sex.Value:Sex.男;
             IsValid = isvalid;
-        }
-        public User(string username, string account, string password, Sex sex, bool isvalid, string email
-           , string phone, DateTime? birthDate, string sign,  DateTime? updatetime)
-       : this(username, account, password, sex, isvalid)
-        {
-            Username = username;
-            Account = account;
-            Password = password;
-            Sex = sex;
-            IsValid = isvalid;
-            UpdateTime = updatetime;
             Email = email;
             Phone = phone;
             BirthDate = birthDate;
@@ -48,7 +30,6 @@ namespace Blog.Domain
         }
         public User(int id,string username, string account, string password, Sex sex, bool isvalid,string email
             ,string phone,DateTime? birthDate,string sign,string headPhoto, DateTime createtime,DateTime? updatetime)
-        :this(username, account, password,sex,isvalid)
         {
             Id = id;
             Username = username;
@@ -104,5 +85,6 @@ namespace Blog.Domain
         /// 头像
         /// </summary>
         public string HeadPhoto { get; private set; }
+
     }
 }

@@ -20,7 +20,7 @@ namespace Blog.Application
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        void Insert(User userModel);
+        void Insert(UserModel userModel);
         /// <summary>
         /// 更新用户
         /// </summary>

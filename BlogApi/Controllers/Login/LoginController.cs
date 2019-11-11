@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using Blog.Application;
+using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Common.CacheFactory;
 using Blog.Domain.Core;
@@ -59,10 +60,13 @@ namespace BlogApi.Controllers
             string account = Request.Form["account"];
             string passWord = Request.Form["password"];
             string userName = Request.Form["username"];
-            Blog.Domain.User user = new Blog.Domain.User(userName, account, passWord);
+            UserModel userModel = new UserModel();
+            userModel.Username = userName;
+            userModel.Account = account;
+            userModel.Password = passWord;
             try
             {
-                _userService.Insert(user);
+                _userService.Insert(userModel);
                 string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
                 if (!string.IsNullOrEmpty(domainNotification))
                     message = domainNotification;

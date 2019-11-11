@@ -6,6 +6,9 @@ using Blog.Domain.Core.Notifications;
 
 namespace Blog.Domain.Core.Bus
 {
+    /// <summary>
+    /// 领域中间件
+    /// </summary>
     public sealed class EventBus : IEventBus
     {
         private IServiceProvider _serviceProvider;
@@ -25,11 +28,10 @@ namespace Blog.Domain.Core.Bus
                 return;
             foreach(var type in types)
             {
-                Type @interface = type.GetInterface("IEventHandler`1");
-                object obj = _serviceProvider.GetService(@interface);
-                if(obj.GetType()==type)
+                object obj = _serviceProvider.GetService(type);
+                if(type.IsAssignableFrom(obj.GetType()))
                 {
-                    IEventHandler<EventData> handler = obj as IEventHandler<EventData>;
+                    IEventHandler<TEventData> handler = obj as IEventHandler<TEventData>;
                     if (handler != null)
                         handler.Handler(eventData);
                 }

@@ -5,7 +5,7 @@ using System.Text;
 namespace Blog.Domain.Core.Event
 {
     /// <summary>
-    /// 领域事件基类
+    /// 事件源，领域事件基类
     /// </summary>
     public class EventData
     {

@@ -35,12 +35,12 @@ namespace BlogApi.Configure
         {
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
-            services.AddEventDependency<IEventHandler<CreateUserCommand>, CreateUserCommand>();
-            services.AddEventDependency<IEventHandler<UpdateUserCommand>, UpdateUserCommand>();
+            services.AddEventBus<IEventHandler<CreateUserCommand>, CreateUserCommand>();
+            services.AddEventBus<IEventHandler<UpdateUserCommand>, UpdateUserCommand>();
 
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IArticleService, ArticleService>();
-            services.AddEventDependency<ArticleCommandHandler, CreateArticleCommand>();
+            services.AddEventBus<IEventHandler<CreateArticleCommand>, CreateArticleCommand>();
 
 
             services.AddTransient<ICommentRepository, CommentRepository>();
@@ -61,7 +61,7 @@ namespace BlogApi.Configure
             //注册发布订阅中介处理
             services.AddTransient<IEventBus, EventBus>();
             //注册领域通知
-            services.AddScoped<INoticficationHandler<DomainNotification>, DomainNotificationHandler>();
+            services.AddNoticfication<DomainNotificationHandler, DomainNotification>();
             //注册仓储接口
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
             //注册Redis
@@ -79,7 +79,6 @@ namespace BlogApi.Configure
         /// <param name="containerBuilder"></param>
         public static void GetAutofacServiceProvider(this ContainerBuilder containerBuilder)
         {
-            //containerBuilder.Populate(services);
             var assembly = Assembly.Load("Blog.Infrastruct");
             containerBuilder.RegisterType<Interceptor>();
             containerBuilder.RegisterAssemblyTypes(assembly)
@@ -88,9 +87,6 @@ namespace BlogApi.Configure
                          .InstancePerLifetimeScope()
                          .EnableInterfaceInterceptors()
                          .InterceptedBy(typeof(Interceptor));
-            //containerBuilder.Build();
-
-            //return new AutofacServiceProvider(builder.Build());
         }
 
     }
