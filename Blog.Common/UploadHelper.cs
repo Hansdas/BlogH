@@ -176,7 +176,7 @@ namespace Blog.Common
             string paramaters = path.Substring(index + ip.Length).Replace(".",@"/");
             string url = GetIP() + controller+ paramaters;
             HttpClient httpClient = new HttpClient();
-            HttpResponseMessage httpResponse =httpClient.DeleteAsync(path).Result;
+            HttpResponseMessage httpResponse =httpClient.DeleteAsync(url).Result;
             httpResponse.EnsureSuccessStatusCode();
             string result = httpResponse.Content.ReadAsStringAsync().Result ;
         }
