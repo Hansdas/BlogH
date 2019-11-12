@@ -35,10 +35,18 @@ namespace Blog.Common
                 {
                     client.DefaultRequestHeaders.Add(key, RequestHeaders[key]);
                 }
-                HttpResponseMessage httpResponseMessage =  client.PostAsync(url, httpContent).Result;
-                httpResponseMessage.EnsureSuccessStatusCode();
-                string result = httpResponseMessage.Content.ReadAsStringAsync().Result;
-                return result;
+                string result = "";
+                try
+                {
+                    HttpResponseMessage httpResponseMessage = client.PostAsync(url, httpContent).Result;
+                    httpResponseMessage.EnsureSuccessStatusCode();
+                    result = httpResponseMessage.Content.ReadAsStringAsync().Result;
+                    return result;
+                }
+                catch (Exception ex)
+                {
+                    return ex.Message;
+                }
             }
         }
         /// <summary>

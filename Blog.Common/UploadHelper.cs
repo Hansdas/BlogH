@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Blog.Common
 {
     /// <summary>
-    /// 文件存储本地结果
+    /// 文件存储结果
     /// </summary>
     public struct PathValue
     {
@@ -114,6 +114,36 @@ namespace Blog.Common
             return fileSize;
         }
         /// <summary>
+        /// 使用HttpClient上传附件
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static PathValue Upload(string localFilePath, string fileName)
+        {
+            if (!File.Exists(localFilePath))
+                throw new IOException("文件不存在");
+            FileStream fileStream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            HttpContent httpContent = new StreamContent(fileStream);
+            httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+            string httpResult = "";
+            using (MultipartFormDataContent mulContent = new MultipartFormDataContent("----WebKitFormBoundaryrXRBKlhEeCbfHIY"))
+            {
+                mulContent.Add(httpContent, "file", fileName);
+                string url = GetIP() + controller;
+                httpResult = HttpHelper.PostHttpClient(url, mulContent);
+            }
+            //上传成功后删除本地文件
+            File.Delete(localFilePath);
+            dynamic result = JsonHelper.DeserializeObject(httpResult);
+            if (result.code == "500")
+                throw new ServiceException("webapi请求错误:" + result.message);
+            PathValue pathValue = new PathValue();
+            pathValue.DatePath = result.datepath;
+            pathValue.FilePath = GetIP()+"/"+pathValue.DatePath;
+            pathValue.FileName = fileName;
+            return pathValue;
+        }
+        /// <summary>
         /// 下载图片
         /// </summary>
         /// <param name="uploadPath">远程文件存放相对路径</param>
@@ -138,6 +168,17 @@ namespace Blog.Common
             img.Save(loaclPath);
             int subIndex = loaclPath.IndexOf("Down") + 4;
             return  string.Format("{0}{1}", ConstantKey.STATIC_FILE, loaclPath.Substring(subIndex));
+        }
+        public static void DeleteFile(string path)
+        {
+            string ip = GetIP();
+            int index = path.IndexOf(ip);
+            string paramaters = path.Substring(index + ip.Length).Replace(".",@"/");
+            string url = GetIP() + controller+ paramaters;
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage httpResponse =httpClient.DeleteAsync(path).Result;
+            httpResponse.EnsureSuccessStatusCode();
+            string result = httpResponse.Content.ReadAsStringAsync().Result ;
         }
 
         /// <summary>

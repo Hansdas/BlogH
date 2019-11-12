@@ -9,7 +9,10 @@ using System.Text;
 
 namespace Blog.Domain.Core.Event
 {
-  public static class DependencyExtensions
+    /// <summary>
+    /// 领域注册类
+    /// </summary>
+  public static class AddEventServices
     {
         private static ConcurrentDictionary<Type, IList<Type>> eventHandlerMapping = new ConcurrentDictionary<Type, IList<Type>>();
         private static ConcurrentDictionary<Type, IList<Type>> notificationMapping = new ConcurrentDictionary<Type, IList<Type>>();

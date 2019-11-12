@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class ValuesController : ControllerBase
     {

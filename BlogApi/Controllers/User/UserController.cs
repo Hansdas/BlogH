@@ -75,7 +75,7 @@ namespace BlogApi.Controllers.User
                     new Claim("email", string.IsNullOrEmpty(userModel.Email)?"":userModel.Email),
                     new Claim("sign", string.IsNullOrEmpty(userModel.Sign)?"":userModel.Sign),
                     new Claim("phone",userModel.Phone),
-                    new Claim("photo",userModel.HeadPhoto)
+                    new Claim("headPhoto",userModel.HeadPhoto)
                 };
                 string jwtToken = new JWT(_cacheClient).CreateToken(claims);
                 return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
@@ -93,10 +93,12 @@ namespace BlogApi.Controllers.User
             var file = Request.Form.Files[0];
             PathValue pathValue = UploadHelper.SaveFile(file.FileName);
             UploadHelper.CompressImage(pathValue.FilePath,file.OpenReadStream(),168,168,true);
-            //使用虚拟静态资源路径，否则无法读取到图片
-            string virtualPath = HttpHelper.GetRequestIP(_httpContext) + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
+            pathValue=UploadHelper.Upload(pathValue.FilePath,file.FileName);
             UserModel userModel = Auth.GetLoginUser(_httpContext);
-            userModel.HeadPhoto = virtualPath;
+            string oldPath = userModel.HeadPhoto;
+            if (!string.IsNullOrEmpty(oldPath))
+                UploadHelper.DeleteFile(oldPath);
+            userModel.HeadPhoto = pathValue.FilePath;
             _userService.Update(userModel);
             IList<Claim> claims = new List<Claim>()
                 {
@@ -107,10 +109,10 @@ namespace BlogApi.Controllers.User
                     new Claim("email", string.IsNullOrEmpty(userModel.Email)?"":userModel.Email),
                     new Claim("sign", string.IsNullOrEmpty(userModel.Sign)?"":userModel.Sign),
                     new Claim("phone",userModel.Phone),
-                    new Claim("photo",userModel.HeadPhoto)
+                    new Claim("headPhoto",userModel.HeadPhoto)
                 };
             string jwtToken = new JWT(_cacheClient).CreateToken(claims);
-            return new JsonResult(new ReturnResult() { Code = "200", Data = new {Path=virtualPath,token=jwtToken } });
+            return new JsonResult(new ReturnResult() { Code = "200", Data = new {Path= pathValue.FilePath, token=jwtToken } });
         }
         [HttpPost]
         public IActionResult UpdatePassword()
