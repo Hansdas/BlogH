@@ -48,9 +48,9 @@ namespace BlogApi.Controllers
         /// 是否登录，通过中间件处理
         /// </summary>
         [HttpPost]
-        public void IsLogin()
+        public string IsLogin()
         {
-           
+            return "200";
         }
     }
 }

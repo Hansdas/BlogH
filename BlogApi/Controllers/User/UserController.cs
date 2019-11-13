@@ -89,7 +89,7 @@ namespace BlogApi.Controllers.User
         [HttpPost]
         [Consumes("multipart/form-data")]
         [EnableCors("AllowSpecificOrigins")]
-        public Task<JsonResult> UploadPhoto()
+        public JsonResult UploadPhoto()
         {
             var file = Request.Form.Files[0];
             PathValue pathValue = UploadHelper.SaveFile(file.FileName);
@@ -98,7 +98,7 @@ namespace BlogApi.Controllers.User
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             string oldPath = userModel.HeadPhoto;
             if (!string.IsNullOrEmpty(oldPath))
-                await UploadHelper.DeleteFile(oldPath);
+                 UploadHelper.DeleteFile(oldPath);
             userModel.HeadPhoto = pathValue.FilePath;
             _userService.Update(userModel);
             IList<Claim> claims = new List<Claim>()
