@@ -30,6 +30,10 @@ namespace Blog.Common
         /// 路径日期部分
         /// </summary>
         public string DatePath { get; set; }
+        /// <summary>
+        /// 附件大小
+        /// </summary>
+        public long Size { get; set; }
     }
     /// <summary>
     /// 上传帮助类文件
@@ -60,65 +64,32 @@ namespace Blog.Common
         /// <param name="localFilePath">本地图片相对路径</param>
         /// <param name="contentRootPath">程序路径</param>
         /// <returns></returns>
-        public static IList<string>  Upload(string[] localFilePath,string contentRootPath)
+        public static IList<PathValue>  Upload(string[] localFilePaths)
         {
-            IList<string> savePathList = new List<string>();
-            Task[] tasks = new Task[localFilePath.Length];
-            for (int i = 0; i < localFilePath.Length; i++)
+            IList<PathValue> pathValues = new List<PathValue>();
+            Task[] tasks = new Task[localFilePaths.Length];
+            for (int i = 0; i < localFilePaths.Length; i++)
             {
                 int m = i;
-                tasks[m] = Task.Run(() =>
+                tasks[m] = Task.Run(async () =>
                 {
-                    int index = localFilePath[m].IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length;
-                    string path = contentRootPath + "/TempFile" + localFilePath[m].Substring(index);
-                    path = path.Replace("/", @"\");
-                    string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
-                    string uploadSavePath;
-                    long fileSzie = Upload(path, fileName, out uploadSavePath);
+                    string fileName = localFilePaths[m].Substring(localFilePaths[m].LastIndexOf(@"\") + 1);
+                    PathValue pathValue =await  Upload(localFilePaths[m], fileName);
                     lock (obj)
                     {
-                        savePathList.Add(uploadSavePath);
+                        pathValues.Add(pathValue);
                     }
                 });
             }
             Task.WaitAll(tasks);
-            return savePathList;
+            return pathValues;
         }
         /// <summary>
-        /// 使用HttpClient上传附件
+        /// 上传附件
         /// </summary>
         /// <param name="filePath"></param>
         /// <returns></returns>
-        public static long Upload(string localFilePath, string fileName,out string uploadSavePath)
-        {
-            if (!File.Exists(localFilePath))
-                throw new IOException("文件不存在");
-            FileStream fileStream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            long fileSize = fileStream.Length;
-            HttpContent httpContent = new StreamContent(fileStream);
-            httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
-            string httpResult = "";
-            using (MultipartFormDataContent mulContent = new MultipartFormDataContent("----WebKitFormBoundaryrXRBKlhEeCbfHIY"))
-            {
-                mulContent.Add(httpContent, "file", fileName);
-                //mulContent.Add(new StringContent("test"), "test");
-                string url = GetIP() + controller;
-                httpResult = HttpHelper.PostHttpClient(url, mulContent);
-            }
-            //上传成功后删除本地文件
-            File.Delete(localFilePath);
-            dynamic result = JsonHelper.DeserializeObject(httpResult);
-            if (result.code == "500")
-                throw new ServiceException("webapi请求错误:" + result.message);
-            uploadSavePath = result.savepath;
-            return fileSize;
-        }
-        /// <summary>
-        /// 使用HttpClient上传附件
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        public static PathValue Upload(string localFilePath, string fileName)
+        public static async Task<PathValue> Upload(string localFilePath, string fileName)
         {
             if (!File.Exists(localFilePath))
                 throw new IOException("文件不存在");
@@ -130,7 +101,7 @@ namespace Blog.Common
             {
                 mulContent.Add(httpContent, "file", fileName);
                 string url = GetIP() + controller;
-                httpResult = HttpHelper.PostHttpClient(url, mulContent);
+                httpResult = await  HttpHelper.PostHttpClient(url, mulContent);
             }
             //上传成功后删除本地文件
             File.Delete(localFilePath);
@@ -169,16 +140,21 @@ namespace Blog.Common
             int subIndex = loaclPath.IndexOf("Down") + 4;
             return  string.Format("{0}{1}", ConstantKey.STATIC_FILE, loaclPath.Substring(subIndex));
         }
+        /// <summary>
+        /// 删除附件
+        /// </summary>
+        /// <param name="path">包含ip地址的文件路径</param>
         public static void DeleteFile(string path)
         {
             string ip = GetIP();
             int index = path.IndexOf(ip);
+            //拼接Resultful接口
             string paramaters = path.Substring(index + ip.Length).Replace(".",@"/");
             string url = GetIP() + controller+ paramaters;
             HttpClient httpClient = new HttpClient();
-            HttpResponseMessage httpResponse =httpClient.DeleteAsync(url).Result;
+            HttpResponseMessage httpResponse = httpClient.DeleteAsync(url).GetAwaiter().GetResult();
             httpResponse.EnsureSuccessStatusCode();
-            string result = httpResponse.Content.ReadAsStringAsync().Result ;
+            string result= httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
         }
 
         /// <summary>
