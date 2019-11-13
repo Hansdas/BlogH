@@ -21,7 +21,7 @@ namespace Blog.Common
         /// <param name="RequestHeaders"></param>
         /// <param name="multipartFormDataContent"></param>
         /// <returns></returns>
-        public static string PostHttpClient(string url,
+        public static async Task<string> PostHttpClient(string url,
              HttpContent httpContent, NameValueCollection RequestHeaders = null)
         {
             var handler = new HttpClientHandler();
@@ -38,7 +38,7 @@ namespace Blog.Common
                 string result = "";
                 try
                 {
-                    HttpResponseMessage httpResponseMessage = client.PostAsync(url, httpContent).Result;
+                    HttpResponseMessage httpResponseMessage = await client.PostAsync(url, httpContent);
                     httpResponseMessage.EnsureSuccessStatusCode();
                     result = httpResponseMessage.Content.ReadAsStringAsync().Result;
                     return result;

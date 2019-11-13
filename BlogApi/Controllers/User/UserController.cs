@@ -15,6 +15,7 @@ using Blog.Common.CacheFactory;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Blog.Domain.Core.Notifications;
+using System.Threading.Tasks;
 
 namespace BlogApi.Controllers.User
 {
@@ -88,16 +89,16 @@ namespace BlogApi.Controllers.User
         [HttpPost]
         [Consumes("multipart/form-data")]
         [EnableCors("AllowSpecificOrigins")]
-        public IActionResult UploadPhoto()
+        public Task<JsonResult> UploadPhoto()
         {
             var file = Request.Form.Files[0];
             PathValue pathValue = UploadHelper.SaveFile(file.FileName);
             UploadHelper.CompressImage(pathValue.FilePath,file.OpenReadStream(),168,168,true);
-            pathValue=UploadHelper.Upload(pathValue.FilePath,file.FileName);
+            pathValue = UploadHelper.Upload(pathValue.FilePath, file.FileName).GetAwaiter().GetResult();
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             string oldPath = userModel.HeadPhoto;
             if (!string.IsNullOrEmpty(oldPath))
-                UploadHelper.DeleteFile(oldPath);
+                await UploadHelper.DeleteFile(oldPath);
             userModel.HeadPhoto = pathValue.FilePath;
             _userService.Update(userModel);
             IList<Claim> claims = new List<Claim>()
