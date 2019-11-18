@@ -9,7 +9,7 @@ namespace Blog.Application
 {
    public interface IArticleService
     {
-        void Publish(Article article);
+        void AddArticle(Article article);
 
         IList<ArticleModel> SelectByPage(int pageIndex, int pageSize,ArticleCondition condition=null);
         Task<IList<ArticleModel>> SelectByPageAsync(int pageIndex, int pageSize, ArticleCondition condition = null);

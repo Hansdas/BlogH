@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -36,32 +37,25 @@ namespace BlogApi
             _httpContext = httpContext;
         }
         [HttpPost]
-        public object AddArticle()
+        public IActionResult AddArticle()
         {
-            //ArticleType articleType = Enum.Parse<ArticleType>(Request.Form["articletype"]);
-            //string title = Request.Form["title"];
-            //string content = Request.Form["content"];
-            //string imgSrc = Request.Form["imgSrc"];
-            //string textSection = Request.Form["textsection"];
-            //string[] srcArray = { };
-            //if (!string.IsNullOrEmpty(imgSrc))
-            //    srcArray = imgSrc.Trim(',').Split(',');
-            //UserModel userModel = Auth.GetLoginUser(_httpContext);
-            //IList<string> filePaths = new List<string>();
-            //try
-            //{
-            //    if(srcArray.Length>0)
-            //        filePaths=UploadHelper.Upload(srcArray);
-            //    RegexContent(filePaths, content);
-            //    Article article = new Article(userModel.Account, title, textSection, content, articleType, true, filePaths);
-            //    _articleService.Publish(article);
-            //}
-            //catch (AggregateException)
-            //{
-            //    return JsonHelper.Serialize(new ReturnResult() { Code = "500", Message ="服务器异常" });
-            //    //todo 有异常删除所有本次所传的附件
-            //}
-            return JsonHelper.Serialize(new ReturnResult() { Code = "500", Message = "服务器异常" }); ;
+            ArticleType articleType = Enum.Parse<ArticleType>(Request.Form["articletype"]);
+            string title = Request.Form["title"];
+            string content = Request.Form["content"];
+            string imgSrc = Request.Form["imgSrc"];
+            string textSection = Request.Form["textsection"];
+            bool isDraft = Convert.ToBoolean(Request.Form["isDraft"]);
+            string[] srcArray = { };
+            if (!string.IsNullOrEmpty(imgSrc))
+                srcArray = imgSrc.Trim(',').Split(',');
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            IList<string> filePaths = new List<string>();
+                if (srcArray.Length > 0)
+                    filePaths = UploadHelper.Upload(srcArray).Select(s=>s.FilePath).ToList();
+                RegexContent(filePaths, content);
+                Article article = new Article(userModel.Account, title, textSection, content, articleType, isDraft, filePaths);
+                _articleService.AddArticle(article);
+            return new JsonResult(new ReturnResult("200")); 
         }
         private void RegexContent(IList<string> savePaths,string input)
         {

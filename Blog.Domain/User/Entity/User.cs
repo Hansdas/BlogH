@@ -27,6 +27,7 @@ namespace Blog.Domain
             Phone = phone;
             BirthDate = birthDate;
             Sign = sign;
+            HeadPhoto = photo;
         }
         public User(int id,string username, string account, string password, Sex sex, bool isvalid,string email
             ,string phone,DateTime? birthDate,string sign,string headPhoto, DateTime createtime,DateTime? updatetime)

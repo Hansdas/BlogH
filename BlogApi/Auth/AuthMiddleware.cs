@@ -17,34 +17,37 @@ namespace BlogApi
         private RequestDelegate _next;
         private IHttpContextAccessor _httpContext;
         private ICacheClient _cacheClient;
-        private IList<string> _requestPaths;
-        public AuthMiddleware(IHttpContextAccessor httpContext, RequestDelegate next, ICacheClient cacheClient,IList<string> requestPaths)
+        private string[] _requestPaths = { "/api/auth/islogin","/api/auth/getloginuser" };
+        private string loginApi = "/api/login/login";
+        public AuthMiddleware(IHttpContextAccessor httpContext, RequestDelegate next, ICacheClient cacheClient)
         {
             _httpContext = httpContext;
             _next = next;
             _cacheClient = cacheClient;
-            _requestPaths = requestPaths;
         }
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                bool isExpires = context.Request.Headers.TryGetValue("isExpires", out StringValues expires);
-                bool IsAuthorized = context.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
-                string token = authStr.ToString().Substring("Bearer ".Length).Trim();
-                //每次访问都更新token有效期
-                new JWT(_cacheClient).RefreshToken(token, isExpires);
-                context.Response.Headers.Add("refreshTokne", token);
+                if (context.Request.Path.Value.ToLower() != loginApi)
+                {
+                    bool isExpires = context.Request.Headers.TryGetValue("isExpires", out StringValues expires);
+                    bool IsAuthorized = context.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
+                    string token = authStr.ToString().Substring("Bearer ".Length).Trim();
+                    //每次访问都更新token有效期
+                    new JWT(_cacheClient).RefreshToken(token, isExpires);
+                    context.Response.Headers.Add("refreshToken", token);
+                    context.Response.Headers.Add("Access-Control-Expose-Headers", "refreshToken");
+                }
             }
             catch (ValidationException)
             {
-                if (_requestPaths.Contains(context.Request.Path.Value))
+                if (_requestPaths.Contains(context.Request.Path.Value.ToLower()))
                 {
-                    context.Response.ContentType = "text/plain";
-                    await context.Response.WriteAsync("not login");
+                    context.Response.Headers.Add("auth", "false");
                 }
             }
-              await _next(context);
+            await _next(context);
         }
     }
     public class JwtAuthOption

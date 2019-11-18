@@ -100,12 +100,7 @@ namespace BlogApi
             });
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAuthMiddleware(s =>
-            {
-                s.RequestPaths(new List<string>() {
-                    "/api/auth/islogin"
-                 });
-            });
+            app.UseAuthMiddleware();
             app.UseEndpoints(endpoints =>
             {
 

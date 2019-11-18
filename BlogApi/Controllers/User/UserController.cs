@@ -91,14 +91,14 @@ namespace BlogApi.Controllers.User
         [EnableCors("AllowSpecificOrigins")]
         public JsonResult UploadPhoto()
         {
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            string oldPath = userModel.HeadPhoto;
+            if (!string.IsNullOrEmpty(oldPath))
+                UploadHelper.DeleteFile(oldPath);
             var file = Request.Form.Files[0];
             PathValue pathValue = UploadHelper.SaveFile(file.FileName);
             UploadHelper.CompressImage(pathValue.FilePath,file.OpenReadStream(),168,168,true);
             pathValue = UploadHelper.Upload(pathValue.FilePath, file.FileName).GetAwaiter().GetResult();
-            UserModel userModel = Auth.GetLoginUser(_httpContext);
-            string oldPath = userModel.HeadPhoto;
-            if (!string.IsNullOrEmpty(oldPath))
-                 UploadHelper.DeleteFile(oldPath);
             userModel.HeadPhoto = pathValue.FilePath;
             _userService.Update(userModel);
             IList<Claim> claims = new List<Claim>()

@@ -8,11 +8,9 @@ namespace BlogApi.Configure
 {
     public static class MiddlewareExtensions
     {
-        public static IApplicationBuilder UseAuthMiddleware(this IApplicationBuilder app, Action<JwtAuthOption> action)
+        public static IApplicationBuilder UseAuthMiddleware(this IApplicationBuilder app)
         {
-            JwtAuthOption jwtAuthOption = new JwtAuthOption();
-            action(jwtAuthOption);
-            return app.UseMiddleware<AuthMiddleware>(jwtAuthOption._requstPaths);
+            return app.UseMiddleware<AuthMiddleware>();
         }
     }
 }

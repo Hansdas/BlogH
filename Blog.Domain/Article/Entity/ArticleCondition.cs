@@ -26,5 +26,9 @@ namespace Blog.Domain
         /// 根据提交人查询
         /// </summary>
         public string Account { get; set; }
+        /// <summary>
+        /// 根据是否根据草稿状态查询
+        /// </summary>
+        public bool IsDraft { get; set; }
     }
 }

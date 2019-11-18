@@ -20,7 +20,7 @@ namespace Blog.Application
             _eventBus = eventBus;
             _articleRepository = articleRepository;
         }
-        public void Publish(Article article)
+        public void AddArticle(Article article)
         {
             var command = new CreateArticleCommand(article);
             _eventBus.Publish(command);
