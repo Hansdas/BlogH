@@ -23,7 +23,7 @@ namespace Blog.Infrastruct
             IList<string> sqlList = new List<string>();
             if (!string.IsNullOrEmpty(condition.ArticleType))
             {
-                dynamicParameters.Add("articleType",Convert.ToInt32(condition.ArticleType), DbType.Int32);
+                dynamicParameters.Add("articleType", Convert.ToInt32(condition.ArticleType), DbType.Int32);
                 sqlList.Add("article_articletype = @articleType");
             }
             if (condition.Id.HasValue)
@@ -104,8 +104,8 @@ namespace Blog.Infrastruct
             string where = Where(condition, ref dynamicParameters);
             //string sql = "SELECT * FROM s_log WHERE Id <=(SELECT Id FROM s_log   ORDER BY Id desc LIMIT 35000, 1) ORDER BY Id DESC LIMIT 10";
 
-            string sql = "SELECT article_id,article_title,article_textsection,article_articletype " +
-                         "FROM Article WHERE " + where +
+            string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_createtime " +
+                         "FROM Article INNER JOIN User ON user_account=article_author WHERE " + where +
                          " AND  article_id <=(" +
                          "SELECT article_id FROM Article WHERE "
                          + where +
@@ -122,9 +122,12 @@ namespace Blog.Infrastruct
                 Article article = new Article(
                   d.article_id
                 , d.article_title
+                , d.user_username
                 , d.article_textsection
                 , (ArticleType)d.article_articletype
-                );
+                , Convert.ToBoolean(d.article_isdraft)
+                , (DateTime)d.article_createtime
+                ); 
                 articles.Add(article);
             }
             return articles;
@@ -167,11 +170,12 @@ namespace Blog.Infrastruct
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(articleCondition, ref dynamicParameters);
-            string sql = "SELECT article_id,article_title,article_content,article_articletype,article_createtime " +
-                         "FROM Article WHERE 1=1 AND " + where;
+            string sql = "SELECT article_id,user_username,article_title,article_content,article_articletype,article_createtime " +
+                         "FROM Article INNER JOIN User ON user_account=article_author WHERE 1=1 AND " + where;
             dynamic d = base.SelectSingle(sql, dynamicParameters);
             Article article = new Article(
-                d.article_id
+                 d.article_id
+                , d.user_username
                 , d.article_title
                 , d.article_content
                 , (ArticleType)d.article_articletype
@@ -180,7 +184,7 @@ namespace Blog.Infrastruct
             return article;
         }
 
-        public IEnumerable<dynamic> SelectNextUp(int id,ArticleCondition articleCondition = null)
+        public IEnumerable<dynamic> SelectNextUp(int id, ArticleCondition articleCondition = null)
         {
 
             DynamicParameters dynamicParameters = new DynamicParameters();

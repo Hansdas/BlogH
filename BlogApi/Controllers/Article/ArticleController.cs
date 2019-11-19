@@ -23,12 +23,12 @@ namespace BlogApi
     {
         private readonly object _obj = new object();
         private IWebHostEnvironment _webHostEnvironment;
-        private  IArticleService _articleService;
+        private IArticleService _articleService;
         private IArticleRepository _articleRepository;
         private ICacheClient _cacheClient;
         private IHttpContextAccessor _httpContext;
         public ArticleController(IArticleService articleService, IWebHostEnvironment webHostEnvironment
-            ,IArticleRepository articleRepository, ICacheClient cacheClient, IHttpContextAccessor httpContext)
+            , IArticleRepository articleRepository, ICacheClient cacheClient, IHttpContextAccessor httpContext)
         {
             _articleService = articleService;
             _webHostEnvironment = webHostEnvironment;
@@ -50,18 +50,18 @@ namespace BlogApi
                 srcArray = imgSrc.Trim(',').Split(',');
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             IList<string> filePaths = new List<string>();
-                if (srcArray.Length > 0)
-                    filePaths = UploadHelper.Upload(srcArray).Select(s=>s.FilePath).ToList();
-                RegexContent(filePaths, content);
-                Article article = new Article(userModel.Account, title, textSection, content, articleType, isDraft, filePaths);
-                _articleService.AddArticle(article);
-            return new JsonResult(new ReturnResult("200")); 
+            if (srcArray.Length > 0)
+                filePaths = UploadHelper.Upload(srcArray).Select(s => s.FilePath).ToList();
+            RegexContent(filePaths, content);
+            Article article = new Article(userModel.Account, title, textSection, content, articleType, isDraft, filePaths);
+            _articleService.AddArticle(article);
+            return new JsonResult(new ReturnResult("200"));
         }
-        private void RegexContent(IList<string> savePaths,string input)
+        private void RegexContent(IList<string> savePaths, string input)
         {
             string pattern = @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>";
             Regex regex = new Regex(pattern);
-            MatchCollection matches =regex.Matches(pattern);
+            MatchCollection matches = regex.Matches(pattern);
             for (int i = 0; i < matches.Count; i++)
             {
                 foreach (string item in savePaths)
@@ -81,8 +81,8 @@ namespace BlogApi
         public int LoadTotal(string articleType)
         {
             ArticleCondition condition = new ArticleCondition();
-                condition.ArticleType = articleType;
-            int count =_articleRepository.SelectCount(condition);
+            condition.ArticleType = articleType;
+            int count = _articleRepository.SelectCount(condition);
             return count;
         }
         [EnableCors("AllowSpecificOrigins")]
@@ -91,7 +91,7 @@ namespace BlogApi
         {
             PageResult pageResult = new PageResult();
             ArticleCondition condition = new ArticleCondition();
-                condition.ArticleType = articleType;
+            condition.ArticleType = articleType;
             try
             {
                 IList<ArticleModel> articleModels = _articleService.SelectByPage(pageIndex, pageSize, condition);
@@ -103,6 +103,31 @@ namespace BlogApi
             {
                 pageResult.Data = null;
                 pageResult.Code = "500";
+                pageResult.Message = e.Message;
+            }
+            return new JsonResult(pageResult);
+        }
+
+        [EnableCors("AllowSpecificOrigins")]
+        [HttpGet]
+        public JsonResult SelectArticle(int page, int limit, string title, bool isDraft)
+        {
+            PageResult pageResult = new PageResult();
+            ArticleCondition condition = new ArticleCondition();
+            condition.TitleContain = title;
+            condition.IsDraft = isDraft;
+            try
+            {
+                IList<ArticleModel> articleModels = _articleService.SelectByPage(page, limit, condition);
+                pageResult.Total = _articleRepository.SelectCount(condition);
+                pageResult.Data = articleModels;
+                pageResult.Code = "0";
+                pageResult.Message = "";
+            }
+            catch (Exception e)
+            {
+                pageResult.Data = null;
+                pageResult.Code = "1";
                 pageResult.Message = e.Message;
             }
             return new JsonResult(pageResult);
@@ -129,15 +154,15 @@ namespace BlogApi
             return new JsonResult(pageResult);
         }
         [HttpGet("{id}/{articletype}")]
-        public IActionResult NextUp(int id,string articletype)
-        {   
+        public IActionResult NextUp(int id, string articletype)
+        {
             ReturnResult returnResult = new ReturnResult();
             ArticleCondition condition = new ArticleCondition();
-
-            condition.ArticleType = Enum.Parse<ArticleType>(articletype).GetEnumValue().ToString();
+            if(string.IsNullOrEmpty(articletype))
+                condition.ArticleType = Enum.Parse<ArticleType>(articletype).GetEnumValue().ToString();
             try
             {
-                PageInfoMode result = _articleService.SelectNextUp(id,condition);
+                PageInfoMode result = _articleService.SelectNextUp(id, condition);
                 returnResult.Data = result;
                 returnResult.Code = "200";
                 returnResult.Message = "ok";

@@ -37,6 +37,9 @@ namespace Blog.Application
                 articleModel.ArticleType = item.ArticleType.GetEnumText<ArticleType>();
                 articleModel.TextSection = item.TextSection;
                 articleModel.Title = item.Title;
+                articleModel.Author = item.Author;
+                articleModel.CreateTime = item.CreateTime.ToString("yyyy-MM-dd hh:mm");
+                articleModel.IsDraft = item.IsDraft ? "是" : "否";
                 articleModels.Add(articleModel);
             }
             return articleModels;
@@ -69,7 +72,9 @@ namespace Blog.Application
                 ,
                 CreateTime = article.CreateTime.ToString("yyyy/MM/dd")
                 ,
-                Content = RegexContent(article.Content)
+                Content = article.Content
+                ,
+                Author=article.Author
             };
             return articleModel;
         }
@@ -91,27 +96,6 @@ namespace Blog.Application
                 }
             }
             return pageInfoMode;
-        }
-        private string RegexContent(string input)
-        {
-            string pattern = @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgsrc>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>";
-            Regex regex = new Regex(pattern);
-            MatchCollection matches = regex.Matches(input);
-            for (int i = 0; i < matches.Count; i++)
-            {
-                string src = matches[i].Groups["imgsrc"].Value;
-                string path = src.Substring(src.IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length);
-                try
-                {
-                    string loaclPath = UploadHelper.DownFileAsync(path).Result;
-                    input = input.Replace(src, loaclPath);
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-            return input;
         }
     }
 }

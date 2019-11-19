@@ -29,6 +29,10 @@ namespace Blog.Domain
         /// <summary>
         /// 根据是否根据草稿状态查询
         /// </summary>
-        public bool IsDraft { get; set; }
+        public bool? IsDraft { get; set; }
+        /// <summary>
+        /// 标题模糊查询
+        /// </summary>
+        public string TitleContain { get; set; }
     }
 }

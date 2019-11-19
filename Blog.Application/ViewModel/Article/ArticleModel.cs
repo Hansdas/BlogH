@@ -30,7 +30,16 @@ namespace Blog.Application.ViewModel
         /// 内容
         /// </summary>
         public string Content { get; set; }
-       
+        /// <summary>
+        /// 作者
+        /// </summary>
+        public string Author { get; set; }
+        /// <summary>
+        /// 是否草稿
+        /// </summary>
+        public string IsDraft { get; set; }
+
+
     }
     public class PageInfoMode
     {

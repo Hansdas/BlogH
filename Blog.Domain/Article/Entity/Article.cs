@@ -17,9 +17,10 @@ namespace Blog.Domain
             TextSection = textSection;
             ArticleType = articleType;
         }
-        public Article(int id,string title,string content, ArticleType articleType,DateTime createTime)
+        public Article(int id,string author,string title,string content, ArticleType articleType,DateTime createTime)
         {
             Id = id;
+            Author = author;
             Title = title;
             Content = content;
             ArticleType = articleType;
@@ -28,12 +29,20 @@ namespace Blog.Domain
         public Article(string author, string title,string textSection, string content, ArticleType articleType, bool isDraft,IList<string> relatedFileList)
         {
             Title = title;
-            TextSection = textSection;
             ArticleType = articleType;
             Author = author;          
             Content = content;
-            IsDraft = isDraft;
             RelatedFileList = relatedFileList;
+        }
+        public Article(int id,string title,string author,string textSection,ArticleType articleType,bool isDraft,DateTime createTime)
+        {
+            Id = id;
+            Title = title;
+            Author = author;
+            ArticleType = articleType;
+            TextSection = textSection;
+            IsDraft = isDraft;
+            CreateTime = createTime;
         }
         public Article(int id, string author, string title,string textSection, string content, ArticleType articleType, bool isDraft, string relatedfiles, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
         {
@@ -50,6 +59,9 @@ namespace Blog.Domain
             CreateTime = createTime;
             UpdateTime = updateTime;
         }
+        /// <summary>
+        /// 作者
+        /// </summary>
         public string Author { get; private set; }
         /// <summary>
         /// 标题
