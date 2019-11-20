@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Blog.Domain.Core
+namespace Blog.Common
 {
     /// <summary>
     /// 常用静态字段

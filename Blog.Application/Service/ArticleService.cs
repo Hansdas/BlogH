@@ -22,8 +22,17 @@ namespace Blog.Application
         }
         public void AddArticle(Article article)
         {
-            var command = new CreateArticleCommand(article);
-            _eventBus.Publish(command);
+
+            if (article.Id > 0)
+            {
+                UpdateArticleCommand updateArticleCommand = new UpdateArticleCommand(article);
+                _eventBus.Publish(updateArticleCommand);
+            }
+            else
+            {
+                CreateArticleCommand createArticleCommand = new CreateArticleCommand(article);
+                _eventBus.Publish(createArticleCommand);
+            }
         }
 
         public IList<ArticleModel> SelectByPage(int pageIndex, int pageSize, ArticleCondition condition = null)
@@ -74,7 +83,9 @@ namespace Blog.Application
                 ,
                 Content = article.Content
                 ,
-                Author=article.Author
+                Author = article.Author
+                ,
+                IsDraft = article.IsDraft ? "是" : "否"
             };
             return articleModel;
         }

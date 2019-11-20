@@ -22,5 +22,15 @@ namespace Blog.Domain
         /// <returns></returns>
 
         IEnumerable<dynamic> SelectNextUp(int id, ArticleCondition articleCondition = null);
+        /// <summary>
+        /// 更新数据
+        /// </summary>
+        /// <param name="article"></param>
+        void Update(Article article);
+        /// <summary>
+        /// 根据id删除
+        /// </summary>
+        /// <param name="id"></param>
+        void Delete(int id);
     }
 }

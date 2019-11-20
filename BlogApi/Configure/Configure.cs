@@ -36,6 +36,7 @@ namespace BlogApi.Configure
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IArticleService, ArticleService>();
             services.AddEventBus<IEventHandler<CreateArticleCommand>, CreateArticleCommand>();
+            services.AddEventBus<IEventHandler<UpdateArticleCommand>, UpdateArticleCommand>();
 
 
             services.AddTransient<ICommentRepository, CommentRepository>();

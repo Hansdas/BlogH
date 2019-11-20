@@ -46,6 +46,6 @@ namespace Blog.Infrastruct
         {
             dynamic dynamic = DbConnection.QueryFirstOrDefault(sql, param);
             return dynamic;
-        }  
+        } 
     }
 }

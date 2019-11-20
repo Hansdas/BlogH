@@ -18,6 +18,7 @@ using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Blog.Common;
 
 namespace BlogApi
 {
@@ -44,7 +45,8 @@ namespace BlogApi
             {
                 s.AddPolicy(AllowSpecificOrigins, build =>
                 {
-                    build.WithOrigins("http://127.0.0.1:8080", "https://127.0.0.1:5001").WithHeaders("Authorization");
+                    build.WithOrigins("http://127.0.0.1:8080", "https://127.0.0.1:5001").WithHeaders("Authorization")
+                    .AllowAnyMethod();
                 });
 
             });

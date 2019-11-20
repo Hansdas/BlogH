@@ -39,6 +39,7 @@ namespace BlogApi
         [HttpPost]
         public IActionResult AddArticle()
         {
+            int id = Convert.ToInt32(Request.Form["id"]);
             ArticleType articleType = Enum.Parse<ArticleType>(Request.Form["articletype"]);
             string title = Request.Form["title"];
             string content = Request.Form["content"];
@@ -50,31 +51,10 @@ namespace BlogApi
                 srcArray = imgSrc.Trim(',').Split(',');
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             IList<string> filePaths = new List<string>();
-            if (srcArray.Length > 0)
-                filePaths = UploadHelper.Upload(srcArray).Select(s => s.FilePath).ToList();
-            RegexContent(filePaths, content);
-            Article article = new Article(userModel.Account, title, textSection, content, articleType, isDraft, filePaths);
+            UploadHelper.Upload(srcArray);
+            Article article = new Article(id,userModel.Account, title, textSection, content, articleType, isDraft);
             _articleService.AddArticle(article);
             return new JsonResult(new ReturnResult("200"));
-        }
-        private void RegexContent(IList<string> savePaths, string input)
-        {
-            string pattern = @"<img\b[^<>]*?\bsrc[\s\t\r\n]*=[\s\t\r\n]*[""']?[\s\t\r\n]*(?<imgUrl>[^\s\t\r\n""'<>]*)[^<>]*?/?[\s\t\r\n]*>";
-            Regex regex = new Regex(pattern);
-            MatchCollection matches = regex.Matches(pattern);
-            for (int i = 0; i < matches.Count; i++)
-            {
-                foreach (string item in savePaths)
-                {
-                    string fileName = item.Substring(item.LastIndexOf(@"\") + 1);
-                    if (matches[i].Value.IndexOf(fileName) > 0)
-                    {
-                        string oldSrc = matches[i].Groups["imgsrc"].Value;
-                        input = input.Replace(oldSrc, item);
-                    }
-
-                }
-            }
         }
         [EnableCors("AllowSpecificOrigins")]
         [HttpGet]
@@ -114,8 +94,10 @@ namespace BlogApi
         {
             PageResult pageResult = new PageResult();
             ArticleCondition condition = new ArticleCondition();
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
             condition.TitleContain = title;
             condition.IsDraft = isDraft;
+            condition.Account = userModel.Account;
             try
             {
                 IList<ArticleModel> articleModels = _articleService.SelectByPage(page, limit, condition);
@@ -174,6 +156,23 @@ namespace BlogApi
                 returnResult.Message = e.Message;
             }
             return new JsonResult(returnResult);
+        }
+
+        [HttpDelete("{id}")]
+        public JsonResult Delete(int id)
+        {
+            ReturnResult result = new ReturnResult();
+            try
+            {
+                _articleRepository.Delete(id);
+                result.Code = "200";
+            }
+            catch (Exception e)
+            {
+                result.Code = "500";
+                result.Message = e.Message;
+            }
+            return new JsonResult(result);
         }
     }
 }

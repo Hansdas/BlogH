@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Domain
 {
-    public class ArticleCommandHandler : IEventHandler<CreateArticleCommand>
+    public class ArticleCommandHandler : IEventHandler<CreateArticleCommand>,IEventHandler<UpdateArticleCommand>
     {
         private readonly IArticleRepository _articleRepository;
         public ArticleCommandHandler(IArticleRepository articleRepository)
@@ -18,6 +18,11 @@ namespace Blog.Domain
         public void Handler(CreateArticleCommand command)
         {
             _articleRepository.Insert(command.Article);
+        }
+
+        public void Handler(UpdateArticleCommand command)
+        {
+            _articleRepository.Update(command.Article);
         }
     }
 }

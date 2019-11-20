@@ -33,7 +33,7 @@ namespace Blog.Infrastruct
             }
             if (!string.IsNullOrEmpty(condition.Account))
             {
-                dynamicParameters.Add("article_author", condition.Id.Value);
+                dynamicParameters.Add("article_author", condition.Account);
                 sqlList.Add("article_author = @article_author");
             }
             sqlList.Add(" 1=1 ");
@@ -81,7 +81,7 @@ namespace Blog.Infrastruct
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(condition, ref dynamicParameters);
-            string sql = "SELECT COUNT(*) FROM Article WHERE" + where;
+            string sql = "SELECT COUNT(*) FROM Article WHERE " + where;
             int count = DbConnection.ExecuteScalar<int>(sql, dynamicParameters);
             return count;
         }
@@ -90,7 +90,7 @@ namespace Blog.Infrastruct
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(condition, ref dynamicParameters);
-            string sql = "SELECT COUNT(*) FROM Article " + where;
+            string sql = "SELECT COUNT(*) FROM Article WHERE " + where;
             int count = await DbConnection.ExecuteScalarAsync<int>(sql, dynamicParameters);
             return count;
         }
@@ -127,7 +127,7 @@ namespace Blog.Infrastruct
                 , (ArticleType)d.article_articletype
                 , Convert.ToBoolean(d.article_isdraft)
                 , (DateTime)d.article_createtime
-                ); 
+                );
                 articles.Add(article);
             }
             return articles;
@@ -170,15 +170,15 @@ namespace Blog.Infrastruct
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(articleCondition, ref dynamicParameters);
-            string sql = "SELECT article_id,user_username,article_title,article_content,article_articletype,article_createtime " +
+            string sql = "SELECT article_id,user_username,article_title,article_content,article_articletype,article_isdraft,article_createtime " +
                          "FROM Article INNER JOIN User ON user_account=article_author WHERE 1=1 AND " + where;
             dynamic d = base.SelectSingle(sql, dynamicParameters);
             Article article = new Article(
-                 d.article_id
+                d.article_title
                 , d.user_username
-                , d.article_title
                 , d.article_content
                 , (ArticleType)d.article_articletype
+                , Convert.ToBoolean(d.article_isdraft)
                 , d.article_createtime
                 );
             return article;
@@ -202,6 +202,34 @@ namespace Blog.Infrastruct
                              + ")";
             IEnumerable<dynamic> dynamics = DbConnection.Query(sql, dynamicParameters);
             return dynamics;
+        }
+        public void Update(Article article)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("Ttile", article.Title);
+            parameters.Add("TextSection", article.TextSection);
+            parameters.Add("Content", article.Content);
+            parameters.Add("ArticleType",article.ArticleType);
+            parameters.Add("PraiseCount", article.PraiseCount);
+            parameters.Add("BrowserCount", article.BrowserCount);
+            parameters.Add("IsDraft", article.IsDraft);
+            parameters.Add("Id", article.Id);
+            string sql = "UPDATE Article " +
+                "SET article_title = @Ttile" +
+                ", article_textsection = @TextSection " +
+                ", article_content =@Content " +
+                ", article_articletype = @ArticleType" +
+                ", article_isdraft = @IsDraft" +
+                ", article_createtime = NOW() WHERE article_id =@Id";
+            DbConnection.Execute(sql, parameters);
+        }
+
+        public void Delete(int id)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("Id", id);
+            string sql = "DELETE FROM Article WHERE article_id=@Id";
+            int i=  DbConnection.Execute(sql,parameters);
         }
     }
 }

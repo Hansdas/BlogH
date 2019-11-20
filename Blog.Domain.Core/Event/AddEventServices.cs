@@ -39,7 +39,6 @@ namespace Blog.Domain.Core.Event
             where TService:EventData
         {
             Type handler = typeof(TImplementation);
-             handler.GetInterfaces();
             Type serviceType = serviceTypes.FirstOrDefault(s => handler.IsAssignableFrom(s));
             if (serviceType == null)
                 throw new ArgumentNullException(string.Format("类型{0}未找到实现类", handler.FullName));

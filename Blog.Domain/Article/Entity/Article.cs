@@ -10,29 +10,31 @@ namespace Blog.Domain
     /// </summary>
     public class Article : AggregateRoot<int>
     {
-        public Article(int id,string title,string textSection, ArticleType articleType)
+        public Article(int id, string title, string textSection, ArticleType articleType)
         {
             Id = id;
             Title = title;
             TextSection = textSection;
             ArticleType = articleType;
         }
-        public Article(int id,string author,string title,string content, ArticleType articleType,DateTime createTime)
+        public Article(int id,string author, string title,string textSection, string content, ArticleType articleType, bool isDraft)
         {
             Id = id;
-            Author = author;
-            Title = title;
-            Content = content;
-            ArticleType = articleType;
-            CreateTime = createTime;
-        }
-        public Article(string author, string title,string textSection, string content, ArticleType articleType, bool isDraft,IList<string> relatedFileList)
-        {
             Title = title;
             ArticleType = articleType;
             Author = author;          
             Content = content;
-            RelatedFileList = relatedFileList;
+            IsDraft = isDraft;
+            TextSection = textSection;
+        }
+        public Article( string title, string author, string content, ArticleType articleType, bool isDraft, DateTime createTime)
+        {
+            Title = title;
+            Author = author;
+            ArticleType = articleType;
+            Content = content;
+            IsDraft = isDraft;
+            CreateTime = createTime;
         }
         public Article(int id,string title,string author,string textSection,ArticleType articleType,bool isDraft,DateTime createTime)
         {
