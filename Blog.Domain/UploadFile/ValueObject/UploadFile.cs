@@ -10,7 +10,7 @@ namespace Blog.Domain
         public UploadFile(string account,string guid,string savePath,string fileName,long fileSize)
         {
             Account = account;
-            GUID = guid;
+            Guid = guid;
             SavePath = savePath;
             FileName = fileName;
             FileSize = fileSize;
@@ -18,7 +18,7 @@ namespace Blog.Domain
         /// <summary>
         /// guid
         /// </summary>
-        public string GUID { get; private set; }
+        public string Guid { get; private set; }
         /// <summary>
         /// 所属用户
         /// </summary>

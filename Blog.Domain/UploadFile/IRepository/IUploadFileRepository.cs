@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Blog.Domain
 {
-  public  class ConditionBase
+   public interface IUploadFileRepository
     {
-        public HashSet<string> ConditionKeys = new HashSet<string>();
+        IList<UploadFile> SelectByIds(IList<string> guids);
     }
 }

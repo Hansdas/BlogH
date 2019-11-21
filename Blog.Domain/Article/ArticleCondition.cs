@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Blog.Domain
 {
-  public  class ArticleCondition:ConditionBase
+  public  class ArticleCondition: ICondition
     {
         /// <summary>
         /// 精确查询

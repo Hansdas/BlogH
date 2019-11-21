@@ -38,7 +38,8 @@ namespace BlogApi.Configure
             services.AddEventBus<IEventHandler<CreateArticleCommand>, CreateArticleCommand>();
             services.AddEventBus<IEventHandler<UpdateArticleCommand>, UpdateArticleCommand>();
 
-
+            services.AddTransient<IUploadFileRepository, UploadFileRepository>();
+            services.AddTransient<IWhisperRepository, WhisperRepository>();
             services.AddTransient<ICommentRepository, CommentRepository>();
 
             services.AddTransient<ICacheClient, CacheClient>();

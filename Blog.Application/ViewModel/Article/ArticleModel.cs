@@ -5,7 +5,7 @@ using System.Text;
 namespace Blog.Application.ViewModel
 {
     /// <summary>
-    /// 文章模型
+    /// 文章模型DTO
     /// </summary>
     public class ArticleModel
     {

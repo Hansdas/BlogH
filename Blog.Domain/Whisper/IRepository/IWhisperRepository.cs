@@ -15,11 +15,11 @@ namespace Blog.Domain
         /// 分页查询微语
         /// </summary>
         /// <returns></returns>
-        IEnumerable<Whisper> SelectByPage(int pageIndex, int pageSize,BlogType blogType);
+        IEnumerable<Whisper> SelectByPage(int pageIndex, int pageSize, WhisperCondiiton condiiton = null);
         /// <summary>
         ///查询总数
         /// </summary>
         /// <returns></returns>
-        int SelectCount();
+        int SelectCount(WhisperCondiiton condiiton=null);
     }
 }

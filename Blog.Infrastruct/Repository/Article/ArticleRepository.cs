@@ -17,9 +17,6 @@ namespace Blog.Infrastruct
     {
         private string Where(ArticleCondition condition, ref DynamicParameters dynamicParameters)
         {
-            if (condition == null)
-                return "";
-            StringBuilder stringBuilder = new StringBuilder();
             IList<string> sqlList = new List<string>();
             if (!string.IsNullOrEmpty(condition.ArticleType))
             {
@@ -37,13 +34,23 @@ namespace Blog.Infrastruct
                 sqlList.Add("article_author = @article_author");
             }
             sqlList.Add(" 1=1 ");
-            if (sqlList.Count == 0)
-                return "";
-            string sql = string.Join(" and ", sqlList);
-            stringBuilder.Append(sql);
-            return stringBuilder.ToString();
+            string sql = string.Join(" AND ", sqlList);
+            return sql;
         }
-
+        public Tuple<IList<string>, DynamicParameters> BuildWhere(ICondition condition)
+        {
+            WhisperCondiiton whisperCondiiton = condition as WhisperCondiiton;
+            DynamicParameters parameters = new DynamicParameters();
+            IList<string> sqlList = new List<string>();
+            if (condition == null)
+                return new Tuple<IList<string>, DynamicParameters>(sqlList, parameters);
+            if (!string.IsNullOrEmpty(whisperCondiiton.Account))
+            {
+                parameters.Add("account", whisperCondiiton.Account);
+                sqlList.Add("whisper_account = @account");
+            }
+            return new Tuple<IList<string>, DynamicParameters>(sqlList, parameters);
+        }
         private Article Map(dynamic d)
         {
             return new Article(d.article_id,

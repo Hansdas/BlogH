@@ -26,7 +26,6 @@ namespace BlogApi.Controllers
             _context = httpContext;
         }
         [HttpPost]
-        [EnableCors("AllowSpecificOrigins")]
         public JsonResult GetLoginUser()
         {
             ReturnResult returnResult = new ReturnResult();
@@ -53,6 +52,9 @@ namespace BlogApi.Controllers
         [HttpPost]
         public string IsLogin()
         {
+            bool noLogin =Response.Headers.TryGetValue("auth", out StringValues value);
+            if (noLogin)
+                return "false";
             return "200";
         }
     }

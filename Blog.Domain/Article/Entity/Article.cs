@@ -8,7 +8,7 @@ namespace Blog.Domain
     /// <summary>
     /// 文章
     /// </summary>
-    public class Article : AggregateRoot<int>
+    public class Article : Entity<int>
     {
         public Article(int id, string title, string textSection, ArticleType articleType)
         {

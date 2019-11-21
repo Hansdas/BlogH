@@ -12,7 +12,7 @@ namespace Blog.Domain
     {
         public Comment(string commentContent,string guid,string commentAccount,DateTime commentDate)
         {
-            GUID = guid;
+            Guid = guid;
             CommentContent = commentContent;
             CommentAccount = commentAccount;
             CommentDate = commentDate;
@@ -24,7 +24,7 @@ namespace Blog.Domain
         /// <summary>
         /// guid(数据持久化，存入实体表)
         /// </summary>
-        public string GUID { get; private set; }
+        public string Guid { get; private set; }
         /// <summary>
         /// 评论人
         /// </summary>

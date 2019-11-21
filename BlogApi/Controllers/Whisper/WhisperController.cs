@@ -1,46 +1,53 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
-//using Blog.Application;
-//using Blog.Application.ViewModel;
-//using Blog.Domain;
-//using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Blog.Application;
+using Blog.Application.ViewModel;
+using Blog.Domain;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
-//namespace Blog.Controllers
-//{
-//    public class WhisperController : BaseController
-//    {
-//        private readonly IBlogService _blogService;
-//        private readonly IBlogRepository  _blogRepository;
-//        public WhisperController(IBlogService  blogService, IBlogRepository blogRepository)
-//        {
-//            _blogService = blogService;
-//            _blogRepository = blogRepository;
-//        }
-//        public IActionResult Index()
-//        {
-              
-//            return View();
-//        }
-//        [HttpGet]
-//        public IActionResult LoadWhisper(int pageIndex, int pageSize)
-//        {
-//            IList<BlogModel>  blogs = _blogService.GetBlogModels(pageIndex, pageSize);
-//            PageResult pageResult = new PageResult();
-//            pageResult.Data = blogs;
-//            pageResult.Code = "200";
-//            pageResult.Message = "ok";
-//            return new JsonResult(pageResult);
-//        }
-//        public int LoadTotal()
-//        {
-//            int total = _blogRepository.SelectCount();
-//            return total;
-//        }
-//        public IActionResult AddWhisper()
-//        {
-//            return View();
-//        }
-//    }
-//}
+namespace BlogApi.Controllers.Whisper
+{
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+    public class WhisperController : ControllerBase
+    {
+        private IWhisperRepository _whisperRepository;
+        private IWhisperService _whisperService;
+        private IHttpContextAccessor _httpContext;
+        public WhisperController(IWhisperRepository whisperRepository,IWhisperService whisperService,IHttpContextAccessor httpContext)
+        {
+            _whisperRepository = whisperRepository;
+            _whisperService = whisperService;
+            _httpContext = httpContext;
+        }
+        [HttpGet]
+        public JsonResult LoadWhisper(int pageIndex,int pageSize)
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                UserModel userModel = Auth.GetLoginUser(_httpContext);
+                WhisperCondiiton condiiton = new WhisperCondiiton();
+                condiiton.Account = userModel.Account;
+               IList<WhisperModel> whisperModels=_whisperService.SelectByPage(pageIndex, pageSize, condiiton);
+                returnResult.Code = "200";
+                returnResult.Data = whisperModels;
+            }
+            catch (Exception e)
+            {
+                returnResult.Code = "500";
+                returnResult.Data = e.Message;
+            }
+            return new JsonResult(returnResult) ;
+        }
+        [HttpGet]
+        public int LoadTotal()
+        {
+            int total = _whisperRepository.SelectCount();
+            return total;
+        }
+    }
+}

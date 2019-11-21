@@ -5,9 +5,9 @@ using System.Text;
 namespace Blog.Application.ViewModel
 {
     /// <summary>
-    /// 博客模型
+    /// 博客模型DTO
     /// </summary>
-   public class BlogModel
+   public class WhisperModel
     {
         /// <summary>
         /// 作者
@@ -39,7 +39,7 @@ namespace Blog.Application.ViewModel
         public IList<CommentDataModel> Commentdatas { get; set; }
     }
     /// <summary>
-    /// 评论模型
+    /// 评论模型DTO
     /// </summary>
     public class CommentDataModel
     {
