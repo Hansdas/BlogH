@@ -16,7 +16,7 @@ namespace Blog.Infrastruct
         {
             return new User(result.user_id, result.user_username, result.user_account, result.user_password, (Sex)result.user_sex
                 , result.IsValid == 0 ? false : true, result.user_email, result.user_phone,result.user_birthdate
-                , result.user_sign, result.headphoto, result.user_createtime, result.user_updatetime
+                , result.user_sign, result.user_headphoto, result.user_createtime, result.user_updatetime
                 );
 
         }

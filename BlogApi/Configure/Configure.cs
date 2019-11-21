@@ -40,6 +40,7 @@ namespace BlogApi.Configure
 
             services.AddTransient<IUploadFileRepository, UploadFileRepository>();
             services.AddTransient<IWhisperRepository, WhisperRepository>();
+            services.AddTransient<IWhisperService, WhisperService>();
             services.AddTransient<ICommentRepository, CommentRepository>();
 
             services.AddTransient<ICacheClient, CacheClient>();

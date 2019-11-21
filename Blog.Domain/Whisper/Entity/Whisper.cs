@@ -20,7 +20,7 @@ namespace Blog.Domain
             PraiseAccount = praiseAccount;
             PraiseCount = praiseCount;
             UploadFileGuids = uploadFileGuids;
-            CreateTime = CreateTime;
+            CreateTime = createTime;
         }
         public Whisper(int id, string account, string content, IList<Comment> commentList, int praiseCount, string praiseAccount, IList<UploadFile> uploadFileList, DateTime createTime)
         {
@@ -31,7 +31,7 @@ namespace Blog.Domain
             PraiseAccount = praiseAccount;
             PraiseCount = praiseCount;
             UploadFileList = uploadFileList;
-            CreateTime = CreateTime;
+            CreateTime = createTime;
         }
         /// <summary>
         /// 提交人
@@ -80,6 +80,8 @@ namespace Blog.Domain
         /// <returns></returns>
         public static IList<string> GetCommentGuidList(Whisper whisper)
         {
+            if (whisper.CommentGuids == null)
+                return new List<string>();
             return whisper.CommentList.Select(s => s.Guid).ToList();
         }
         /// <summary>
@@ -98,6 +100,8 @@ namespace Blog.Domain
         /// <returns></returns>
         public static IList<string> GetFileGuids(Whisper whisper)
         {
+            if (whisper.UploadFileList == null)
+                return new List<string>();
             return whisper.UploadFileList.Select(s => s.Guid).ToList();
         }
         /// <summary>

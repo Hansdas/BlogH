@@ -31,7 +31,7 @@ namespace BlogApi.Controllers
             ReturnResult returnResult = new ReturnResult();
             try
             {
-                bool noLogin = Request.Headers.TryGetValue("auth", out StringValues value);
+                bool noLogin = Response.Headers.TryGetValue("auth", out StringValues value);
                 if (noLogin)
                     throw new ValidationException();
                 string json = new JWT(_context).ResolveToken();
