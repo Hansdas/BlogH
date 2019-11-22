@@ -8,7 +8,7 @@ using Blog.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BlogApi.Controllers.Whisper
+namespace BlogApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
@@ -22,6 +22,25 @@ namespace BlogApi.Controllers.Whisper
             _whisperRepository = whisperRepository;
             _whisperService = whisperService;
             _httpContext = httpContext;
+        }
+        [HttpPost]
+        public JsonResult Publish()
+        {
+            ReturnResult returnResult = new ReturnResult();
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            string content = Request.Form["content"];
+            Whisper whisper = new Whisper(userModel.Account, content);
+            try
+            {
+                _whisperService.Insert(whisper);
+                returnResult.Code = "200";
+            }
+            catch (Exception e)
+            {
+                returnResult.Code = "500";
+                returnResult.Message = e.Message;
+            }
+            return new JsonResult(returnResult);
         }
         [HttpGet]
         public JsonResult LoadWhisper(int pageIndex,int pageSize)

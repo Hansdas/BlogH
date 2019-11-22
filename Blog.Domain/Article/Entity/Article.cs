@@ -46,7 +46,7 @@ namespace Blog.Domain
             IsDraft = isDraft;
             CreateTime = createTime;
         }
-        public Article(int id, string author, string title,string textSection, string content, ArticleType articleType, bool isDraft, string relatedfiles, int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
+        public Article(int id, string author, string title,string textSection, string content, ArticleType articleType, bool isDraft,int praiseCount, int browserCount, DateTime createTime, DateTime? updateTime)
         {
             Id = id;
             Title = title;
@@ -55,7 +55,6 @@ namespace Blog.Domain
             Author = author;
             Content = content;
             IsDraft = isDraft;
-            RelatedFileList = relatedfiles.Split(',');
             PraiseCount = praiseCount;
             BrowserCount = browserCount;
             CreateTime = createTime;
@@ -94,18 +93,8 @@ namespace Blog.Domain
         /// </summary>
         public int BrowserCount { get; private set; }
         /// <summary>
-        /// 相关文件
+        /// 评论
         /// </summary>
-        public IList<string> RelatedFileList { get; private set; }
-        /// <summary>
-        /// 相关文件,数据库持久化，存放附件路径
-        /// </summary>
-        public string RelatedFiles {
-            get {
-                if (RelatedFileList == null || RelatedFileList.Count == 0)
-                    return "";
-                return RelatedFileList.ConvertTostring(',');
-            }
-        }
+        public IList<Comment> Comments { get; private set; }
     }
 }

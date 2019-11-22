@@ -13,11 +13,17 @@ namespace Blog.Application
     public class WhisperService : IWhisperService
     {
         private  IWhisperRepository _whisperRepository;
-        public WhisperService(IWhisperRepository whisperRepository)
+        private IEventBus _eventBus;
+        public WhisperService(IWhisperRepository whisperRepository, IEventBus eventBus)
         {
             _whisperRepository = whisperRepository;
+            _eventBus = eventBus;
         }
-
+        public void Insert(Whisper whisper)
+        {
+            CreateWhisperCommand command = new CreateWhisperCommand(whisper);
+            _eventBus.Publish(command); 
+        }
         public IList<WhisperModel> SelectByPage(int pageIndex, int pageSize, WhisperCondiiton condiiton = null)
         {
             IEnumerable<Whisper> whispers = _whisperRepository.SelectByPage(pageIndex, pageSize, condiiton);
@@ -27,7 +33,6 @@ namespace Blog.Application
                 WhisperModel model = new WhisperModel();
                 model.Author = item.Account;
                 model.Content = item.Content;
-                model.PhotoPaths = item.UploadFileList.Select(s => s.SaveFullPath).ToList();
                 model.Reply = item.CommentCount;
                 model.Praise = item.PraiseCount;
                 model.Date = item.CreateTime.ToString("yyyy/MM/dd hh:mm");

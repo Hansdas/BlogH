@@ -11,7 +11,12 @@ namespace Blog.Domain
     /// </summary>
     public class Whisper : Entity<int>
     {
-        public Whisper(int id, string account, string content, string commentGuids, int praiseCount, string praiseAccount,string uploadFileGuids, DateTime createTime)
+        public Whisper(string account,string content)
+        {
+            Account = account;
+            Content = content;
+        }
+        public Whisper(int id, string account, string content, string commentGuids, int praiseCount, string praiseAccount, DateTime createTime)
         {
             Id = id;
             Account = account;
@@ -19,10 +24,9 @@ namespace Blog.Domain
             CommentGuids = commentGuids;
             PraiseAccount = praiseAccount;
             PraiseCount = praiseCount;
-            UploadFileGuids = uploadFileGuids;
             CreateTime = createTime;
         }
-        public Whisper(int id, string account, string content, IList<Comment> commentList, int praiseCount, string praiseAccount, IList<UploadFile> uploadFileList, DateTime createTime)
+        public Whisper(int id, string account, string content, IList<Comment> commentList, int praiseCount, string praiseAccount,DateTime createTime)
         {
             Id = id;
             Account = account;
@@ -30,7 +34,6 @@ namespace Blog.Domain
             CommentList = commentList;
             PraiseAccount = praiseAccount;
             PraiseCount = praiseCount;
-            UploadFileList = uploadFileList;
             CreateTime = createTime;
         }
         /// <summary>
@@ -65,15 +68,6 @@ namespace Blog.Domain
         /// </summary>
         public string PraiseAccount { get; private set; }
         /// <summary>
-        /// 文件guid(只用来数据持久化)
-        /// </summary>
-        public string UploadFileGuids { get; private set; }
-        /// <summary>
-        /// 相关图片
-        /// </summary>
-        public IList<UploadFile> UploadFileList { get; private set; }
-
-        /// <summary>
         /// 获取评论guid集合
         /// </summary>
         /// <param name="whisper"></param>
@@ -92,26 +86,6 @@ namespace Blog.Domain
         {
             IList<string> commentGuidList = GetCommentGuidList(whisper);
             whisper.CommentGuids = string.Join(",", commentGuidList);
-        }
-        /// <summary>
-        /// 获取附件guid集合
-        /// </summary>
-        /// <param name="whisper"></param>
-        /// <returns></returns>
-        public static IList<string> GetFileGuids(Whisper whisper)
-        {
-            if (whisper.UploadFileList == null)
-                return new List<string>();
-            return whisper.UploadFileList.Select(s => s.Guid).ToList();
-        }
-        /// <summary>
-        /// 对评论guids赋值
-        /// </summary>
-        /// <param name="whisper"></param>
-        public static void SetFileGuids(Whisper whisper)
-        {
-            IList<string> uploadFileGuidList = GetFileGuids(whisper);
-            whisper.UploadFileGuids = string.Join(",", uploadFileGuidList);
         }
     }
 }

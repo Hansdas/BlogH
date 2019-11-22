@@ -8,6 +8,7 @@ namespace Blog.Application
 {
    public interface IWhisperService
     {
+        void Insert(Whisper whisper);
         IList<WhisperModel> SelectByPage(int pageIndex, int pageSize, WhisperCondiiton condiiton = null);
     }
 }
