@@ -11,9 +11,7 @@ namespace Blog.Domain
     {
         void Insert(Article article);
         int SelectCount(ArticleCondition condition = null);
-        Task<int> SelectCountAsync(ArticleCondition condition = null);
         IEnumerable<Article> SelectByPage(int pageSize, int pageIndex, ArticleCondition condition=null);
-        Task<IEnumerable<Article>> SelectByPageAsync(int pageSize, int pageIndex, ArticleCondition condition = null);
         Article Select(ArticleCondition articleCondition = null);
         /// <summary>
         /// 查询上一篇和下一篇
@@ -22,15 +20,13 @@ namespace Blog.Domain
         /// <returns></returns>
 
         IEnumerable<dynamic> SelectNextUp(int id, ArticleCondition articleCondition = null);
+        void Update(Article article);
+        void Delete(int id);
         /// <summary>
-        /// 更新数据
+        /// 评论
         /// </summary>
         /// <param name="article"></param>
-        void Update(Article article);
-        /// <summary>
-        /// 根据id删除
-        /// </summary>
-        /// <param name="id"></param>
-        void Delete(int id);
+        void Comment(IList<Comment> comments,int id);
+        IList<string> SelectCommentIds(int id);
     }
 }

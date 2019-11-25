@@ -2,6 +2,7 @@
 using Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Blog.Domain
 {
@@ -27,7 +28,7 @@ namespace Blog.Domain
             IsDraft = isDraft;
             TextSection = textSection;
         }
-        public Article( string title, string author, string content, ArticleType articleType, bool isDraft, DateTime createTime)
+        public Article(string title, string author, string content, ArticleType articleType, bool isDraft,IList<Comment> comments, DateTime createTime)
         {
             Title = title;
             Author = author;
@@ -35,6 +36,10 @@ namespace Blog.Domain
             Content = content;
             IsDraft = isDraft;
             CreateTime = createTime;
+            Comments = comments;
+            if (comments != null)
+                CommentIds = string.Join(',', comments.Select(s => s.Guid));
+
         }
         public Article(int id,string title,string author,string textSection,ArticleType articleType,bool isDraft,DateTime createTime)
         {
@@ -92,6 +97,10 @@ namespace Blog.Domain
         /// 浏览次数
         /// </summary>
         public int BrowserCount { get; private set; }
+        /// <summary>
+        /// 评论 ids
+        /// </summary>
+        public string CommentIds { get; private set; }
         /// <summary>
         /// 评论
         /// </summary>

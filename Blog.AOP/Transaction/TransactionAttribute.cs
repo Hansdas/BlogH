@@ -12,49 +12,24 @@ namespace Blog.AOP.Transaction
     [AttributeUsage(AttributeTargets.Method)]
    public class TransactionAttribute:Attribute
     {
-
-        public TransactionAttribute()
+        public TransactionAttribute(TransactionLevel level, ScopeOption scope)
         {
-            TimeSpan timeOut = new TimeSpan(0, 0, 20);
-            if (Timeout.HasValue)
-                timeOut = Timeout.Value;
-            Timeout = new TimeSpan(0, 0, 20);
-
-            IsolationLevel isolationLevel = IsolationLevel.ReadUncommitted;
-            if (TransactionLevel.HasValue)
-                isolationLevel = Enum.Parse<IsolationLevel>(TransactionLevel.Value.GetEnumValue().ToString());
-
-            if (TransactionScopeOptionLevel.HasValue)
-                TransactionScopeOption = Enum.Parse<TransactionScopeOption>(TransactionScopeOptionLevel.Value.GetEnumValue().ToString());
-            else
-                TransactionScopeOption = TransactionScopeOption.Required;
-
-            transactionOptions = new TransactionOptions() {
-                Timeout = timeOut,
-                IsolationLevel= isolationLevel
-            };
+            Level = level;
+            TransactionScope = scope;
         }
+
         /// <summary>
         /// 超时时间
         /// </summary>
-        public TimeSpan? Timeout { get; set; }
+        public int? TimeoutSecond { get; set; }
         /// <summary>
         /// 事务级别
         /// </summary>
-        public TransactionLevel? TransactionLevel { get; set; }
+        public TransactionLevel? Level { get; set; }
         /// <summary>
         /// 事务范围
         /// </summary>
-        public TransactionScopeOptionLevel? TransactionScopeOptionLevel { get; set; }
-        /// <summary>
-        /// 事务信息
-        /// </summary>
-        public TransactionOptions transactionOptions { get; private set; }
-
-        /// <summary>
-        /// 事务信息
-        /// </summary>
-        public TransactionScopeOption TransactionScopeOption { get;private set; }
+        public ScopeOption? TransactionScope { get; set; }
     }
     /// <summary>
     /// 事务级别
@@ -73,7 +48,7 @@ namespace Blog.AOP.Transaction
     /// <summary>
     /// 事务范围
     /// </summary>
-    public enum TransactionScopeOptionLevel
+    public enum ScopeOption
     {
         //多个connection共用一个事务
         Required,

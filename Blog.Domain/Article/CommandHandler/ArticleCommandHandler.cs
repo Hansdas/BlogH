@@ -22,7 +22,10 @@ namespace Blog.Domain
 
         public void Handler(UpdateArticleCommand command)
         {
-            _articleRepository.Update(command.Article);
+            if (command.Id > 0)
+                _articleRepository.Comment(command.Comments, command.Id);
+            else
+                _articleRepository.Update(command.Article);
         }
     }
 }

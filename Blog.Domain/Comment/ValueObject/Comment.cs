@@ -30,10 +30,6 @@ namespace Blog.Domain
         /// </summary>
         public string CommentAccount { get; private set; }
         /// <summary>
-        /// 评论人
-        /// </summary>
-        public string CommentUsername { get; private set; }
-        /// <summary>
         /// 评论时间
         /// </summary>
         public DateTime CommentDate { get; private set; }

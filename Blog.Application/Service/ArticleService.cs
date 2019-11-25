@@ -25,7 +25,7 @@ namespace Blog.Application
 
             if (article.Id > 0)
             {
-                UpdateArticleCommand updateArticleCommand = new UpdateArticleCommand(article);
+                UpdateArticleCommand  updateArticleCommand = new UpdateArticleCommand(article);
                 _eventBus.Publish(updateArticleCommand);
             }
             else
@@ -53,39 +53,18 @@ namespace Blog.Application
             }
             return articleModels;
         }
-        public async Task<IList<ArticleModel>> SelectByPageAsync(int pageIndex, int pageSize, ArticleCondition condition = null)
-        {
-            IEnumerable<Article> articles = await _articleRepository.SelectByPageAsync(pageSize, pageIndex, condition);
-            IList<ArticleModel> articleModels = new List<ArticleModel>();
-            foreach (var item in articles)
-            {
-                ArticleModel articleModel = new ArticleModel();
-                articleModel.Id = item.Id;
-                articleModel.ArticleType = item.ArticleType.GetEnumText<ArticleType>();
-                articleModel.TextSection = item.TextSection;
-                articleModel.Title = item.Title;
-                articleModels.Add(articleModel);
-            }
-            return articleModels;
-        }
         public ArticleModel Select(ArticleCondition articleCondition = null)
         {
             Article article = _articleRepository.Select(articleCondition);
             ArticleModel articleModel = new ArticleModel()
             {
                 Id = article.Id
-                ,
-                Title = article.Title
-                ,
-                ArticleType = article.ArticleType.GetEnumText<ArticleType>()
-                ,
-                CreateTime = article.CreateTime.ToString("yyyy/MM/dd")
-                ,
-                Content = article.Content
-                ,
-                Author = article.Author
-                ,
-                IsDraft = article.IsDraft ? "是" : "否"
+                ,Title = article.Title
+                ,ArticleType = article.ArticleType.GetEnumText()
+                ,CreateTime = article.CreateTime.ToString("yyyy/MM/dd")
+                ,Content = article.Content
+                ,Author = article.Author
+                ,IsDraft = article.IsDraft ? "是" : "否"
             };
             return articleModel;
         }
@@ -107,6 +86,12 @@ namespace Blog.Application
                 }
             }
             return pageInfoMode;
+        }
+
+        public void Comment(IList<Comment> comments, int id)
+        {
+            UpdateArticleCommand command = new UpdateArticleCommand(comments,id);
+            _eventBus.Publish(command);
         }
     }
 }

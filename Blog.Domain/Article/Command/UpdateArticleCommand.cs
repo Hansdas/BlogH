@@ -7,10 +7,18 @@ namespace Blog.Domain
 {
     public class UpdateArticleCommand : Command
     {
-        public Article Article { get; private set; }
         public UpdateArticleCommand(Article article)
         {
             Article = article;
         }
+        public UpdateArticleCommand(IList<Comment> comments,int id)
+        {
+            Comments = comments;
+            Id = id;
+        }
+        public IList<Comment> Comments;
+        public int Id { get;private set; }
+        public Article Article { get; private set; }
+
     }
 }

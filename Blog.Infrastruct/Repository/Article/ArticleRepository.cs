@@ -10,11 +10,17 @@ using System.Linq;
 using System.Dynamic;
 using System.Collections;
 using System.Threading.Tasks;
+using Blog.AOP.Transaction;
 
 namespace Blog.Infrastruct
 {
     public class ArticleRepository : Repository<Article, int>, IArticleRepository, IInterceptorHandler
     {
+        private ICommentRepository _commentRepository;
+        public ArticleRepository(ICommentRepository commentRepository)
+        {
+            _commentRepository = commentRepository;
+        }
         private string Where(ArticleCondition condition, ref DynamicParameters dynamicParameters)
         {
             IList<string> sqlList = new List<string>();
@@ -60,7 +66,6 @@ namespace Blog.Infrastruct
                                d.article_content,
                                (ArticleType)d.article_articletype,
                                d.article_isdraft,
-                               d.article_relatedfiles,
                                d.article_praisecount,
                                d.article_browsercount,
                                d.article_createtime,
@@ -93,14 +98,6 @@ namespace Blog.Infrastruct
             return count;
         }
 
-        public async Task<int> SelectCountAsync(ArticleCondition condition = null)
-        {
-            DynamicParameters dynamicParameters = new DynamicParameters();
-            string where = Where(condition, ref dynamicParameters);
-            string sql = "SELECT COUNT(*) FROM Article WHERE " + where;
-            int count = await DbConnection.ExecuteScalarAsync<int>(sql, dynamicParameters);
-            return count;
-        }
 
         public IEnumerable<Article> SelectByPage(int pageSize, int pageIndex, ArticleCondition condition = null)
         {
@@ -109,8 +106,6 @@ namespace Blog.Infrastruct
             dynamicParameters.Add("pageId", pageId, DbType.Int32);
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condition, ref dynamicParameters);
-            //string sql = "SELECT * FROM s_log WHERE Id <=(SELECT Id FROM s_log   ORDER BY Id desc LIMIT 35000, 1) ORDER BY Id DESC LIMIT 10";
-
             string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_createtime " +
                          "FROM Article INNER JOIN User ON user_account=article_author WHERE " + where +
                          " AND  article_id <=(" +
@@ -140,38 +135,6 @@ namespace Blog.Infrastruct
             return articles;
         }
 
-        public async Task<IEnumerable<Article>> SelectByPageAsync(int pageSize, int pageIndex, ArticleCondition condition = null)
-        {
-            int pageId = pageSize * (pageIndex - 1);
-            DynamicParameters dynamicParameters = new DynamicParameters();
-            dynamicParameters.Add("pageId", pageId, DbType.Int32);
-            dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
-            string where = Where(condition, ref dynamicParameters);
-            //string sql = "SELECT * FROM s_log WHERE Id <=(SELECT Id FROM s_log   ORDER BY Id desc LIMIT 35000, 1) ORDER BY Id DESC LIMIT 10";
-            string sql = "SELECT article_id,article_title,article_textsection,article_articletype " +
-                       "FROM Article WHERE " + where +
-                       " AND  article_id <=(" +
-                       "SELECT article_id FROM Article WHERE"
-                       + where + " AND " +
-                       "ORDER BY article_id DESC " +
-                       "LIMIT @pageId, 1) " +
-                       "ORDER BY article_id DESC " +
-                       "LIMIT @pageSize";
-            IEnumerable<dynamic> dynamics = await DbConnection.QueryAsync<dynamic>(sql, dynamicParameters);
-            IList<Article> articles = new List<Article>();
-            foreach (var d in dynamics)
-            {
-
-                Article article = new Article(
-                  d.article_id
-                , d.article_title
-                , d.article_textsection
-                , (ArticleType)d.article_articletype
-                );
-                articles.Add(article);
-            }
-            return articles;
-        }
 
         public Article Select(ArticleCondition articleCondition = null)
         {
@@ -186,6 +149,7 @@ namespace Blog.Infrastruct
                 , d.article_content
                 , (ArticleType)d.article_articletype
                 , Convert.ToBoolean(d.article_isdraft)
+                , d.article_comments
                 , d.article_createtime
                 );
             return article;
@@ -237,6 +201,31 @@ namespace Blog.Infrastruct
             parameters.Add("Id", id);
             string sql = "DELETE FROM Article WHERE article_id=@Id";
             int i=  DbConnection.Execute(sql,parameters);
+        }                                                  
+
+        [Transaction(TransactionLevel.ReadCommitted, ScopeOption.Required)]
+        public void Comment(IList<Comment> comments, int id)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("Comments", comments.Select(s=>s.Guid));
+            parameters.Add("Id", id);
+            string sql = "UPDATE Article " +
+                "SET article_comments = @Comments" +
+                " WHERE article_id =@Id";
+            DbConnection.Execute(sql, parameters);
+            string insert = "INSERT INTO Comment(comment_guid,comment_content,comment_account,comment_commentdate)" +
+                " VALUES (@Guid,@CommentContent,@CommentAccount,@CommentDate)";
+            DbConnection.Execute(insert, comments[comments.Count-1]);//最后一条数据为最新评论
+        }
+
+        public IList<string> SelectCommentIds(int id)
+        {
+            IList<string> commnetIdList = new List<string>();
+            string select = "SELECT article_comments FROM Article WHERE article_id = @Id";
+            string commentIds = SelectSingle(select, new { Id = id });
+            if (!string.IsNullOrEmpty(commentIds))
+                commnetIdList = commentIds.Split(',');
+            return commnetIdList;
         }
     }
 }
