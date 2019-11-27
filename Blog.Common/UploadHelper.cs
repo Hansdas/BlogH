@@ -66,10 +66,13 @@ namespace Blog.Common
         public static  IList<PathValue>  Upload(string[] localFilePaths)
         {
             IList<PathValue> pathValues = new List<PathValue>();
-            for (int i = 0; i < localFilePaths.Length; i++)
+            
+            for (int i = 0; i < localFilePaths.Length; i++)                     
             {
+                int index = localFilePaths[i].LastIndexOf(ConstantKey.STATIC_FILE)+ConstantKey.STATIC_FILE.Length+1 ;
+                string loaclPath = string.Format(@"{0}/TempFile/{1}", ConstantKey.WebRoot, localFilePaths[i].Substring(index));
                 string fileName = localFilePaths[i].Substring(localFilePaths[i].LastIndexOf(@"\") + 1);
-                PathValue pathValue =Upload(localFilePaths[i], fileName).GetAwaiter().GetResult();
+                PathValue pathValue =Upload(loaclPath, fileName).GetAwaiter().GetResult();
                 pathValues.Add(pathValue);
             }
             return pathValues;
