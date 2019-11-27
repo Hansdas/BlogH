@@ -63,7 +63,7 @@ namespace BlogApi.Controllers.Upload
             UploadHelper.CompressImage(pathValue.FilePath, imgFile.OpenReadStream(), height, width, b);
             //使用虚拟静态资源路径，否则无法读取到图片
             string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
-            return Json(new { Code = "200", Data = new { Src = virtualPath, Title = imgFile.FileName } });
+            return Json(new { Code = "0", Data = new { Src = virtualPath, Title = imgFile.FileName } });
         }
     
         public IActionResult DeleteFile(string imgpath)

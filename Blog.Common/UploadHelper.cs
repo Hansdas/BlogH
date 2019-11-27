@@ -62,26 +62,16 @@ namespace Blog.Common
         /// 上传附件
         /// </summary>
         /// <param name="localFilePath">本地图片相对路径</param>
-        /// <param name="contentRootPath">程序路径</param>
         /// <returns></returns>
-        public static IList<PathValue>  Upload(string[] localFilePaths)
+        public static  IList<PathValue>  Upload(string[] localFilePaths)
         {
             IList<PathValue> pathValues = new List<PathValue>();
-            Task[] tasks = new Task[localFilePaths.Length];
             for (int i = 0; i < localFilePaths.Length; i++)
             {
-                int m = i;
-                tasks[m] = Task.Run(async () =>
-                {
-                    string fileName = localFilePaths[m].Substring(localFilePaths[m].LastIndexOf(@"\") + 1);
-                    PathValue pathValue =await  Upload(localFilePaths[m], fileName);
-                    lock (obj)
-                    {
-                        pathValues.Add(pathValue);
-                    }
-                });
+                string fileName = localFilePaths[i].Substring(localFilePaths[i].LastIndexOf(@"\") + 1);
+                PathValue pathValue =Upload(localFilePaths[i], fileName).GetAwaiter().GetResult();
+                pathValues.Add(pathValue);
             }
-            Task.WaitAll(tasks);
             return pathValues;
         }
         /// <summary>
