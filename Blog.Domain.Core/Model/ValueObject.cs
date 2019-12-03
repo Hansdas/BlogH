@@ -9,6 +9,5 @@ namespace Blog.Domain.Core
     /// </summary>
    public class ValueObject
     {
-        public string Content { get; private set; }
     }
 }

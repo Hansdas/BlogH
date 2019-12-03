@@ -24,15 +24,15 @@ namespace BlogApi.Controllers.User
     [ApiController]
     public class UserController : Controller
     {
-        private  IUserService _userService;
+        private IUserService _userService;
         private DomainNotificationHandler _domainNotificationHandler;
         private readonly ICacheClient _cacheClient;
         private IHttpContextAccessor _httpContext;
-        public UserController( IUserService  userService, INoticficationHandler<DomainNotification> notifications
-            , ICacheClient cacheClient,IHttpContextAccessor httpContext)
+        public UserController(IUserService userService, INoticficationHandler<DomainNotification> notifications
+            , ICacheClient cacheClient, IHttpContextAccessor httpContext)
         {
             _userService = userService;
-            _domainNotificationHandler=  (DomainNotificationHandler)notifications;
+            _domainNotificationHandler = (DomainNotificationHandler)notifications;
             _cacheClient = cacheClient;
             _httpContext = httpContext;
         }
@@ -60,13 +60,13 @@ namespace BlogApi.Controllers.User
                 userModel.Username = Request.Form["username"];
                 userModel.Sex = Request.Form["sex"];
                 userModel.BirthDate = Request.Form["birthdate"];
-                userModel .Phone= Request.Form["phone"];
+                userModel.Phone = Request.Form["phone"];
                 userModel.Email = Request.Form["email"];
                 userModel.Sign = Request.Form["sign"];
                 _userService.Update(userModel);
-                string domainNotification =  _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
+                string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
                 if (!string.IsNullOrEmpty(domainNotification))
-                    return new JsonResult(new ReturnResult() { Code = "500", Data = domainNotification});
+                    return new JsonResult(new ReturnResult() { Code = "500", Data = domainNotification });
                 IList<Claim> claims = new List<Claim>()
                 {
                     new Claim("account", userModel.Account),
@@ -88,7 +88,6 @@ namespace BlogApi.Controllers.User
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
-        [EnableCors("AllowSpecificOrigins")]
         public JsonResult UploadPhoto()
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
@@ -97,7 +96,7 @@ namespace BlogApi.Controllers.User
                 UploadHelper.DeleteFile(oldPath);
             var file = Request.Form.Files[0];
             PathValue pathValue = UploadHelper.SaveFile(file.FileName);
-            UploadHelper.CompressImage(pathValue.FilePath,file.OpenReadStream(),168,168,true);
+            UploadHelper.CompressImage(pathValue.FilePath, file.OpenReadStream(), 168, 168, true);
             pathValue = UploadHelper.Upload(pathValue.FilePath, file.FileName).GetAwaiter().GetResult();
             userModel.HeadPhoto = pathValue.FilePath;
             _userService.Update(userModel);
@@ -113,20 +112,20 @@ namespace BlogApi.Controllers.User
                     new Claim("headPhoto",userModel.HeadPhoto)
                 };
             string jwtToken = new JWT(_cacheClient).CreateToken(claims);
-            return new JsonResult(new ReturnResult() { Code = "200", Data = new {Path= pathValue.FilePath, token=jwtToken } });
+            return new JsonResult(new ReturnResult() { Code = "200", Data = new { Path = pathValue.FilePath, token = jwtToken } });
         }
         [HttpPost]
         public IActionResult UpdatePassword()
         {
-             string password= Request.Form["password"];
+            string password = Request.Form["password"];
             string OldPawword = Request.Form["oldpassword"];
             string json = new JWT(_httpContext).ResolveToken();
             UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
-            _userService.UpdatePassword(userModel.Account,password, OldPawword);
+            _userService.UpdatePassword(userModel.Account, password, OldPawword);
             string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
             if (!string.IsNullOrEmpty(domainNotification))
                 return new JsonResult(new ReturnResult() { Code = "500", Message = domainNotification });
-            return new JsonResult(new ReturnResult() { Code = "200"});
+            return new JsonResult(new ReturnResult() { Code = "200" });
         }
         [HttpGet]
         public string GetPhoto()

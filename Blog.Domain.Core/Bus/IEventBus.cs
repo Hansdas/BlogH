@@ -11,16 +11,16 @@ namespace Blog.Domain.Core.Bus
   public  interface  IEventBus
     {
         /// <summary>
-        /// 发布事件
+        /// 发布领域命令
         /// </summary>
         /// <typeparam name="TEventData"></typeparam>
         /// <param name="eventData"></param>
-        void Publish<TEventData>(TEventData eventData) where TEventData : EventData;
+        void Publish<TCommand>(TCommand command) where TCommand : Command;
         /// <summary>
-        /// 发送领域通知
+        /// 触发领域事件
         /// </summary>
         /// <typeparam name="TNotification"></typeparam>
         /// <param name="notification"></param>
-        void Send<TNotification>(TNotification notification) where TNotification : DomainNotification;
+        void RaiseEvent<TEventData>(TEventData eventData) where TEventData : EventData;
     }
 }

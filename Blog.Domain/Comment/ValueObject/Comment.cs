@@ -8,30 +8,46 @@ namespace Blog.Domain
     /// <summary>
     /// 评论
     /// </summary>
-   public class Comment: ValueObject
+    public class Comment : ValueObject
     {
-        public Comment(string commentContent,string guid,string commentAccount,DateTime commentDate)
+        public Comment(string guid,string content, string postUser,string replyGuid)
         {
             Guid = guid;
-            CommentContent = commentContent;
-            CommentAccount = commentAccount;
-            CommentDate = commentDate;
+            Content = content;
+            PostUser = postUser;
+            ReplyGuid = replyGuid;
         }
-        /// <summary>
-        /// 评论内容
-        /// </summary>
-        public string CommentContent { get; private set; }
+        public Comment(string guid, string content,  string postUser, string postUsername, DateTime postDate)
+        {
+            Guid = guid;
+            Content = content;
+            PostUser = postUser;
+            PostUsername = postUsername;
+            PostDate = postDate;
+        }
         /// <summary>
         /// guid(数据持久化，存入实体表)
         /// </summary>
         public string Guid { get; private set; }
         /// <summary>
-        /// 评论人
+        /// 评论内容
         /// </summary>
-        public string CommentAccount { get; private set; }
+        public string Content { get; private set; }
+        /// <summary>
+        /// 评论人账号
+        /// </summary>
+        public string PostUser { get; private set; }
+        /// <summary>
+        /// 评论人昵称，不存库
+        /// </summary>
+        public string PostUsername { get; private set; }
+        /// <summary>
+        /// 回复评论的id
+        /// </summary>
+        public string ReplyGuid { get;private set; }
         /// <summary>
         /// 评论时间
         /// </summary>
-        public DateTime CommentDate { get; private set; }
+        public DateTime PostDate { get; private set; }
     }
 }

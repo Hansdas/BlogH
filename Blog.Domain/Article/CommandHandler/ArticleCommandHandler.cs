@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace Blog.Domain
 {
-    public class ArticleCommandHandler : IEventHandler<CreateArticleCommand>,IEventHandler<UpdateArticleCommand>
+    /// <summary>
+    /// 文章命令处理程序
+    /// </summary>
+    public class ArticleCommandHandler : ICommandHandler<CreateArticleCommand>, ICommandHandler<UpdateArticleCommand>
     {
         private readonly IArticleRepository _articleRepository;
         public ArticleCommandHandler(IArticleRepository articleRepository)
@@ -15,15 +18,30 @@ namespace Blog.Domain
             _articleRepository = articleRepository;
         }
 
+        /// <summary>
+        /// 创建文章事件
+        /// </summary>
+        /// <param name="command"></param>
         public void Handler(CreateArticleCommand command)
         {
             _articleRepository.Insert(command.Article);
         }
+        /// <summary>
+        /// 更新文章事件
+        /// </summary>
+        /// <param name="command"></param>
 
         public void Handler(UpdateArticleCommand command)
         {
-            if (command.Id > 0)
-                _articleRepository.Comment(command.Comments, command.Id);
+            if (command.Comment != null)
+            {
+                string postReviceUser = _articleRepository.SelectAuthorById(command.Id);
+                Comment comment = new Comment(command.Comment.Guid, command.Comment.Content, command.Comment.PostUser, postReviceUser);
+
+                IList<string> commentIds = _articleRepository.SelectCommentIds(command.Id);
+                commentIds.Add(comment.Guid);
+                _articleRepository.Review(commentIds,comment, command.Id);
+            }
             else
                 _articleRepository.Update(command.Article);
         }

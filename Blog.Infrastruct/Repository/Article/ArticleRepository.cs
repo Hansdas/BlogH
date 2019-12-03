@@ -2,14 +2,10 @@
 using Blog.Domain;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Dapper;
 using System.Data;
 using Blog.Domain.Core;
 using System.Linq;
-using System.Dynamic;
-using System.Collections;
-using System.Threading.Tasks;
 using Blog.AOP.Transaction;
 
 namespace Blog.Infrastruct
@@ -21,6 +17,12 @@ namespace Blog.Infrastruct
         {
             _commentRepository = commentRepository;
         }
+        /// <summary>
+        /// 拼接查询条件
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="dynamicParameters"></param>
+        /// <returns></returns>
         private string Where(ArticleCondition condition, ref DynamicParameters dynamicParameters)
         {
             IList<string> sqlList = new List<string>();
@@ -43,20 +45,7 @@ namespace Blog.Infrastruct
             string sql = string.Join(" AND ", sqlList);
             return sql;
         }
-        public Tuple<IList<string>, DynamicParameters> BuildWhere(ICondition condition)
-        {
-            WhisperCondiiton whisperCondiiton = condition as WhisperCondiiton;
-            DynamicParameters parameters = new DynamicParameters();
-            IList<string> sqlList = new List<string>();
-            if (condition == null)
-                return new Tuple<IList<string>, DynamicParameters>(sqlList, parameters);
-            if (!string.IsNullOrEmpty(whisperCondiiton.Account))
-            {
-                parameters.Add("account", whisperCondiiton.Account);
-                sqlList.Add("whisper_account = @account");
-            }
-            return new Tuple<IList<string>, DynamicParameters>(sqlList, parameters);
-        }
+
         private Article Map(dynamic d)
         {
             return new Article(d.article_id,
@@ -134,22 +123,21 @@ namespace Blog.Infrastruct
             }
             return articles;
         }
-
-
         public Article Select(ArticleCondition articleCondition = null)
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(articleCondition, ref dynamicParameters);
-            string sql = "SELECT article_id,user_username,article_title,article_content,article_articletype,article_isdraft,article_createtime " +
+            string sql = "SELECT article_id,user_username,article_title,article_content,article_articletype,article_comments,article_isdraft,article_createtime " +
                          "FROM Article INNER JOIN User ON user_account=article_author WHERE 1=1 AND " + where;
             dynamic d = base.SelectSingle(sql, dynamicParameters);
+            IList<Comment> comments = _commentRepository.SelectByIds(d.article_comments.Split(','));
             Article article = new Article(
                 d.article_title
                 , d.user_username
                 , d.article_content
                 , (ArticleType)d.article_articletype
                 , Convert.ToBoolean(d.article_isdraft)
-                , d.article_comments
+                , comments
                 , d.article_createtime
                 );
             return article;
@@ -197,35 +185,39 @@ namespace Blog.Infrastruct
 
         public void Delete(int id)
         {
-            DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("Id", id);
             string sql = "DELETE FROM Article WHERE article_id=@Id";
-            int i=  DbConnection.Execute(sql,parameters);
-        }                                                  
+            DbConnection.Execute(sql,new { Id=id});
+        }
 
-        [Transaction(TransactionLevel.ReadCommitted, ScopeOption.Required)]
-        public void Comment(IList<Comment> comments, int id)
+        [Transaction(TransactionLevel.ReadCommitted)]
+        public void Review(IList<string> commentGuids,Comment comment, int id)
         {
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("Comments", comments.Select(s=>s.Guid));
+            parameters.Add("Comments", string.Join(',',commentGuids));
             parameters.Add("Id", id);
             string sql = "UPDATE Article " +
                 "SET article_comments = @Comments" +
                 " WHERE article_id =@Id";
             DbConnection.Execute(sql, parameters);
-            string insert = "INSERT INTO Comment(comment_guid,comment_content,comment_account,comment_commentdate)" +
-                " VALUES (@Guid,@CommentContent,@CommentAccount,@CommentDate)";
-            DbConnection.Execute(insert, comments[comments.Count-1]);//最后一条数据为最新评论
+            string insert = "INSERT INTO Comment(comment_guid,comment_content,comment_postuser,comment_replyguid,comment_postdate)" +
+                " VALUES (@Guid,@Content,@CommentAccount,@PostUser,@ReplyGuid,NOW())";
+            DbConnection.Execute(insert, comment);//最后一条数据为最新评论
         }
 
         public IList<string> SelectCommentIds(int id)
         {
             IList<string> commnetIdList = new List<string>();
             string select = "SELECT article_comments FROM Article WHERE article_id = @Id";
-            string commentIds = SelectSingle(select, new { Id = id });
+            string commentIds = SelectSingle(select, new { Id = id }).article_comments;
             if (!string.IsNullOrEmpty(commentIds))
-                commnetIdList = commentIds.Split(',');
+                commnetIdList = commentIds.Split(',').ToList();
             return commnetIdList;
+        }
+        public string SelectAuthorById(int id)
+        {
+            string sql = "SELECT article_author FROM Article WHERE article_Id=@Id";
+            string postReviceUser = SelectSingle(sql, new { Id = id }).article_author;
+            return postReviceUser;
         }
     }
 }

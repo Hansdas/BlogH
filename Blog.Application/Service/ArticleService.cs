@@ -15,17 +15,26 @@ namespace Blog.Application
     {
         private IArticleRepository _articleRepository;
         private IEventBus _eventBus;
-        public ArticleService(IEventBus eventBus, IArticleRepository articleRepository)
+        private ICommentRepository _commentRepository;
+        public ArticleService(IEventBus eventBus, IArticleRepository articleRepository, ICommentRepository commentRepository)
         {
             _eventBus = eventBus;
             _articleRepository = articleRepository;
+            _commentRepository = commentRepository;
         }
-        public void AddArticle(Article article)
+        public void AddOrUpdate(ArticleModel model)
         {
-
+            Article article = new Article(
+                model.Id
+                , model.Author
+                , model.Title
+                , model.TextSection
+                , model.Content
+                , Enum.Parse<ArticleType>(model.ArticleType)
+                , Convert.ToBoolean(model.IsDraft));
             if (article.Id > 0)
             {
-                UpdateArticleCommand  updateArticleCommand = new UpdateArticleCommand(article);
+                UpdateArticleCommand updateArticleCommand = new UpdateArticleCommand(article);
                 _eventBus.Publish(updateArticleCommand);
             }
             else
@@ -58,15 +67,31 @@ namespace Blog.Application
             Article article = _articleRepository.Select(articleCondition);
             ArticleModel articleModel = new ArticleModel()
             {
-                Id = article.Id
-                ,Title = article.Title
-                ,ArticleType = article.ArticleType.GetEnumText()
-                ,CreateTime = article.CreateTime.ToString("yyyy/MM/dd")
-                ,Content = article.Content
-                ,Author = article.Author
-                ,IsDraft = article.IsDraft ? "是" : "否"
+                Id = article.Id,
+                Title = article.Title,
+                ArticleType = article.ArticleType.GetEnumText(),
+                CreateTime = article.CreateTime.ToString("yyyy/MM/dd"),
+                Content = article.Content,
+                Author = article.Author,
+                IsDraft = article.IsDraft ? "是" : "否",
+                Comments = GetCommentModels(article.Comments)
             };
             return articleModel;
+        }
+        private IList<CommentModel> GetCommentModels(IList<Comment> comments)
+        {
+            IList<CommentModel> commentModels = new List<CommentModel>();
+           foreach (var item in comments)
+            {
+                CommentModel commentModel = new CommentModel();
+                commentModel.Guid = item.Guid;
+                commentModel.Content = item.Content;
+                commentModel.PostUser = item.PostUser;
+                commentModel.PostUsername = item.PostUsername;
+                commentModel.PostDate = item.PostDate.ToString("yyyy-MM-dd hh:mm");
+                commentModels.Add(commentModel);
+            }
+            return commentModels;
         }
         public PageInfoMode SelectNextUp(int id, ArticleCondition articleCondition = null)
         {
@@ -88,9 +113,11 @@ namespace Blog.Application
             return pageInfoMode;
         }
 
-        public void Comment(IList<Comment> comments, int id)
+        public void Review(CommentModel commentModel, int id)
         {
-            UpdateArticleCommand command = new UpdateArticleCommand(comments,id);
+            string guid = Guid.NewGuid().ToString();           
+            Comment comment = new Comment(guid, commentModel.Content,commentModel.PostUser, commentModel.ReplyGuid);
+            UpdateArticleCommand command = new UpdateArticleCommand(comment, id);
             _eventBus.Publish(command);
         }
     }

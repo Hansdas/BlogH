@@ -38,6 +38,7 @@ namespace BlogApi
                     new JWT(_cacheClient).RefreshToken(token, isExpires);
                     context.Response.Headers.Add("refreshToken", token);
                     context.Response.Headers.Add("Access-Control-Expose-Headers", "refreshToken");
+
                 }
             }
             catch (ValidationException)
@@ -48,6 +49,7 @@ namespace BlogApi
                 }
             }
             await _next(context);
+
         }
     }
     public class JwtAuthOption

@@ -9,10 +9,10 @@ namespace Blog.Application
 {
    public interface IArticleService
     {
-        void AddArticle(Article article);
+        void AddOrUpdate(ArticleModel model);
         IList<ArticleModel> SelectByPage(int pageIndex, int pageSize,ArticleCondition condition=null);
         ArticleModel Select(ArticleCondition articleCondition = null);
         PageInfoMode SelectNextUp(int id, ArticleCondition articleCondition = null);
-        void Comment(IList<Comment> comments, int id);
+        void Review(CommentModel commentModel, int id);
     }
 }

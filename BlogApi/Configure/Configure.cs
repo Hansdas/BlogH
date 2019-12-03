@@ -30,18 +30,18 @@ namespace BlogApi.Configure
         {
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
-            services.AddEventBus<IEventHandler<CreateUserCommand>, CreateUserCommand>();
-            services.AddEventBus<IEventHandler<UpdateUserCommand>, UpdateUserCommand>();
+            services.AddEventBus<ICommandHandler<CreateUserCommand>, CreateUserCommand>();
+            services.AddEventBus<ICommandHandler<UpdateUserCommand>, UpdateUserCommand>();
 
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IArticleService, ArticleService>();
-            services.AddEventBus<IEventHandler<CreateArticleCommand>, CreateArticleCommand>();
-            services.AddEventBus<IEventHandler<UpdateArticleCommand>, UpdateArticleCommand>();
+            services.AddEventBus<ICommandHandler<CreateArticleCommand>, CreateArticleCommand>();
+            services.AddEventBus<ICommandHandler<UpdateArticleCommand>, UpdateArticleCommand>();
 
             services.AddTransient<IUploadFileRepository, UploadFileRepository>();
             services.AddTransient<IWhisperRepository, WhisperRepository>();
             services.AddTransient<IWhisperService, WhisperService>();
-            services.AddEventBus<IEventHandler<CreateWhisperCommand>, CreateWhisperCommand>();
+            services.AddEventBus<ICommandHandler<CreateWhisperCommand>, CreateWhisperCommand>();
             services.AddTransient<ICommentRepository, CommentRepository>();
 
             services.AddTransient<ICacheClient, CacheClient>();
@@ -59,13 +59,12 @@ namespace BlogApi.Configure
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
             //注册发布订阅中介处理
             services.AddTransient<IEventBus, EventBus>();
-            //注册领域通知
-            services.AddNoticfication<DomainNotificationHandler, DomainNotification>();
             //注册仓储接口
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
+            //注册领域通知
+            services.AddNotification();
             //注册Redis
             services.AddSingleton(new CacheProvider());
-
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));

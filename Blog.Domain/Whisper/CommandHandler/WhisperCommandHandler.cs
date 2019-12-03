@@ -2,7 +2,7 @@
 
 namespace Blog.Domain
 {
-    public class WhisperCommandHandler : IEventHandler<CreateWhisperCommand>
+    public class WhisperCommandHandler : ICommandHandler<CreateWhisperCommand>
     {
         private readonly IWhisperRepository _whisperRepository;
         public WhisperCommandHandler(IWhisperRepository whisperRepository)
