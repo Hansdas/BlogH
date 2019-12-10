@@ -200,7 +200,7 @@ namespace Blog.Infrastruct
                 " WHERE article_id =@Id";
             DbConnection.Execute(sql, parameters);
             string insert = "INSERT INTO Comment(comment_guid,comment_content,comment_postuser,comment_replyguid,comment_postdate)" +
-                " VALUES (@Guid,@Content,@CommentAccount,@PostUser,@ReplyGuid,NOW())";
+                " VALUES (@Guid,@Content,@PostUser,@ReplyGuid,NOW())";
             DbConnection.Execute(insert, comment);//最后一条数据为最新评论
         }
 

@@ -29,7 +29,7 @@ namespace Blog.Infrastruct
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Guids", guids);
             string sql = "SELECT comment_guid,comment_content,comment_postuser,user_username,comment_postdate " +
-                "FROM Comment INNER JOIN User ON comment_postuser=user_account WHERE comment_guid in @Guids";
+                "FROM Comment INNER JOIN User ON comment_postuser=user_account WHERE comment_guid in @Guids ORDER BY comment_postdate DESC";
             IEnumerable<dynamic> dynamics = Select(sql, parameters);
             foreach (var d in dynamics)
             {

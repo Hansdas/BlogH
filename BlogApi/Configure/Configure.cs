@@ -17,6 +17,7 @@ using Blog.AOP.Transaction;
 using Blog.AOP;
 using Blog.Domain.Core.Event;
 using Blog.Domain.Core.Notifications;
+using Blog.Common.Socket;
 
 namespace BlogApi.Configure
 {
@@ -68,8 +69,9 @@ namespace BlogApi.Configure
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
-            //注册AOP拦截器
-            //return GetAutofacServiceProvider(services);
+            //注册消息通讯SignalR
+            services.AddSignalR();
+            services.AddTransient<ISingalrSvc, SingalrSvc>();
         }
         /// <summary>
         /// 3.0不支持返回IServiceProvider

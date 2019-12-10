@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Blog.Domain.Core.Notifications;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BlogApi.Controllers.User
 {
@@ -43,11 +44,15 @@ namespace BlogApi.Controllers.User
             {
                 string json = new JWT(_httpContext).ResolveToken();
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
-                return new JsonResult(new ReturnResult("200", userModel));
+                return new JsonResult(new ReturnResult("0", userModel));
+            }
+            catch(ValidationException)
+            {
+                return new JsonResult(new ReturnResult("1", "auth fail"));
             }
             catch (Exception ex)
             {
-                return new JsonResult(new ReturnResult("500", ex.Message));
+                return new JsonResult(new ReturnResult("1", ex.Message));
             }
         }
         [HttpPost]

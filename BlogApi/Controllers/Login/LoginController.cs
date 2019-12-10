@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
+using Blog;
 using Blog.Application;
 using Blog.Application.ViewModel;
 using Blog.Common;
@@ -14,6 +15,7 @@ namespace BlogApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [GlobaExceptionFilter]
     public class LoginController : Controller
     {
         protected IUserService _userService;

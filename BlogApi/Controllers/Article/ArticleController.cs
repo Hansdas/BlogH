@@ -185,7 +185,7 @@ namespace BlogApi
             return new JsonResult(result);
         }
         [HttpPost("{articleId}")]
-        public JsonResult Review([FromBody]CommentModel commentModel,int articleId)
+        public  JsonResult Review([FromBody]CommentModel commentModel,int articleId)
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             commentModel.PostUser = userModel.Account;
@@ -194,7 +194,6 @@ namespace BlogApi
             commentModel.PostDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
             commentModel.Guid = "";
             return new JsonResult(new ReturnResult("0", commentModel));
-
         }
     }
 }

@@ -35,8 +35,7 @@ namespace Blog.Domain
         {
             if (command.Comment != null)
             {
-                string postReviceUser = _articleRepository.SelectAuthorById(command.Id);
-                Comment comment = new Comment(command.Comment.Guid, command.Comment.Content, command.Comment.PostUser, postReviceUser);
+                Comment comment = new Comment(command.Comment.Guid, command.Comment.Content, command.Comment.PostUser, command.Comment.ReplyGuid);
 
                 IList<string> commentIds = _articleRepository.SelectCommentIds(command.Id);
                 commentIds.Add(comment.Guid);

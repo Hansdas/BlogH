@@ -15,21 +15,20 @@ namespace BlogApi
     public class AuthMiddleware
     {
         private RequestDelegate _next;
-        private IHttpContextAccessor _httpContext;
         private ICacheClient _cacheClient;
-        private string[] _requestPaths = { "/api/auth/islogin","/api/auth/getloginuser" };
-        private string loginApi = "/api/login/login";
-        public AuthMiddleware(IHttpContextAccessor httpContext, RequestDelegate next, ICacheClient cacheClient)
+        private string[] _requestPaths = { "/api/auth/islogin", "/api/auth/getloginuser" };
+        private IList<string> _whiteList;
+        public AuthMiddleware(RequestDelegate next, ICacheClient cacheClient, IList<string> whiteList)
         {
-            _httpContext = httpContext;
             _next = next;
             _cacheClient = cacheClient;
+            _whiteList = whiteList;
         }
         public async Task InvokeAsync(HttpContext context)
         {
             try
             {
-                if (context.Request.Path.Value.ToLower() != loginApi)
+                if (!_whiteList.Contains(context.Request.Path.Value))
                 {
                     bool isExpires = context.Request.Headers.TryGetValue("isExpires", out StringValues expires);
                     bool IsAuthorized = context.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
@@ -38,8 +37,8 @@ namespace BlogApi
                     new JWT(_cacheClient).RefreshToken(token, isExpires);
                     context.Response.Headers.Add("refreshToken", token);
                     context.Response.Headers.Add("Access-Control-Expose-Headers", "refreshToken");
-
                 }
+
             }
             catch (ValidationException)
             {
@@ -54,10 +53,13 @@ namespace BlogApi
     }
     public class JwtAuthOption
     {
-        public IList<string> _requstPaths;
-        public void RequestPaths(IList<string> requestPaths)
+        /// <summary>
+        /// 白名单
+        /// </summary>
+        public IList<string> _whiteList;
+        public void SetWhiteList(IList<string> whiteList)
         {
-            _requstPaths = requestPaths;
+            _whiteList = whiteList;
         }
 
     }

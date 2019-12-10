@@ -70,9 +70,13 @@ namespace Blog.Application.ViewModel
         /// </summary>
         public string PostDate { get; set; }
         /// <summary>
-        /// 评论接收人
+        /// 回复评论的id
         /// </summary>
         public string ReplyGuid { get; set; }
+        /// <summary>
+        /// 回复的对象
+        /// </summary>
+        public string ReplyUser { get; set; }
     }
     public class PageInfoMode
     {

@@ -44,8 +44,11 @@ namespace BlogApi
             {
                 s.AddPolicy("cores", build =>
                 {
-                    build.WithOrigins("http://127.0.0.1:8080", "http://127.0.0.1:5000").WithHeaders("Authorization", "content-type")
-                    .AllowAnyMethod();
+                    build.WithOrigins("http://127.0.0.1:8080", "http://127.0.0.1:5000")
+                    .WithHeaders("Authorization", "content-type", "x-requested-with")
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                    
                 });
 
             });
@@ -80,7 +83,7 @@ namespace BlogApi
                             context.Response.Headers.Add("isExpires", "true");
                         }
                         return Task.CompletedTask;
-                    }
+                    },
                 };
             });
 
@@ -100,10 +103,16 @@ namespace BlogApi
             });
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAuthMiddleware();
+            app.UseAuthMiddleware(s=> {
+                s.SetWhiteList(new List<string>() {
+                    "/api/login/login",
+                    "/chatHub/negotiate",//SingalR通讯请求的地址
+                    "/chatHub" //SingalR通讯请求的地址
+                });
+            });
             app.UseEndpoints(endpoints =>
             {
-
+                endpoints.MapHub<SingalrService>("/chatHub");
                 endpoints.MapControllers();
             });
         }
