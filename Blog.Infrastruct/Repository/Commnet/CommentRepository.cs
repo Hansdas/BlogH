@@ -23,13 +23,24 @@ namespace Blog.Infrastruct
             }
             return comments;
         }
+
+        public Comment SelectById(string guid)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("guid", guid);
+            string sql = "SELECT comment_guid,comment_content,comment_postuser,user_username,comment_postdate " +
+                "FROM T_Comment INNER JOIN T_User ON comment_postuser=user_account WHERE comment_guid =@guid";
+            dynamic d = SelectSingle(sql, parameters);
+            return Map(d);
+        }
+
         public IList<Comment> SelectByIds(IList<string> guids)
         {
             IList<Comment> comments = new List<Comment>();
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Guids", guids);
             string sql = "SELECT comment_guid,comment_content,comment_postuser,user_username,comment_postdate " +
-                "FROM Comment INNER JOIN User ON comment_postuser=user_account WHERE comment_guid in @Guids ORDER BY comment_postdate DESC";
+                "FROM T_Comment INNER JOIN T_User ON comment_postuser=user_account WHERE comment_guid in @Guids ORDER BY comment_postdate DESC";
             IEnumerable<dynamic> dynamics = Select(sql, parameters);
             foreach (var d in dynamics)
             {

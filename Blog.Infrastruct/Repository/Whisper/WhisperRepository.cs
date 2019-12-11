@@ -38,7 +38,7 @@ namespace Blog.Infrastruct
         }
         public void Insert(Whisper whisper)
         {
-            string sql = "INSERT INTO Whisper(whisper_account,whisper_content,whisper_createtime) VALUES(@Account,@Content,NOW())";
+            string sql = "INSERT INTO T_Whisper(whisper_account,whisper_content,whisper_createtime) VALUES(@Account,@Content,NOW())";
             DbConnection.Execute(sql, whisper);
         }
 
@@ -50,9 +50,9 @@ namespace Blog.Infrastruct
             parameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condiiton, ref parameters);
             string sql = "SELECT W.*,U.user_username " +
-                        "FROM Whisper W INNER JOIN User U ON user_account=whisper_account WHERE " + where +
+                        "FROM T_Whisper W INNER JOIN T_User U ON user_account=whisper_account WHERE " + where +
                         " AND  whisper_id <=(" +
-                        "SELECT whisper_id FROM Whisper WHERE "
+                        "SELECT whisper_id FROM T_Whisper WHERE "
                         + where +
                         "ORDER BY whisper_id DESC " +
                         "LIMIT @pageId, 1) " +
@@ -95,7 +95,7 @@ namespace Blog.Infrastruct
         {
             DynamicParameters parameters = new DynamicParameters();
             string where = Where(condiiton, ref parameters);
-            string sql = "SELECT COUNT(*) FROM Whisper WHERE " + where;
+            string sql = "SELECT COUNT(*) FROM T_Whisper WHERE " + where;
             return DbConnection.ExecuteScalar<int>(sql, parameters);
         }
     }

@@ -42,7 +42,7 @@ namespace Blog.Infrastruct
             IList<UploadFile> uploadFiles = new List<UploadFile>();
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Guids", guids);
-            string sql = "SELECT * FROM UploadFile WHERE uploadfile_guid in @Guids";
+            string sql = "SELECT * FROM SYS_UploadFile WHERE uploadfile_guid in @Guids";
             IEnumerable<dynamic> dynamics = Select(sql, parameters);
             foreach (var d in dynamics)
             {

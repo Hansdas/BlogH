@@ -23,7 +23,7 @@ namespace Blog.Infrastruct
         public User SelectUserByAccount(string account)
         {
 
-            string sql = "SELECT * FROM User where user_account=@Account";
+            string sql = "SELECT * FROM T_User where user_account=@Account";
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Account", account);
             dynamic result = new User();
@@ -40,7 +40,7 @@ namespace Blog.Infrastruct
         public int SelectCountByAccount(string account)
         {
 
-            string sql = "SELECT COUNT(*) FROM User where user_account=@Account";
+            string sql = "SELECT COUNT(*) FROM T_User where user_account=@Account";
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Account", account);
             int count= DbConnection.ExecuteScalar<int>(sql, dynamicParameters);
@@ -52,14 +52,14 @@ namespace Blog.Infrastruct
         /// <param name="user"></param>
         public void Insert(User user)
         {
-            string sql = "INSERT INTO User(user_id, user_username, user_account, user_password, user_sex, user_phone, user_email,user_birthdate" +
+            string sql = "INSERT INTO T_User(user_id, user_username, user_account, user_password, user_sex, user_phone, user_email,user_birthdate" +
                 ",user_sign, user_isvalid,user_headphoto, user_createtime, user_updatetime)" +
                   " VALUES (@Id, @Username, @Account, @Password, @Sex,@Phone,@Email,@Birthdate,@Sign, @IsValid,@HeadPhoto,NOW())";
             DbConnection.Execute(sql,user);
         }
         public string SelectPassword(string account)
         {
-            string sql = "SELECT user_password FROM User where user_account=@Account";
+            string sql = "SELECT user_password FROM T_User where user_account=@Account";
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("Account", account);
             string password = DbConnection.ExecuteScalar<string>(sql, dynamicParameters);
@@ -68,7 +68,7 @@ namespace Blog.Infrastruct
         public Dictionary<string,string> SelectUserByAccounts(IList<string> accounts)
         {
             Dictionary<string, string> accountAndName = new Dictionary<string, string>();
-            string sql = "SELECT  user_username, user_account FROM User WHERE user_account  IN @Useraccount";
+            string sql = "SELECT  user_username, user_account FROM T_User WHERE user_account  IN @Useraccount";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Useraccount", accounts);
             IEnumerable<dynamic> dynamics = DbConnection.Query(sql, parameters);
@@ -90,7 +90,7 @@ namespace Blog.Infrastruct
             parameters.Add("Sign", user.Sign);
             parameters.Add("UpdateTime", DateTime.Now);
             parameters.Add("HeadPhoto", user.HeadPhoto);
-            string sql= "UPDATE User SET user_username = @Username, user_sex = @Sex" +
+            string sql= "UPDATE T_User SET user_username = @Username, user_sex = @Sex" +
                 ", user_phone = @Phone, user_email = @Email, user_birthdate = @BirthDate, user_sign = @Sign" +
                 ", user_updatetime = @UpdateTime, user_headphoto=@HeadPhoto WHERE user_account = @Account";
             DbConnection.Execute(sql, parameters);
@@ -101,7 +101,7 @@ namespace Blog.Infrastruct
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Password", password);
             parameters.Add("Account", account);
-            string sql = "UPDATE User SET user_password = @Password WHERE user_account = @Account";
+            string sql = "UPDATE T_User SET user_password = @Password WHERE user_account = @Account";
             DbConnection.Execute(sql, parameters);
         }
     }

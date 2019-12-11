@@ -72,7 +72,7 @@ namespace Blog.Infrastruct
         }
         public void Insert(Article article)
         {
-            string sql = "INSERT INTO Article(" +
+            string sql = "INSERT INTO T_Article(" +
                 "article_author,article_title,article_textsection, article_content, article_articletype, article_praisecount, article_browsercount, article_isdraft, article_relatedfiles, article_createtime)" +
                    " VALUES (@Author,@Title,@TextSection, @Content, @ArticleType, @PraiseCount,@BrowserCount,@IsDraft,@RelatedFiles, NOW())";
             DbConnection.Execute(sql, article);
@@ -82,7 +82,7 @@ namespace Blog.Infrastruct
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(condition, ref dynamicParameters);
-            string sql = "SELECT COUNT(*) FROM Article WHERE " + where;
+            string sql = "SELECT COUNT(*) FROM T_Article WHERE " + where;
             int count = DbConnection.ExecuteScalar<int>(sql, dynamicParameters);
             return count;
         }
@@ -96,9 +96,9 @@ namespace Blog.Infrastruct
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condition, ref dynamicParameters);
             string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_createtime " +
-                         "FROM Article INNER JOIN User ON user_account=article_author WHERE " + where +
+                         "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE " + where +
                          " AND  article_id <=(" +
-                         "SELECT article_id FROM Article WHERE "
+                         "SELECT article_id FROM T_Article WHERE "
                          + where +
                          "ORDER BY article_id DESC " +
                          "LIMIT @pageId, 1) " +
@@ -128,7 +128,7 @@ namespace Blog.Infrastruct
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(articleCondition, ref dynamicParameters);
             string sql = "SELECT article_id,user_username,article_title,article_content,article_articletype,article_comments,article_isdraft,article_createtime " +
-                         "FROM Article INNER JOIN User ON user_account=article_author WHERE 1=1 AND " + where;
+                         "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE 1=1 AND " + where;
             dynamic d = base.SelectSingle(sql, dynamicParameters);
             IList<Comment> comments = _commentRepository.SelectByIds(d.article_comments.Split(','));
             Article article = new Article(
@@ -149,14 +149,14 @@ namespace Blog.Infrastruct
             DynamicParameters dynamicParameters = new DynamicParameters();
             dynamicParameters.Add("article_id", id, DbType.Int32);
             string where = Where(articleCondition, ref dynamicParameters);
-            string sql = "SELECT article_id,article_title FROM Article "
+            string sql = "SELECT article_id,article_title FROM T_Article "
                        + "WHERE article_id IN( "
                              + "SELECT MAX(article_id) "
-                             + "FROM Article "
+                             + "FROM T_Article "
                              + "WHERE article_id <@article_id  AND " + where
                              + "UNION "
                              + "SELECT MIN(article_id) "
-                             + "FROM Article "
+                             + "FROM T_Article "
                              + "WHERE article_id >@article_id  AND " + where
                              + ")";
             IEnumerable<dynamic> dynamics = DbConnection.Query(sql, dynamicParameters);
@@ -173,7 +173,7 @@ namespace Blog.Infrastruct
             parameters.Add("BrowserCount", article.BrowserCount);
             parameters.Add("IsDraft", article.IsDraft);
             parameters.Add("Id", article.Id);
-            string sql = "UPDATE Article " +
+            string sql = "UPDATE T_Article " +
                 "SET article_title = @Ttile" +
                 ", article_textsection = @TextSection " +
                 ", article_content =@Content " +
@@ -185,7 +185,7 @@ namespace Blog.Infrastruct
 
         public void Delete(int id)
         {
-            string sql = "DELETE FROM Article WHERE article_id=@Id";
+            string sql = "DELETE FROM T_Article WHERE article_id=@Id";
             DbConnection.Execute(sql,new { Id=id});
         }
 
@@ -195,11 +195,11 @@ namespace Blog.Infrastruct
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Comments", string.Join(',',commentGuids));
             parameters.Add("Id", id);
-            string sql = "UPDATE Article " +
+            string sql = "UPDATE T_Article " +
                 "SET article_comments = @Comments" +
                 " WHERE article_id =@Id";
             DbConnection.Execute(sql, parameters);
-            string insert = "INSERT INTO Comment(comment_guid,comment_content,comment_postuser,comment_replyguid,comment_postdate)" +
+            string insert = "INSERT INTO T_Comment(comment_guid,comment_content,comment_postuser,comment_replyguid,comment_postdate)" +
                 " VALUES (@Guid,@Content,@PostUser,@ReplyGuid,NOW())";
             DbConnection.Execute(insert, comment);//最后一条数据为最新评论
         }
@@ -207,7 +207,7 @@ namespace Blog.Infrastruct
         public IList<string> SelectCommentIds(int id)
         {
             IList<string> commnetIdList = new List<string>();
-            string select = "SELECT article_comments FROM Article WHERE article_id = @Id";
+            string select = "SELECT article_comments FROM T_Article WHERE article_id = @Id";
             string commentIds = SelectSingle(select, new { Id = id }).article_comments;
             if (!string.IsNullOrEmpty(commentIds))
                 commnetIdList = commentIds.Split(',').ToList();
@@ -215,7 +215,7 @@ namespace Blog.Infrastruct
         }
         public string SelectAuthorById(int id)
         {
-            string sql = "SELECT article_author FROM Article WHERE article_Id=@Id";
+            string sql = "SELECT article_author FROM T_Article WHERE article_Id=@Id";
             string postReviceUser = SelectSingle(sql, new { Id = id }).article_author;
             return postReviceUser;
         }

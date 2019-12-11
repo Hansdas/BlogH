@@ -1,4 +1,5 @@
-﻿using Blog.Domain.Core.Event;
+﻿using Blog.Domain.Core.Bus;
+using Blog.Domain.Core.Event;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,10 +13,12 @@ namespace Blog.Domain
     /// </summary>
     public class ArticleCommandHandler : ICommandHandler<CreateArticleCommand>, ICommandHandler<UpdateArticleCommand>
     {
-        private readonly IArticleRepository _articleRepository;
-        public ArticleCommandHandler(IArticleRepository articleRepository)
+        private  IArticleRepository _articleRepository;
+        private IEventBus _eventBus;
+        public ArticleCommandHandler(IArticleRepository articleRepository, IEventBus eventBus)
         {
             _articleRepository = articleRepository;
+            _eventBus = eventBus;
         }
 
         /// <summary>
@@ -40,6 +43,11 @@ namespace Blog.Domain
                 IList<string> commentIds = _articleRepository.SelectCommentIds(command.Id);
                 commentIds.Add(comment.Guid);
                 _articleRepository.Review(commentIds,comment, command.Id);
+
+                //消息
+                ReviewEvent reviewEvent = new ReviewEvent(comment,command.Id);
+                _eventBus.RaiseEvent(reviewEvent);
+              
             }
             else
                 _articleRepository.Update(command.Article);
