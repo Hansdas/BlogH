@@ -1,5 +1,6 @@
 ﻿
 
+using Blog;
 using Blog.Application;
 using Blog.Application.ViewModel;
 using Blog.Common;
@@ -19,43 +20,26 @@ using System.Threading.Tasks;
 namespace BlogApi
 {
     [Route("api/[controller]/[action]")]
+    [ApiController]
+    [GlobaExceptionFilter]
     public class ArticleController : ControllerBase
     {
-        private readonly object _obj = new object();
-        private IWebHostEnvironment _webHostEnvironment;
         private IArticleService _articleService;
         private IArticleRepository _articleRepository;
-        private ICacheClient _cacheClient;
         private IHttpContextAccessor _httpContext;
-        public ArticleController(IArticleService articleService, IWebHostEnvironment webHostEnvironment
-            , IArticleRepository articleRepository, ICacheClient cacheClient, IHttpContextAccessor httpContext)
+        public ArticleController(IArticleService articleService,IArticleRepository articleRepository,IHttpContextAccessor httpContext)
         {
             _articleService = articleService;
-            _webHostEnvironment = webHostEnvironment;
             _articleRepository = articleRepository;
-            _cacheClient = cacheClient;
             _httpContext = httpContext;
         }
         [HttpPost]
-        public IActionResult AddArticle()
+        public IActionResult AddArticle([FromBody]ArticleModel articleModel)
         {
-            int id = Convert.ToInt32(Request.Form["id"]);
-            ArticleType articleType = Enum.Parse<ArticleType>(Request.Form["articletype"]);
-            string title = Request.Form["title"];
-            string content = Request.Form["content"];
-            string imgSrc = Request.Form["imgSrc"];
-            string textSection = Request.Form["textsection"];
-            bool isDraft = Convert.ToBoolean(Request.Form["isDraft"]);
-            string[] srcArray = { };
-            if (!string.IsNullOrEmpty(imgSrc))
-                srcArray = imgSrc.Trim(',').Split(',');
             UserModel userModel = Auth.GetLoginUser(_httpContext);
-            IEnumerable<string> pathValues =UploadHelper.Upload(srcArray).Select(s=>s.FilePath);
-            content=RegexContent(content, pathValues);
-            Article article = new Article(id,userModel.Account, title, textSection, content, articleType, isDraft);
-            _articleService.AddArticle(article);
-
-            
+            IEnumerable<string> pathValues =UploadHelper.Upload(articleModel.FilePaths).Select(s=>s.FilePath);
+            articleModel.Content= RegexContent(articleModel.Content, pathValues);
+            _articleService.AddOrUpdate(articleModel);            
             return new JsonResult(new ReturnResult("200"));
         }
         /// <summary>
@@ -66,7 +50,7 @@ namespace BlogApi
         /// <returns></returns>
         private string RegexContent(string content, IEnumerable<string> pathValues)
         {
-            string pattern = @"http:\'?(.*?)(\'|>|\\s+)";
+            string pattern = @"((http|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?";
             Regex regex = new Regex(pattern);
             MatchCollection matches = regex.Matches(content);
             for (int i = 0; i < matches.Count; i++)
@@ -74,10 +58,10 @@ namespace BlogApi
                 string src = matches[i].Groups[0].Value;
                 foreach (string path in pathValues)
                 {
-                    string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
+                    string fileName = path.Substring(path.LastIndexOf("/") + 1);
                     if (src.IndexOf(fileName) > 0)
                     {
-                        content.Replace(src, path);
+                        content=content.Replace(src, path);
                     }
                 }
             }
@@ -140,6 +124,8 @@ namespace BlogApi
             }
             return new JsonResult(pageResult);
         }
+
+
         [HttpGet("{id}")]
         public IActionResult Detail(int id)
         {
@@ -150,13 +136,12 @@ namespace BlogApi
             {
                 ArticleModel articleModel = _articleService.Select(condition);
                 pageResult.Data = articleModel;
-                pageResult.Code = "200";
+                pageResult.Code = "0";
                 pageResult.Message = "ok";
             }
             catch (Exception e)
             {
-                pageResult.Data = null;
-                pageResult.Code = "500";
+                pageResult.Code = "1";
                 pageResult.Message = e.Message;
             }
             return new JsonResult(pageResult);
@@ -172,13 +157,12 @@ namespace BlogApi
             {
                 PageInfoMode result = _articleService.SelectNextUp(id, condition);
                 returnResult.Data = result;
-                returnResult.Code = "200";
-                returnResult.Message = "ok";
+                returnResult.Code = "0";
             }
             catch (Exception e)
             {
                 returnResult.Data = null;
-                returnResult.Code = "500";
+                returnResult.Code = "1";
                 returnResult.Message = e.Message;
             }
             return new JsonResult(returnResult);
@@ -199,6 +183,17 @@ namespace BlogApi
                 result.Message = e.Message;
             }
             return new JsonResult(result);
+        }
+        [HttpPost("{articleId}")]
+        public  JsonResult Review([FromBody]CommentModel commentModel,int articleId)
+        {
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            commentModel.PostUser = userModel.Account;
+            _articleService.Review(commentModel, articleId);
+            commentModel.PostUsername = userModel.Username;
+            commentModel.PostDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
+            commentModel.Guid = "";
+            return new JsonResult(new ReturnResult("0", commentModel));
         }
     }
 }

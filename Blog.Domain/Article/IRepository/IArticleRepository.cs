@@ -1,9 +1,4 @@
-﻿using Blog.Domain.Core.Enum;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Blog.Domain
 {
@@ -18,15 +13,24 @@ namespace Blog.Domain
         /// </summary>
         /// <param name="articleCondition"></param>
         /// <returns></returns>
-
         IEnumerable<dynamic> SelectNextUp(int id, ArticleCondition articleCondition = null);
         void Update(Article article);
         void Delete(int id);
         /// <summary>
         /// 评论
         /// </summary>
-        /// <param name="article"></param>
-        void Comment(IList<Comment> comments,int id);
+        void Review(IList<string> commentGuids, Comment comment, int id);
+        /// <summary>
+        /// 查询文章的评论guid集合
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         IList<string> SelectCommentIds(int id);
+        /// <summary>
+        /// 查询作者
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        string SelectAuthorById(int id);
     }
 }

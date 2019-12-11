@@ -17,6 +17,7 @@ using Blog.AOP.Transaction;
 using Blog.AOP;
 using Blog.Domain.Core.Event;
 using Blog.Domain.Core.Notifications;
+using Blog.Common.Socket;
 
 namespace BlogApi.Configure
 {
@@ -30,18 +31,18 @@ namespace BlogApi.Configure
         {
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
-            services.AddEventBus<IEventHandler<CreateUserCommand>, CreateUserCommand>();
-            services.AddEventBus<IEventHandler<UpdateUserCommand>, UpdateUserCommand>();
+            services.AddEventBus<ICommandHandler<CreateUserCommand>, CreateUserCommand>();
+            services.AddEventBus<ICommandHandler<UpdateUserCommand>, UpdateUserCommand>();
 
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IArticleService, ArticleService>();
-            services.AddEventBus<IEventHandler<CreateArticleCommand>, CreateArticleCommand>();
-            services.AddEventBus<IEventHandler<UpdateArticleCommand>, UpdateArticleCommand>();
+            services.AddEventBus<ICommandHandler<CreateArticleCommand>, CreateArticleCommand>();
+            services.AddEventBus<ICommandHandler<UpdateArticleCommand>, UpdateArticleCommand>();
 
             services.AddTransient<IUploadFileRepository, UploadFileRepository>();
             services.AddTransient<IWhisperRepository, WhisperRepository>();
             services.AddTransient<IWhisperService, WhisperService>();
-            services.AddEventBus<IEventHandler<CreateWhisperCommand>, CreateWhisperCommand>();
+            services.AddEventBus<ICommandHandler<CreateWhisperCommand>, CreateWhisperCommand>();
             services.AddTransient<ICommentRepository, CommentRepository>();
 
             services.AddTransient<ICacheClient, CacheClient>();
@@ -59,18 +60,18 @@ namespace BlogApi.Configure
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
             //注册发布订阅中介处理
             services.AddTransient<IEventBus, EventBus>();
-            //注册领域通知
-            services.AddNoticfication<DomainNotificationHandler, DomainNotification>();
             //注册仓储接口
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
+            //注册领域通知
+            services.AddNotification();
             //注册Redis
             services.AddSingleton(new CacheProvider());
-
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
-            //注册AOP拦截器
-            //return GetAutofacServiceProvider(services);
+            //注册消息通讯SignalR
+            services.AddSignalR();
+            services.AddTransient<ISingalrSvc, SingalrSvc>();
         }
         /// <summary>
         /// 3.0不支持返回IServiceProvider

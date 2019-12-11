@@ -24,9 +24,7 @@ namespace Blog.AOP.Transaction
                     IsolationLevel = Enum.Parse<System.Transactions.IsolationLevel>(attribute.Level.GetEnumValue().ToString()),
                     Timeout = attribute.TimeoutSecond.HasValue ? new TimeSpan(0, 0, attribute.TimeoutSecond.Value) : new TimeSpan(0, 0, 10)
                 };
-                //事务范围
-                TransactionScopeOption transactionScopeOption = Enum.Parse<TransactionScopeOption>(attribute.TransactionScope.Value.GetEnumValue().ToString());
-                using (TransactionScope transactionScope = new TransactionScope(transactionScopeOption, transactionOptions))
+                using (TransactionScope transactionScope = new TransactionScope(TransactionScopeOption.Required, transactionOptions))
                 {
                     try
                     {

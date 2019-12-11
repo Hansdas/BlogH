@@ -30,7 +30,7 @@ namespace Blog
             ////    //_logger.Log(LogLevel.Error, context.Exception, message);
             ////    _logger.Error(context.Exception, message);
             ////});
-            ReturnResult returnResult = new ReturnResult("500", "响应服务器错误");
+            ReturnResult returnResult = new ReturnResult("500", context.Exception.Message);
             context.Result = new JsonResult(returnResult);
             context.ExceptionHandled = true;
         }

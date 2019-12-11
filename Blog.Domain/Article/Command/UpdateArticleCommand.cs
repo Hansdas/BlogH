@@ -11,12 +11,12 @@ namespace Blog.Domain
         {
             Article = article;
         }
-        public UpdateArticleCommand(IList<Comment> comments,int id)
+        public UpdateArticleCommand(Comment comment,int id)
         {
-            Comments = comments;
+            Comment = comment;
             Id = id;
         }
-        public IList<Comment> Comments;
+        public Comment Comment;
         public int Id { get;private set; }
         public Article Article { get; private set; }
 

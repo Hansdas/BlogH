@@ -13,7 +13,7 @@ namespace Blog.Dapper
        
         public  static IDbConnection connection()
         {
-            return new MySqlConnection(connStr);
+                return new MySqlConnection(connStr);
         }
         private static string connStr = ConfigurationProvider.configuration.GetSection("ConnectionStrings:MySqlConnection").Value;
         private DapperProvider()

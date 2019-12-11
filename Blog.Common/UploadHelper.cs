@@ -58,18 +58,25 @@ namespace Blog.Common
             string http = "http://" + ip;
             return http;
         }
+        private static string GetFilePath(string urlPath)
+        {
+           int index = urlPath.IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length + 1;
+           string loaclPath = string.Format(@"{0}/TempFile/{1}", ConstantKey.WebRoot, urlPath.Substring(index));
+            return loaclPath;
+
+        }
         /// <summary>
         /// 上传附件
         /// </summary>
-        /// <param name="localFilePath">本地图片相对路径</param>
+        /// <param name="urlPaths">本地图片相对路径</param>
         /// <returns></returns>
-        public static  IList<PathValue>  Upload(string[] localFilePaths)
+        public static  IList<PathValue>  Upload(IList<string> urlPaths)
         {
             IList<PathValue> pathValues = new List<PathValue>();
-            for (int i = 0; i < localFilePaths.Length; i++)
+            for (int i = 0; i < urlPaths.Count; i++)
             {
-                string fileName = localFilePaths[i].Substring(localFilePaths[i].LastIndexOf(@"\") + 1);
-                PathValue pathValue =Upload(localFilePaths[i], fileName).GetAwaiter().GetResult();
+                string fileName = urlPaths[i].Substring(urlPaths[i].LastIndexOf(@"\") + 1);
+                PathValue pathValue =Upload(GetFilePath(urlPaths[i]), fileName).GetAwaiter().GetResult();
                 pathValues.Add(pathValue);
             }
             return pathValues;

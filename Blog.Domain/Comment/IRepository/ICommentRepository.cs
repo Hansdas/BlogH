@@ -6,6 +6,17 @@ namespace Blog.Domain
 {
   public  interface ICommentRepository: IRepository<Article, int>
     {
+        /// <summary>
+        /// 查询评论
+        /// </summary>
+        /// <param name="guids"></param>
+        /// <returns></returns>
         IList<Comment> SelectByIds(IList<string> guids);
+        /// <summary>
+        /// 查询评论
+        /// </summary>
+        /// <param name="guids"></param>
+        /// <returns></returns>
+        Comment SelectById(string guid);
     }
 }

@@ -12,12 +12,10 @@ namespace Blog.AOP.Transaction
     [AttributeUsage(AttributeTargets.Method)]
    public class TransactionAttribute:Attribute
     {
-        public TransactionAttribute(TransactionLevel level, ScopeOption scope)
+        public TransactionAttribute(TransactionLevel level)
         {
             Level = level;
-            TransactionScope = scope;
         }
-
         /// <summary>
         /// 超时时间
         /// </summary>
@@ -26,10 +24,6 @@ namespace Blog.AOP.Transaction
         /// 事务级别
         /// </summary>
         public TransactionLevel? Level { get; set; }
-        /// <summary>
-        /// 事务范围
-        /// </summary>
-        public ScopeOption? TransactionScope { get; set; }
     }
     /// <summary>
     /// 事务级别
@@ -45,16 +39,16 @@ namespace Blog.AOP.Transaction
         //未提交读。当事务A更新某条数据的时候，不容许其他事务来更新该数据，但可以进行读取操作
         ReadUncommitted,
     }
-    /// <summary>
-    /// 事务范围
-    /// </summary>
-    public enum ScopeOption
-    {
-        //多个connection共用一个事务
-        Required,
-        //每个connection从新创建一个事物
-        RequiresNew,
-        //不参与事务
-        Suppress
-    }
+    ///// <summary>
+    ///// 事务范围
+    ///// </summary>
+    //public enum ScopeOption
+    //{
+    //    //多个connection共用一个事务
+    //    Required,
+    //    //每个connection从新创建一个事物
+    //    RequiresNew,
+    //    //不参与事务
+    //    Suppress
+    //}
 }

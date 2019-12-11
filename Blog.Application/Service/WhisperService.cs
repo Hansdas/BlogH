@@ -46,8 +46,8 @@ namespace Blog.Application
         private CommentDataModel GetCommentDataModel(Comment comment)
         {
             CommentDataModel commentDataModel = new CommentDataModel();
-            commentDataModel.CommentContent = comment.CommentContent;
-            commentDataModel.CommentUser = comment.CommentAccount;
+            commentDataModel.CommentContent = comment.Content;
+            commentDataModel.CommentUser = comment.PostUser;
             commentDataModel.UserPhotoPath = "";
             commentDataModel.CommentDate = "";
             return commentDataModel;

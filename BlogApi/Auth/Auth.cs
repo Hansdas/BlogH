@@ -14,6 +14,10 @@ namespace BlogApi
     public static class Auth
     {
         /// <summary>
+        /// 跨域代理的名字
+        /// </summary>
+        public const string AllowSpecificOrigins = "_AllowSpecificOrigins";
+        /// <summary>
         /// 获取登录人基本信息
         /// </summary>
         /// <param name="httpContextAccessor"></param>

@@ -36,17 +36,19 @@ namespace BlogApi
         {
             containerBuilder.GetAutofacServiceProvider();
         }
-        readonly string AllowSpecificOrigins = "_AllowSpecificOrigins";
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
             services.AddCors(s =>
             {
-                s.AddPolicy(AllowSpecificOrigins, build =>
+                s.AddPolicy("cores", build =>
                 {
-                    build.WithOrigins("http://127.0.0.1:8080", "https://127.0.0.1:5001").WithHeaders("Authorization")
-                    .AllowAnyMethod();
+                    build.WithOrigins("http://127.0.0.1:8080", "http://127.0.0.1:5000")
+                    .WithHeaders("Authorization", "content-type", "x-requested-with")
+                    .AllowAnyMethod()
+                    .AllowCredentials();
+                    
                 });
 
             });
@@ -81,10 +83,9 @@ namespace BlogApi
                             context.Response.Headers.Add("isExpires", "true");
                         }
                         return Task.CompletedTask;
-                    }
+                    },
                 };
             });
-            services.AddMvc();
 
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,7 +93,7 @@ namespace BlogApi
         {
             loggerFactory.AddNLog();
             loggerFactory.ConfigureNLog("Configs/nlog.config");
-            app.UseCors(AllowSpecificOrigins);
+            app.UseCors("cores");
             ConstantKey.WebRoot = env.ContentRootPath;
             //自定义使用资源目录
             app.UseStaticFiles(new StaticFileOptions()
@@ -102,10 +103,16 @@ namespace BlogApi
             });
             app.UseRouting();
             app.UseAuthentication();
-            app.UseAuthMiddleware();
+            app.UseAuthMiddleware(s=> {
+                s.SetWhiteList(new List<string>() {
+                    "/api/login/login",
+                    "/chatHub/negotiate",//SingalR通讯请求的地址
+                    "/chatHub" //SingalR通讯请求的地址
+                });
+            });
             app.UseEndpoints(endpoints =>
             {
-
+                endpoints.MapHub<SingalrService>("/chatHub");
                 endpoints.MapControllers();
             });
         }
