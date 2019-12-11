@@ -14,5 +14,11 @@ namespace Blog.Infrastruct
                  "VALUES (@CommentId,@ReviceUser,@IsRead,@Url,@AdditionalData,NOW())";
             DbConnection.Execute(sql,tidings);
         }
+
+        public int SelectCountByAccount(string account)
+        {
+            string sql = "SELECT COUNT(*) FROM T_Tidings WHERE tidings_reviceuser=@reviceuser and tidings_isread=@isread";
+            return SelectSingle(sql, new { reviceuser = account, isread =0});
+        }
     }
 }
