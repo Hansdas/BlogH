@@ -50,7 +50,7 @@ namespace BlogApi
             if (!string.IsNullOrEmpty(imgSrc))
                 srcArray = imgSrc.Trim(',').Split(',');
             UserModel userModel = Auth.GetLoginUser(_httpContext);
-            IEnumerable<PathValue> pathValues =UploadHelper.Upload(srcArray);
+            IEnumerable<string> pathValues =UploadHelper.Upload(srcArray).Select(s=>s.FilePath);
             content=RegexContent(content, pathValues);
             Article article = new Article(id,userModel.Account, title, textSection, content, articleType, isDraft);
             _articleService.AddArticle(article);
@@ -64,7 +64,7 @@ namespace BlogApi
         /// <param name="content"></param>
         /// <param name="pathValues"></param>
         /// <returns></returns>
-        private string RegexContent(string content, IEnumerable<PathValue> pathValues)
+        private string RegexContent(string content, IEnumerable<string> pathValues)
         {
             string pattern = @"http:\'?(.*?)(\'|>|\\s+)";
             Regex regex = new Regex(pattern);
@@ -72,11 +72,12 @@ namespace BlogApi
             for (int i = 0; i < matches.Count; i++)
             {
                 string src = matches[i].Groups[0].Value;
-                foreach (var pathValue in pathValues)
+                foreach (string path in pathValues)
                 {
-                    if (src.IndexOf(pathValue.FileName) > 0)
+                    string fileName = path.Substring(path.LastIndexOf(@"\") + 1);
+                    if (src.IndexOf(fileName) > 0)
                     {
-                        content= content.Replace(src, pathValue.FilePath);
+                        content.Replace(src, path);
                     }
                 }
             }
