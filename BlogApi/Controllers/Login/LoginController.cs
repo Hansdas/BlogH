@@ -10,6 +10,7 @@ using Blog.Common.CacheFactory;
 using Blog.Domain.Core;
 using Blog.Domain.Core.Notifications;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace BlogApi.Controllers
 {
@@ -81,10 +82,11 @@ namespace BlogApi.Controllers
                 return Json(new ReturnResult() { Code = "1", Message = message });
             return Json(new ReturnResult() { Code = "0", Data = jwtToken});
         }
-        public string LoginOut(string token)
+        [HttpPost]
+        public void LoginOut()
         {
+            string token = Request.Form["token"].ToString();
             _cacheClient.Remove(token);
-            return "200";
         }
 
     }

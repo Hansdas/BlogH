@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Blog.Domain
+namespace Blog.Application.IService
 {
-   public interface ITidingsRepository
+   public interface ITidingsService
     {
-        void Insert(Tidings tidings);
-
         int SelectCountByAccount(string account);
     }
 }
