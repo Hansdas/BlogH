@@ -57,16 +57,9 @@ namespace BlogApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult Logon()
+        public IActionResult Logon([FromBody]UserModel userModel)
         {
             string message = string.Empty;
-            string account = Request.Form["account"];
-            string passWord = Request.Form["password"];
-            string userName = Request.Form["username"];
-            UserModel userModel = new UserModel();
-            userModel.Username = userName;
-            userModel.Account = account;
-            userModel.Password = passWord;
             try
             {
                 _userService.Insert(userModel);
@@ -78,10 +71,15 @@ namespace BlogApi.Controllers
             {
                 message = e.Message;
             }
-
+            IList<Claim> claims = new List<Claim>()
+                {
+                    new Claim("account", userModel.Account),
+                    new Claim("username", userModel.Username),
+                };
+            string jwtToken = new JWT(_cacheClient).CreateToken(claims);
             if (!string.IsNullOrEmpty(message))
-                return Json(new ReturnResult() { Code = "500", Message = message });
-            return Json(new ReturnResult() { Code = "200", Message = "注册成功" });
+                return Json(new ReturnResult() { Code = "1", Message = message });
+            return Json(new ReturnResult() { Code = "0", Data = jwtToken});
         }
         public string LoginOut(string token)
         {
