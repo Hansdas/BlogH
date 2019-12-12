@@ -28,7 +28,7 @@ namespace Blog.Domain
             int count = _userRepository.SelectCountByAccount(command.User.Account);
             if (count > 0)
             {
-                _eventBus.RaiseEvent(new DomainNotification("该账号已存在"));
+                _eventBus.RaiseEvent(new NotifyValidation("该账号已存在"));
                 return;
             }
             _userRepository.Insert(command.User);
@@ -41,7 +41,7 @@ namespace Blog.Domain
                 string password = _userRepository.SelectPassword(command.User.Account);
                 if (password != command.OldPassword)
                 {
-                    _eventBus.RaiseEvent(new DomainNotification("原始密码错误"));
+                    _eventBus.RaiseEvent(new NotifyValidation("原始密码错误"));
                     return;
                 }
                 _userRepository.UpdatePassword(command.User.Account, command.User.Password);
@@ -51,7 +51,7 @@ namespace Blog.Domain
                 User user = _userRepository.SelectUserByAccount(command.User.Account);
                 if (user == null)
                 {
-                    _eventBus.RaiseEvent(new DomainNotification("不存在用户账号：" + command.User.Account));
+                    _eventBus.RaiseEvent(new NotifyValidation("不存在用户账号：" + command.User.Account));
                     return;
                 }
                 _userRepository.UpdateUser(command.User);

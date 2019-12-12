@@ -15,7 +15,6 @@ namespace Blog.Domain.Core.Event
   public static class AddServices
     {
         private static ConcurrentDictionary<Type, IList<Type>> handlerMapping = new ConcurrentDictionary<Type, IList<Type>>();
-        private static ConcurrentDictionary<Type, IList<Type>> notificationMapping = new ConcurrentDictionary<Type, IList<Type>>();
         /// <summary>
         /// 临时存储类型数组
         /// </summary>
@@ -40,17 +39,17 @@ namespace Blog.Domain.Core.Event
             GetOrAddHandlerMapping(typeof(TService)).Add(handler);
         }
         /// <summary>
-        /// 注册领域触发事件
+        /// 注册验证错误通知
         /// </summary>
         /// <typeparam name="TImplementation"></typeparam>
         /// <typeparam name="TService"></typeparam>
         /// <param name="serviceDescriptors"></param>
-        public static void AddNotification(this IServiceCollection serviceDescriptors)
+        public static void AddNotifyValidation(this IServiceCollection serviceDescriptors)
         {
-            Type handler = typeof(DomainNotificationHandler);
-            Type @interface = typeof(INoticficationHandler<DomainNotification>);
-            serviceDescriptors.AddScoped(@interface, handler);
-            GetOrAddHandlerMapping(typeof(DomainNotification)).Add(handler);
+            Type serviceType = typeof(NotifyValidationHandler);
+            Type handler = typeof(IEventHandler<NotifyValidation>);
+            serviceDescriptors.AddScoped(handler, serviceType);
+            GetOrAddHandlerMapping(typeof(NotifyValidation)).Add(handler);
         }
     }
 }

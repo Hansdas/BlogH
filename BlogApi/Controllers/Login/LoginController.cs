@@ -8,6 +8,7 @@ using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Common.CacheFactory;
 using Blog.Domain.Core;
+using Blog.Domain.Core.Event;
 using Blog.Domain.Core.Notifications;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
@@ -21,11 +22,11 @@ namespace BlogApi.Controllers
     {
         protected IUserService _userService;
         protected ICacheClient _cacheClient;
-        private readonly DomainNotificationHandler _domainNotificationHandler;
-        public LoginController(IUserService userService, ICacheClient cacheClient, INoticficationHandler<DomainNotification> notifications)
+        private NotifyValidationHandler _notifyValidationHandler;
+        public LoginController(IUserService userService, ICacheClient cacheClient, IEventHandler<NotifyValidation> notifyValidationHandler)
         {
             _userService = userService;
-            _domainNotificationHandler = (DomainNotificationHandler)notifications;
+            _notifyValidationHandler = (NotifyValidationHandler)notifyValidationHandler;
             _cacheClient = cacheClient;
         }
         [HttpPost]
@@ -64,7 +65,7 @@ namespace BlogApi.Controllers
             try
             {
                 _userService.Insert(userModel);
-                string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
+                string domainNotification = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
                 if (!string.IsNullOrEmpty(domainNotification))
                     message = domainNotification;
             }
@@ -80,7 +81,7 @@ namespace BlogApi.Controllers
             string jwtToken = new JWT(_cacheClient).CreateToken(claims);
             if (!string.IsNullOrEmpty(message))
                 return Json(new ReturnResult() { Code = "1", Message = message });
-            return Json(new ReturnResult() { Code = "0", Data = jwtToken});
+            return Json(new ReturnResult() { Code = "0", Data = jwtToken });
         }
         [HttpPost]
         public void LoginOut()

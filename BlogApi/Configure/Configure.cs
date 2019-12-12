@@ -38,6 +38,7 @@ namespace BlogApi.Configure
             services.AddTransient<IArticleService, ArticleService>();
             services.AddEventBus<ICommandHandler<CreateArticleCommand>, CreateArticleCommand>();
             services.AddEventBus<ICommandHandler<UpdateArticleCommand>, UpdateArticleCommand>();
+            services.AddEventBus<IEventHandler<ReviewEvent>, ReviewEvent>();
 
             services.AddTransient<IUploadFileRepository, UploadFileRepository>();
             services.AddTransient<IWhisperRepository, WhisperRepository>();
@@ -62,8 +63,8 @@ namespace BlogApi.Configure
             services.AddTransient<IEventBus, EventBus>();
             //注册仓储接口
             services.AddTransient(typeof(IRepository<,>), typeof(Repository<,>));
-            //注册领域通知
-            services.AddNotification();
+            //注册领域验证
+            services.AddNotifyValidation();
             //注册Redis
             services.AddSingleton(new CacheProvider());
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();

@@ -8,9 +8,9 @@ namespace Blog.Domain.Core
     /// <summary>
     /// 领域通知类
     /// </summary>
-  public  class DomainNotification:EventData
+  public  class NotifyValidation : EventData
     {
-        public DomainNotification(string value)
+        public NotifyValidation(string value)
         {
             Value = value;
         }

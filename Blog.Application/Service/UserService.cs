@@ -46,6 +46,7 @@ namespace Blog.Application
         }
         public void Insert(UserModel userModel)
         {
+            userModel.Password = EncrypUtil.MD5Encry(userModel.Password);
             var command = new CreateUserCommand(TransferModel(userModel));
             _eventBus.Publish(command);
         }

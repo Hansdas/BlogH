@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Hosting;
 using Blog.Domain.Core.Notifications;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
+using Blog.Domain.Core.Event;
 
 namespace BlogApi.Controllers.User
 {
@@ -26,14 +27,14 @@ namespace BlogApi.Controllers.User
     public class UserController : Controller
     {
         private IUserService _userService;
-        private DomainNotificationHandler _domainNotificationHandler;
+        private NotifyValidationHandler _notifyValidationHandler;
         private readonly ICacheClient _cacheClient;
         private IHttpContextAccessor _httpContext;
-        public UserController(IUserService userService, INoticficationHandler<DomainNotification> notifications
+        public UserController(IUserService userService, IEventHandler<NotifyValidation> notifyValidationHandler
             , ICacheClient cacheClient, IHttpContextAccessor httpContext)
         {
             _userService = userService;
-            _domainNotificationHandler = (DomainNotificationHandler)notifications;
+            _notifyValidationHandler = (NotifyValidationHandler)notifyValidationHandler;
             _cacheClient = cacheClient;
             _httpContext = httpContext;
         }
@@ -69,7 +70,7 @@ namespace BlogApi.Controllers.User
                 userModel.Email = Request.Form["email"];
                 userModel.Sign = Request.Form["sign"];
                 _userService.Update(userModel);
-                string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
+                string domainNotification = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
                 if (!string.IsNullOrEmpty(domainNotification))
                     return new JsonResult(new ReturnResult() { Code = "500", Data = domainNotification });
                 IList<Claim> claims = new List<Claim>()
@@ -127,7 +128,7 @@ namespace BlogApi.Controllers.User
             string json = new JWT(_httpContext).ResolveToken();
             UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
             _userService.UpdatePassword(userModel.Account, password, OldPawword);
-            string domainNotification = _domainNotificationHandler.GetDomainNotificationList().Select(s => s.Value).FirstOrDefault();
+            string domainNotification = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
             if (!string.IsNullOrEmpty(domainNotification))
                 return new JsonResult(new ReturnResult() { Code = "500", Message = domainNotification });
             return new JsonResult(new ReturnResult() { Code = "200" });

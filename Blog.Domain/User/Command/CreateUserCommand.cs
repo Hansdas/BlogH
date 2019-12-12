@@ -15,5 +15,6 @@ namespace Blog.Domain
             User = user;
         }
         public User User { get; private set; }
+
     }
 }

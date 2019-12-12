@@ -49,10 +49,9 @@ namespace Blog.Domain.Core.Bus
             if (types == null || types.Count == 0)
                 return;
             foreach (var type in types)
-            {
-                Type @interface = type.GetInterface("INoticficationHandler`1");
-                object obj = _serviceProvider.GetService(@interface);
-                if (obj.GetType() == type)
+            {              
+                object obj = _serviceProvider.GetService(type);
+                if (type.IsAssignableFrom(obj.GetType()))
                 {
                     IEventHandler<TEventData> handler = obj as IEventHandler<TEventData>;
                     if (handler != null)
