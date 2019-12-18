@@ -87,13 +87,12 @@ namespace BlogApi
             {
                 IList<ArticleModel> articleModels = _articleService.SelectByPage(pageIndex, pageSize, condition);
                 pageResult.Data = articleModels;
-                pageResult.Code = "200";
-                pageResult.Message = "ok";
+                pageResult.Code = "0";
             }
             catch (Exception e)
             {
                 pageResult.Data = null;
-                pageResult.Code = "500";
+                pageResult.Code = "1";
                 pageResult.Message = e.Message;
             }
             return new JsonResult(pageResult);

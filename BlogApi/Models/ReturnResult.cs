@@ -16,7 +16,7 @@ namespace BlogApi
         {
             Code = code;
         }
-        public ReturnResult(string code,string message):this(code)
+        public ReturnResult(string code, string message) : this(code)
         {
             Message = message;
         }
@@ -24,7 +24,7 @@ namespace BlogApi
         {
             Data = data;
         }
-        public ReturnResult(string code, string message,dynamic data):this(code,message)
+        public ReturnResult(string code, string message, dynamic data) : this(code, message)
         {
             Data = data;
         }
@@ -45,7 +45,7 @@ namespace BlogApi
     /// <summary>
     /// 分页返回数据
     /// </summary>
-    public class PageResult:ReturnResult
+    public class PageResult : ReturnResult
     {
         /// <summary>
         /// 结果数量

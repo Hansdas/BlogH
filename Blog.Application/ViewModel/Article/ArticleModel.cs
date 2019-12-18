@@ -43,6 +43,10 @@ namespace Blog.Application.ViewModel
         /// </summary>
         public IList<string> FilePaths { get; set; }
         /// <summary>
+        /// 评论数
+        /// </summary>
+        public int CommentCount { get; set; }
+        /// <summary>
         /// 评论
         /// </summary>
         public IList<CommentModel> Comments { get; set; }

@@ -13,10 +13,12 @@ namespace Blog.Domain
     {
         private ICommentRepository _commentRepository;
         private ITidingsRepository  _tidingsRepository;
-        public ReviewEventHandler(ICommentRepository commentRepository, ITidingsRepository tidingsRepository)
+        private IArticleRepository _articleRepository;
+        public ReviewEventHandler(ICommentRepository commentRepository, ITidingsRepository tidingsRepository, IArticleRepository articleRepository)
         {
             _commentRepository = commentRepository;
             _tidingsRepository = tidingsRepository;
+            _articleRepository = articleRepository;
         }
         /// <summary>
         /// 触发评论事件
@@ -24,7 +26,11 @@ namespace Blog.Domain
         /// <param name="notification"></param>
         public void Handler(ReviewEvent reviewEvent)
         {
-            string reviceUser = _commentRepository.SelectById(reviewEvent.Comment.ReplyGuid).PostUser;
+            string reviceUser = "";
+            if(string.IsNullOrEmpty(reviewEvent.Comment.ReplyGuid))
+                reviceUser = _articleRepository.SelectAuthorById(reviewEvent.ArticleId);
+            else
+                reviceUser = _commentRepository.SelectById(reviewEvent.Comment.ReplyGuid).PostUser;
             string url = "../article/detail?id=" + reviewEvent.ArticleId;
             Tidings tidings = new Tidings(reviewEvent.Comment.Guid, reviceUser, false, url, "");
             _tidingsRepository.Insert(tidings);

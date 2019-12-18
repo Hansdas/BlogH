@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -53,11 +54,12 @@ namespace Blog.Application
                 ArticleModel articleModel = new ArticleModel();
                 articleModel.Id = item.Id;
                 articleModel.ArticleType = item.ArticleType.GetEnumText<ArticleType>();
-                articleModel.TextSection = item.TextSection;
+                articleModel.TextSection = item.TextSection.Trim();
                 articleModel.Title = item.Title;
                 articleModel.Author = item.Author;
                 articleModel.CreateTime = item.CreateTime.ToString("yyyy-MM-dd hh:mm");
                 articleModel.IsDraft = item.IsDraft ? "是" : "否";
+                articleModel.CommentCount = string.IsNullOrEmpty(item.CommentIds)?0: item.CommentIds.Split(',').Length;
                 articleModels.Add(articleModel);
             }
             return articleModels;

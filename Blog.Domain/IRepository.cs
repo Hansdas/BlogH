@@ -28,5 +28,12 @@ namespace Blog.Domain
         /// </summary>
         /// <returns></returns>
         dynamic SelectSingle(string sql, object param);
+        /// <summary>
+        ///查询数量
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        int SelectCount(string sql, object param);
     }
 }

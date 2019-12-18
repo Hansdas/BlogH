@@ -95,7 +95,7 @@ namespace Blog.Infrastruct
             dynamicParameters.Add("pageId", pageId, DbType.Int32);
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condition, ref dynamicParameters);
-            string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_createtime " +
+            string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_comments,article_createtime " +
                          "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE " + where +
                          " AND  article_id <=(" +
                          "SELECT article_id FROM T_Article WHERE "
@@ -117,6 +117,7 @@ namespace Blog.Infrastruct
                 , d.article_textsection
                 , (ArticleType)d.article_articletype
                 , Convert.ToBoolean(d.article_isdraft)
+                , d.article_comments
                 , (DateTime)d.article_createtime
                 );
                 articles.Add(article);
@@ -130,7 +131,9 @@ namespace Blog.Infrastruct
             string sql = "SELECT article_id,user_username,article_title,article_content,article_articletype,article_comments,article_isdraft,article_createtime " +
                          "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE 1=1 AND " + where;
             dynamic d = base.SelectSingle(sql, dynamicParameters);
-            IList<Comment> comments = _commentRepository.SelectByIds(d.article_comments.Split(','));
+            IList<Comment> comments = new List<Comment>();
+            if (!string.IsNullOrEmpty(d.article_comments))
+                comments = _commentRepository.SelectByIds(d.article_comments.Split(','));
             Article article = new Article(
                 d.article_title
                 , d.user_username

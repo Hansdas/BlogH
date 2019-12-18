@@ -46,6 +46,11 @@ namespace Blog.Infrastruct
         {
             dynamic dynamic = DbConnection.QueryFirstOrDefault(sql, param);
             return dynamic;
-        } 
+        }
+
+        public int SelectCount(string sql, object param)
+        {
+          return  DbConnection.ExecuteScalar<int>(sql, param);
+        }
     }
 }

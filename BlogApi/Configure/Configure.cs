@@ -18,6 +18,8 @@ using Blog.AOP;
 using Blog.Domain.Core.Event;
 using Blog.Domain.Core.Notifications;
 using Blog.Common.Socket;
+using Blog.Application.IService;
+using Blog.Application.Service;
 
 namespace BlogApi.Configure
 {
@@ -45,6 +47,10 @@ namespace BlogApi.Configure
             services.AddTransient<IWhisperService, WhisperService>();
             services.AddEventBus<ICommandHandler<CreateWhisperCommand>, CreateWhisperCommand>();
             services.AddTransient<ICommentRepository, CommentRepository>();
+
+
+            services.AddTransient<ITidingsRepository, TidingsRepository>();
+            services.AddTransient<ITidingsService, TidingsService>();
 
             services.AddTransient<ICacheClient, CacheClient>();
 
