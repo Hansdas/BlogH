@@ -10,18 +10,34 @@ namespace Blog.Domain
     /// </summary>
    public  class Tidings:Entity<int>
     {
-        public Tidings(string commentId,string reviceUser,bool isRead,string url,string additionalData)
+        public Tidings(string postUser, string postContent, string reviceUser, bool isRead, string url, string additionalData,DateTime sendDate)
         {
-            CommentId = commentId;
+            PostUser = postUser;
+            PostContent = postContent;
             ReviceUser = reviceUser;
             IsRead = isRead;
             Url = url;
             AdditionalData = additionalData;
+            SendDate = sendDate;
         }
+        public Tidings(string commentId,string postUser,string postContent,string reviceUser,bool isRead,string url,string additionalData, DateTime sendDate) :
+            this(postUser, postContent, reviceUser, isRead, url, additionalData,sendDate)
+        {
+            CommentId = commentId;
+        }
+     
         /// <summary>
         /// 评论id
         /// </summary>
         public string CommentId { get; private set; }
+        /// <summary>
+        /// 评论人
+        /// </summary>
+        public string PostUser { get; set; }
+        /// <summary>
+        /// 内容
+        /// </summary>
+        public string PostContent { get; set; }
         /// <summary>
         /// 接收人
         /// </summary>

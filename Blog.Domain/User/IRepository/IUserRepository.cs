@@ -29,7 +29,7 @@ namespace Blog.Domain
         /// </summary>
         /// <param name="condition"></param>
         /// <returns></returns>
-        Dictionary<string, string> SelectUserByAccounts(IList<string> accounts);
+        Dictionary<string, string> SelectNameWithAccountDic(IEnumerable<string> accounts);
         /// <summary>
         /// 更新用户
         /// </summary>

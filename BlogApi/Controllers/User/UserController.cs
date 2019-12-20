@@ -18,6 +18,8 @@ using Blog.Domain.Core.Notifications;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using Blog.Domain.Core.Event;
+using Blog.Application.IService;
+using Blog.Application.ViewMode;
 
 namespace BlogApi.Controllers.User
 {
@@ -30,13 +32,20 @@ namespace BlogApi.Controllers.User
         private NotifyValidationHandler _notifyValidationHandler;
         private readonly ICacheClient _cacheClient;
         private IHttpContextAccessor _httpContext;
+        private ITidingsService _tidingsService;
+        private IArticleService _articleService;
+        private IArticleRepository _articleRepository;
         public UserController(IUserService userService, IEventHandler<NotifyValidation> notifyValidationHandler
-            , ICacheClient cacheClient, IHttpContextAccessor httpContext)
+            , ICacheClient cacheClient, IHttpContextAccessor httpContext, ITidingsService tidingsService, IArticleService articleService
+            , IArticleRepository articleRepository)
         {
             _userService = userService;
             _notifyValidationHandler = (NotifyValidationHandler)notifyValidationHandler;
             _cacheClient = cacheClient;
             _httpContext = httpContext;
+            _tidingsService = tidingsService;
+            _articleService = articleService;
+            _articleRepository = articleRepository;
         }
         [HttpGet]
         public IActionResult UserInfo()
@@ -138,6 +147,52 @@ namespace BlogApi.Controllers.User
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             return userModel.HeadPhoto;
+        }
+        [HttpGet]
+        public JsonResult GetTidings(int pageIndex, int pageSize)
+        {
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            TidingsCondition tidingsCondition = new TidingsCondition();
+            tidingsCondition.Account = userModel.Account;
+            try
+            {
+                IList<TidingsModel> tidingsModels = _tidingsService.SelectByPage(pageIndex, pageSize, tidingsCondition);
+                return new JsonResult(new ReturnResult() { Code = "0", Data=tidingsModels });
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new ReturnResult() { Code = "1", Message=ex.Message });
+            }
+
+        }
+        [HttpPost]
+        public JsonResult SelectArticle()
+        {
+            int page = Convert.ToInt32(Request.Form["page"]);
+            int limit = Convert.ToInt32(Request.Form["limit"]);
+            string titleContain = Request.Form["title"];
+            bool isDraft = Convert.ToBoolean(Request.Form["isDraft"]);
+            PageResult pageResult = new PageResult();
+            ArticleCondition condition = new ArticleCondition();
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            condition.TitleContain = titleContain;
+            condition.IsDraft = isDraft;
+            condition.Account = userModel.Account;
+            try
+            {
+                IList<ArticleModel> articleModels = _articleService.SelectByPage(page, limit, condition);
+                pageResult.Total = _articleRepository.SelectCount(condition);
+                pageResult.Data = articleModels;
+                pageResult.Code = "0";
+                pageResult.Message = "";
+            }
+            catch (Exception e)
+            {
+                pageResult.Data = null;
+                pageResult.Code = "1";
+                pageResult.Message = e.Message;
+            }
+            return new JsonResult(pageResult);
         }
     }
 }

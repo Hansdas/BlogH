@@ -51,7 +51,7 @@ namespace BlogApi.Controllers
                     new Claim("birthDate", user.BirthDate.HasValue?user.BirthDate.Value.ToString("yyyy-MM-dd"):""),
                     new Claim("email", string.IsNullOrEmpty(user.Email)?"":user.Email),
                     new Claim("sign", string.IsNullOrEmpty(user.Sign)?"":user.Sign),
-                    new Claim("phone",user.Phone),
+                    new Claim("phone",string.IsNullOrEmpty(user.Phone)?"":user.Phone),
                     new Claim("headPhoto", string.IsNullOrEmpty(user.HeadPhoto)?"":user.HeadPhoto)
                 };
             string jwtToken = new JWT(_cacheClient).CreateToken(claims);

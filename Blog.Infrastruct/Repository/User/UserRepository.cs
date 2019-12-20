@@ -65,7 +65,7 @@ namespace Blog.Infrastruct
             string password = DbConnection.ExecuteScalar<string>(sql, dynamicParameters);
             return password;
         }
-        public Dictionary<string,string> SelectUserByAccounts(IList<string> accounts)
+        public Dictionary<string,string> SelectNameWithAccountDic(IEnumerable<string> accounts)
         {
             Dictionary<string, string> accountAndName = new Dictionary<string, string>();
             string sql = "SELECT  user_username, user_account FROM T_User WHERE user_account  IN @Useraccount";

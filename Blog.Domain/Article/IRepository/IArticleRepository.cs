@@ -8,6 +8,8 @@ namespace Blog.Domain
         int SelectCount(ArticleCondition condition = null);
         IEnumerable<Article> SelectByPage(int pageSize, int pageIndex, ArticleCondition condition=null);
         Article Select(ArticleCondition articleCondition = null);
+
+        Article SelectById(int id);
         /// <summary>
         /// 查询上一篇和下一篇
         /// </summary>

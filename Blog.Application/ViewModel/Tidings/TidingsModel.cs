@@ -27,6 +27,10 @@ namespace Blog.Application.ViewMode
         /// </summary>
         public string PostDate { get; set; }
         /// <summary>
+        /// 跳转地址
+        /// </summary>
+        public string Url { get; set; }
+        /// <summary>
         /// 是否已读
         /// </summary>
         public bool IsRead { get; set; }

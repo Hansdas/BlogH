@@ -33,13 +33,23 @@ namespace Blog.Infrastruct
             }
             if (condition.Id.HasValue)
             {
-                dynamicParameters.Add("article_id", condition.Id.Value);
-                sqlList.Add("article_id = @article_id");
+                dynamicParameters.Add("id", condition.Id.Value);
+                sqlList.Add("article_id = @id");
             }
             if (!string.IsNullOrEmpty(condition.Account))
             {
-                dynamicParameters.Add("article_author", condition.Account);
-                sqlList.Add("article_author = @article_author");
+                dynamicParameters.Add("author", condition.Account);
+                sqlList.Add("article_author = @author");
+            }
+            if(!string.IsNullOrEmpty(condition.TitleContain))
+            {
+                dynamicParameters.Add("titleContain", condition.TitleContain);
+                sqlList.Add("article_title like '%@titleContain%'");
+            }
+            if(condition.IsDraft.HasValue)
+            {
+                dynamicParameters.Add("isDraft", condition.IsDraft.Value);
+                sqlList.Add("article_isdraft = @isDraft");
             }
             sqlList.Add(" 1=1 ");
             string sql = string.Join(" AND ", sqlList);
@@ -221,6 +231,26 @@ namespace Blog.Infrastruct
             string sql = "SELECT article_author FROM T_Article WHERE article_Id=@Id";
             string postReviceUser = SelectSingle(sql, new { Id = id }).article_author;
             return postReviceUser;
+        }
+
+        public Article SelectById(int id)
+        {
+            string sql = "SELECT article_id,article_author,article_title,article_content,article_articletype,article_comments,article_isdraft,article_createtime " +
+                         "FROM T_Article  WHERE 1=1 AND article_id=@id";
+            dynamic d = base.SelectSingle(sql, new { id =id});
+            IList<Comment> comments = new List<Comment>();
+            if (!string.IsNullOrEmpty(d.article_comments))
+                comments = _commentRepository.SelectByIds(d.article_comments.Split(','));
+            Article article = new Article(
+                d.article_title
+                , d.article_author
+                , d.article_content
+                , (ArticleType)d.article_articletype
+                , Convert.ToBoolean(d.article_isdraft)
+                , comments
+                , d.article_createtime
+                );
+            return article;
         }
     }
 }

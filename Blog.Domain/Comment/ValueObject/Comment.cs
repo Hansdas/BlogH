@@ -42,7 +42,7 @@ namespace Blog.Domain
         /// </summary>
         public string PostUsername { get; private set; }
         /// <summary>
-        /// 回复评论的id
+        /// 被评论的id
         /// </summary>
         public string ReplyGuid { get;private set; }
         /// <summary>

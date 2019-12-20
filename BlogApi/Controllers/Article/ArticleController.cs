@@ -83,6 +83,7 @@ namespace BlogApi
             PageResult pageResult = new PageResult();
             ArticleCondition condition = new ArticleCondition();
             condition.ArticleType = articleType;
+            condition.IsDraft = false;
             try
             {
                 IList<ArticleModel> articleModels = _articleService.SelectByPage(pageIndex, pageSize, condition);
@@ -96,35 +97,7 @@ namespace BlogApi
                 pageResult.Message = e.Message;
             }
             return new JsonResult(pageResult);
-        }
-
-        [HttpGet]
-        public JsonResult SelectArticle(int page, int limit, string title, bool isDraft)
-        {
-            PageResult pageResult = new PageResult();
-            ArticleCondition condition = new ArticleCondition();
-            UserModel userModel = Auth.GetLoginUser(_httpContext);
-            condition.TitleContain = title;
-            condition.IsDraft = isDraft;
-            condition.Account = userModel.Account;
-            try
-            {
-                IList<ArticleModel> articleModels = _articleService.SelectByPage(page, limit, condition);
-                pageResult.Total = _articleRepository.SelectCount(condition);
-                pageResult.Data = articleModels;
-                pageResult.Code = "0";
-                pageResult.Message = "";
-            }
-            catch (Exception e)
-            {
-                pageResult.Data = null;
-                pageResult.Code = "1";
-                pageResult.Message = e.Message;
-            }
-            return new JsonResult(pageResult);
-        }
-
-
+        }     
         [HttpGet("{id}")]
         public IActionResult Detail(int id)
         {

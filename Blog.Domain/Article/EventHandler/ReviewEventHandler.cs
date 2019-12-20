@@ -26,13 +26,20 @@ namespace Blog.Domain
         /// <param name="notification"></param>
         public void Handler(ReviewEvent reviewEvent)
         {
-            string reviceUser = "";
-            if(string.IsNullOrEmpty(reviewEvent.Comment.ReplyGuid))
-                reviceUser = _articleRepository.SelectAuthorById(reviewEvent.ArticleId);
-            else
-                reviceUser = _commentRepository.SelectById(reviewEvent.Comment.ReplyGuid).PostUser;
+            Tidings tidings = null;
             string url = "../article/detail?id=" + reviewEvent.ArticleId;
-            Tidings tidings = new Tidings(reviewEvent.Comment.Guid, reviceUser, false, url, "");
+            if (string.IsNullOrEmpty(reviewEvent.Comment.ReplyGuid))//评论文章
+            {
+                Article article = _articleRepository.SelectById(reviewEvent.ArticleId);
+                tidings = new Tidings(reviewEvent.Comment.Guid,reviewEvent.Comment.PostUser,reviewEvent.Comment.Content, article.Author, false, url, article.Title,DateTime.Now);
+            }
+            else//回复评论 
+            {
+                Comment comment = _commentRepository.SelectById(reviewEvent.Comment.ReplyGuid);//被评论的数据;
+                tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content.Substring(0, 200)
+                    , comment.PostUser, false, url, comment.Content.Substring(0,200),DateTime.Now);
+            }
+           
             _tidingsRepository.Insert(tidings);
         }
     }
