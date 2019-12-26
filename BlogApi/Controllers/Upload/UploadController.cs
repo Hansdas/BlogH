@@ -37,7 +37,7 @@ namespace BlogApi.Controllers.Upload
                 pairs.Add(item.ToString(), Enum.GetName(typeof(ArticleType), item));
             }
             ReturnResult returnResult = new ReturnResult();
-            returnResult.Code = "200";
+            returnResult.Code = "0";
             returnResult.Data = pairs;
             return Json(returnResult);
         }
@@ -48,7 +48,6 @@ namespace BlogApi.Controllers.Upload
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
-        [EnableCors("AllowSpecificOrigins")]
         public IActionResult UploadImage()
         {   
             int height =Convert.ToInt32(Request.Form["height"]);

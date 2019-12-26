@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Blog.Common;
+using Microsoft.Extensions.Hosting;
 
 namespace BlogApi
 {
@@ -39,12 +40,14 @@ namespace BlogApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+
             services.AddControllers();
             services.AddCors(s =>
             {
                 s.AddPolicy("cores", build =>
                 {
-                    build.WithOrigins("http://127.0.0.1:8080", "http://127.0.0.1:5000")
+                    build.WithOrigins("http://127.0.0.1:8080", "http://127.0.0.1:5000", "http://111.229.211.248:5000", "http://58.87.92.221")
                     .WithHeaders("Authorization", "content-type", "x-requested-with")
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -98,7 +101,7 @@ namespace BlogApi
             //自定义使用资源目录
             app.UseStaticFiles(new StaticFileOptions()
             {
-                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath + "/TempFile")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath , "TempFile")),
                 RequestPath = ConstantKey.STATIC_FILE
             });
             app.UseRouting();

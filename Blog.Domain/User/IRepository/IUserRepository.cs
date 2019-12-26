@@ -34,13 +34,13 @@ namespace Blog.Domain
         /// 更新用户
         /// </summary>
         /// <param name="user"></param>
-        public void UpdateUser(User user);
+         void UpdateUser(User user);
         /// <summary>
         /// 更新密码
         /// </summary>
         /// <param name="account"></param>
         /// <param name="password"></param>
-        public void UpdatePassword(string account, string password);
+         void UpdatePassword(string account, string password);
         /// <summary>
         /// 查询密码
         /// </summary>

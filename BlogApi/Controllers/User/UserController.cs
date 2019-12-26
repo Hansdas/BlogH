@@ -9,7 +9,6 @@ using Blog.Domain.Core;
 using Blog.Application;
 using System.Collections.Generic;
 using System.Security.Claims;
-using MediatR;
 using System.Linq;
 using Blog.Common.CacheFactory;
 using Microsoft.AspNetCore.Cors;

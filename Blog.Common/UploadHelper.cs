@@ -52,10 +52,12 @@ namespace Blog.Common
         /// 通过配置文件回获取ip
         /// </summary>
         /// <returns></returns>
-        private static string GetIP()
+        private static string GetHttpAddress()
         {
-            string ip= GetConfigurationSection("webapi").GetSection("HttpAddresss").Value;
-            string http = "http://" + ip;
+            IConfigurationSection configurationSection = GetConfigurationSection("webapi");
+            string ip= configurationSection.GetSection("HttpAddresss").Value;
+            string port = configurationSection.GetSection("port").Value;
+            string http = string.Format("http://{0}:{1}", ip, port);
             return http;
         }
         private static string GetFilePath(string urlPath)
@@ -97,7 +99,7 @@ namespace Blog.Common
             using (MultipartFormDataContent mulContent = new MultipartFormDataContent("----WebKitFormBoundaryrXRBKlhEeCbfHIY"))
             {
                 mulContent.Add(httpContent, "file", fileName);
-                string url = GetIP() + controller;
+                string url = GetHttpAddress() + controller;
                 httpResult = await  HttpHelper.PostHttpClient(url, mulContent);
             }
             //上传成功后删除本地文件
@@ -107,7 +109,8 @@ namespace Blog.Common
                 throw new ServiceException("webapi请求错误:" + result.message);
             PathValue pathValue = new PathValue();
             pathValue.DatePath = result.datepath;
-            pathValue.FilePath = GetIP()+"/"+pathValue.DatePath;
+           
+            pathValue.FilePath = string.Format("http://{0}/picture/{1}", GetConfigurationSection("webapi").GetSection("HttpAddresss").Value, pathValue.DatePath);//nginx路由匹配
             pathValue.FileName = fileName;
             return pathValue;
         }
@@ -143,11 +146,11 @@ namespace Blog.Common
         /// <param name="path">包含ip地址的文件路径</param>
         public static void DeleteFile(string path)
         {
-            string ip = GetIP();
+            string ip = GetHttpAddress();
             int index = path.IndexOf(ip);
             //拼接Resultful接口
             string paramaters = path.Substring(index + ip.Length).Replace(".",@"/");
-            string url = GetIP() + controller+ paramaters;
+            string url = GetHttpAddress() + controller+ paramaters;
             HttpClient httpClient = new HttpClient();
             HttpResponseMessage httpResponse = httpClient.DeleteAsync(url).GetAwaiter().GetResult();
             httpResponse.EnsureSuccessStatusCode();

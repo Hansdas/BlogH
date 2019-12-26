@@ -20,6 +20,7 @@ using Blog.Domain.Core.Notifications;
 using Blog.Common.Socket;
 using Blog.Application.IService;
 using Blog.Application.Service;
+using Microsoft.Extensions.Hosting;
 
 namespace BlogApi.Configure
 {
@@ -79,6 +80,7 @@ namespace BlogApi.Configure
             //注册消息通讯SignalR
             services.AddSignalR();
             services.AddTransient<ISingalrSvc, SingalrSvc>();
+            services.Configure<ConsoleLifetimeOptions>(opts => opts.SuppressStatusMessages = false);
         }
         /// <summary>
         /// 3.0不支持返回IServiceProvider

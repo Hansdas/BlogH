@@ -107,12 +107,12 @@ namespace Blog.Infrastruct
             string where = Where(condition, ref dynamicParameters);
             string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_comments,article_createtime " +
                          "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE " + where +
-                         " AND  article_id <=(" +
-                         "SELECT article_id FROM T_Article WHERE "
+                         " AND  article_createtime <=(" +
+                         "SELECT article_createtime FROM T_Article WHERE "
                          + where +
-                         "ORDER BY article_id DESC " +
+                         "ORDER BY article_createtime DESC " +
                          "LIMIT @pageId, 1) " +
-                         "ORDER BY article_id DESC " +
+                         "ORDER BY article_createtime DESC " +
                          "LIMIT @pageSize";
 
             IEnumerable<dynamic> dynamics = Select(sql, dynamicParameters);
