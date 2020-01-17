@@ -17,6 +17,7 @@ namespace Blog
     /// </summary>
     public class GlobaExceptionFilterAttribute : ExceptionFilterAttribute
     {
+        
         private readonly NLog.ILogger _logger;
         public GlobaExceptionFilterAttribute()
         {
@@ -24,12 +25,12 @@ namespace Blog
         }
         public override void OnException(ExceptionContext context)
         {
-            //string message = context.Exception.Message;
-            ////Task.Factory.StartNew(() =>
-            ////{
-            ////    //_logger.Log(LogLevel.Error, context.Exception, message);
-            ////    _logger.Error(context.Exception, message);
-            ////});
+            string message = context.Exception.Message;
+            Task.Factory.StartNew(() =>
+            {
+                _logger.Log(LogLevel.Error, context.Exception, message);
+                //_logger.Error(context.Exception, message);
+            });
             ReturnResult returnResult = new ReturnResult("500", context.Exception.Message);
             context.Result = new JsonResult(returnResult);
             context.ExceptionHandled = true;

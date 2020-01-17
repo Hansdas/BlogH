@@ -21,7 +21,6 @@ namespace BlogApi
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [GlobaExceptionFilter]
     public class ArticleController : ControllerBase
     {
         private IArticleService _articleService;
@@ -36,11 +35,21 @@ namespace BlogApi
         [HttpPost]
         public IActionResult AddArticle([FromBody]ArticleModel articleModel)
         {
-            UserModel userModel = Auth.GetLoginUser(_httpContext);
-            IEnumerable<string> pathValues =UploadHelper.Upload(articleModel.FilePaths).Select(s=>s.FilePath);
-            articleModel.Content= RegexContent(articleModel.Content, pathValues);
-            _articleService.AddOrUpdate(articleModel);            
-            return new JsonResult(new ReturnResult("200"));
+            try
+            {
+                UserModel userModel = Auth.GetLoginUser(_httpContext);
+                IEnumerable<string> pathValues = UploadHelper.Upload(articleModel.FilePaths).Select(s => s.FilePath);
+                articleModel.Content = RegexContent(articleModel.Content, pathValues);
+                articleModel.Author = userModel.Account;
+                _articleService.AddOrUpdate(articleModel);
+                return new JsonResult(new ReturnResult("0"));
+            }
+            catch (Exception ex)
+            {
+
+                return new JsonResult(new ReturnResult("1",ex.Message));
+            }
+
         }
         /// <summary>
         /// 将临时附件路径转换为服务器路径

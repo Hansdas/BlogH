@@ -23,6 +23,13 @@ namespace BlogApi.Controllers
         }
         // GET api/values
         [HttpGet]
+        public string GetValue()
+        {
+            throw new Exception("11");
+            return "str";
+        }
+        // GET api/values
+        [HttpGet("{str}")]
         public ActionResult<IEnumerable<string>> Get(string str)
         {
             return new string[] { "value1", str };

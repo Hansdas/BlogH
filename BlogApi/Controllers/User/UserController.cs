@@ -65,18 +65,10 @@ namespace BlogApi.Controllers.User
             }
         }
         [HttpPost]
-        public IActionResult UpdateUser()
+        public IActionResult UpdateUser([FromBody]UserModel userModel)
         {
             try
             {
-                UserModel userModel = new UserModel();
-                userModel.Account = Request.Form["account"];
-                userModel.Username = Request.Form["username"];
-                userModel.Sex = Request.Form["sex"];
-                userModel.BirthDate = Request.Form["birthdate"];
-                userModel.Phone = Request.Form["phone"];
-                userModel.Email = Request.Form["email"];
-                userModel.Sign = Request.Form["sign"];
                 _userService.Update(userModel);
                 string domainNotification = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
                 if (!string.IsNullOrEmpty(domainNotification))
@@ -90,14 +82,17 @@ namespace BlogApi.Controllers.User
                     new Claim("email", string.IsNullOrEmpty(userModel.Email)?"":userModel.Email),
                     new Claim("sign", string.IsNullOrEmpty(userModel.Sign)?"":userModel.Sign),
                     new Claim("phone",userModel.Phone),
-                    new Claim("headPhoto",userModel.HeadPhoto)
+                    new Claim("headPhoto",JsonHelper.DeserializeObject<UserModel>(new JWT(_httpContext).ResolveToken()).HeadPhoto)
                 };
                 string jwtToken = new JWT(_cacheClient).CreateToken(claims);
-                return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
+                if (Response.Headers.ContainsKey("refreshToken"))
+                    Response.Headers.Remove("refreshToken");
+                Response.Headers.Add("refreshToken", jwtToken);
+                return new JsonResult(new ReturnResult() { Code = "0"});
             }
             catch (Exception ex)
             {
-                return new JsonResult(new ReturnResult("500", ex.Message));
+                return new JsonResult(new ReturnResult("1", ex.Message));
             }
         }
         [HttpPost]

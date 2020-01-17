@@ -27,7 +27,7 @@ namespace Blog.Domain
         public void Handler(ReviewEvent reviewEvent)
         {
             Tidings tidings = null;
-            string url = "../article/detail?id=" + reviewEvent.ArticleId;
+            string url = "../article/detail.html?id=" + reviewEvent.ArticleId;
             if (string.IsNullOrEmpty(reviewEvent.Comment.ReplyGuid))//评论文章
             {
                 Article article = _articleRepository.SelectById(reviewEvent.ArticleId);

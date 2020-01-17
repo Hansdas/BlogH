@@ -64,6 +64,7 @@ namespace Blog.Common
         {
            int index = urlPath.IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length + 1;
            string loaclPath = string.Format(@"{0}/TempFile/{1}", ConstantKey.WebRoot, urlPath.Substring(index));
+            loaclPath=loaclPath.Replace(@"\", "/");
             return loaclPath;
 
         }
@@ -77,7 +78,7 @@ namespace Blog.Common
             IList<PathValue> pathValues = new List<PathValue>();
             for (int i = 0; i < urlPaths.Count; i++)
             {
-                string fileName = urlPaths[i].Substring(urlPaths[i].LastIndexOf(@"\") + 1);
+                string fileName = urlPaths[i].Substring(urlPaths[i].LastIndexOf("/") + 1);
                 PathValue pathValue =Upload(GetFilePath(urlPaths[i]), fileName).GetAwaiter().GetResult();
                 pathValues.Add(pathValue);
             }
@@ -91,7 +92,7 @@ namespace Blog.Common
         public static async Task<PathValue> Upload(string localFilePath, string fileName)
         {
             if (!File.Exists(localFilePath))
-                throw new IOException("文件不存在");
+                throw new IOException("文件路径不存在:"+localFilePath);
             FileStream fileStream = new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             HttpContent httpContent = new StreamContent(fileStream);
             httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
@@ -141,7 +142,7 @@ namespace Blog.Common
             return  string.Format("{0}{1}", ConstantKey.STATIC_FILE, loaclPath.Substring(subIndex));
         }
         /// <summary>
-        /// 删除附件
+        /// 删除图片
         /// </summary>
         /// <param name="path">包含ip地址的文件路径</param>
         public static void DeleteFile(string path)
@@ -149,7 +150,7 @@ namespace Blog.Common
             string ip = GetHttpAddress();
             int index = path.IndexOf(ip);
             //拼接Resultful接口
-            string paramaters = path.Substring(index + ip.Length).Replace(".",@"/");
+            string paramaters = path.Substring(path.LastIndexOf("picture") + "picture".Length).Replace(".",@"/");
             string url = GetHttpAddress() + controller+ paramaters;
             HttpClient httpClient = new HttpClient();
             HttpResponseMessage httpResponse = httpClient.DeleteAsync(url).GetAwaiter().GetResult();
@@ -250,8 +251,8 @@ namespace Blog.Common
             string guid = Guid.NewGuid().ToString().Replace("-", "");//生成guid
             string newFileName = guid + extension;
             DateTime dateTime = DateTime.Now;
-            string datePath = string.Format(@"\{0}\{1}\{2}\", dateTime.Year, dateTime.Month, dateTime.Day);//路径日期部分
-            string fullPath = string.Format(@"{0}\TempFile{1}", webpath, datePath);//全路径
+            string datePath = string.Format("/{0}/{1}/{2}/", dateTime.Year, dateTime.Month, dateTime.Day);//路径日期部分
+            string fullPath = string.Format("{0}/TempFile{1}", webpath, datePath);//全路径
             DirectoryHelper.CreateDirectory(fullPath);//创建目录
             PathValue pathValue = new PathValue();
             pathValue.DatePath = datePath;

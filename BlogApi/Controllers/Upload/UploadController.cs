@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Blog;
 using Blog.Common;
 using Blog.Domain.Core;
 using Microsoft.AspNetCore.Cors;
@@ -61,15 +62,20 @@ namespace BlogApi.Controllers.Upload
             PathValue pathValue =UploadHelper.SaveFile(imgFile.FileName);
             UploadHelper.CompressImage(pathValue.FilePath, imgFile.OpenReadStream(), height, width, b);
             //使用虚拟静态资源路径，否则无法读取到图片
-            string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
+            var configuration = ConfigurationProvider.configuration.GetSection("loaclweb");
+            string ip = configuration.GetSection("httpAddresss").Value;
+            string port = configuration.GetSection("port").Value;
+            string virtualPath = string.Format("http://{0}:{1}{2}", ip,port, ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName);
+            //string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
             return Json(new { Code = "0", Data = new { Src = virtualPath, Title = imgFile.FileName } });
         }
     
-        public IActionResult DeleteFile(string imgpath)
+        [HttpPost]
+        public IActionResult DeleteFile()
         {
+            string imgpath = Request.Form["imgpath"];
             int index = imgpath.IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length;
             string path = _webHostEnvironment.ContentRootPath + "/TempFile" + imgpath.Substring(index);
-            path = path.Replace("/", @"\");
             DirectoryHelper.Delete(path);
             return Json(new ReturnResult("0"));
         }

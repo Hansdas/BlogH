@@ -17,7 +17,6 @@ namespace BlogApi.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [GlobaExceptionFilter]
     public class LoginController : Controller
     {
         protected IUserService _userService;
@@ -38,12 +37,7 @@ namespace BlogApi.Controllers
             try
             {
                 user = _userService.SelectUser(account, passWord);
-            }
-            catch (ValidationException e)
-            {
-                return new JsonResult(new ReturnResult() { Code = "500", Message = e.Message });
-            }
-            IList<Claim> claims = new List<Claim>()
+                IList<Claim> claims = new List<Claim>()
                 {
                     new Claim("account", user.Account),
                     new Claim("username", user.Username),
@@ -54,8 +48,14 @@ namespace BlogApi.Controllers
                     new Claim("phone",string.IsNullOrEmpty(user.Phone)?"":user.Phone),
                     new Claim("headPhoto", string.IsNullOrEmpty(user.HeadPhoto)?"":user.HeadPhoto)
                 };
-            string jwtToken = new JWT(_cacheClient).CreateToken(claims);
-            return new JsonResult(new ReturnResult() { Code = "200", Data = jwtToken });
+                string jwtToken = new JWT(_cacheClient).CreateToken(claims);
+                return new JsonResult(new ReturnResult() { Code = "0", Data = jwtToken });
+            }
+            catch (ValidationException e)
+            {
+                return new JsonResult(new ReturnResult() { Code = "1", Message = e.Message });
+            }
+           
         }
 
         [HttpPost]
