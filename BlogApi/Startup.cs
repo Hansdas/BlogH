@@ -47,8 +47,11 @@ namespace BlogApi
             {
                 s.AddPolicy("cores", build =>
                 {
-                    build.WithOrigins("http://127.0.0.1:8080", "http://127.0.0.1:5000", "http://111.229.211.248:5000", "http://58.87.92.221")
-                    .WithHeaders("Authorization", "content-type", "x-requested-with")
+                    IConfigurationSection section = Configuration.GetSection("Policy");
+                    string[] origins= section.GetSection("Origins").Value.Split(',');
+                    string[] headers = section.GetSection("Headers").Value.Split(',');
+                    build.WithOrigins(origins)
+                    .WithHeaders(headers)
                     .AllowAnyMethod()
                     .AllowCredentials();
                     
