@@ -11,11 +11,10 @@ namespace Blog.Domain
     /// </summary>
     public class Article : Entity<int>
     {
-        public Article(int id, string title, string textSection, ArticleType articleType)
+        public Article(int id, string title, ArticleType articleType)
         {
             Id = id;
             Title = title;
-            TextSection = textSection;
             ArticleType = articleType;
         }
         public Article(int id,string author, string title,string textSection, string content, ArticleType articleType, bool isDraft)
@@ -41,7 +40,7 @@ namespace Blog.Domain
                 CommentIds = string.Join(',', comments.Select(s => s.Guid));
 
         }
-        public Article(int id,string title,string author,string textSection,ArticleType articleType,bool isDraft,string commentIds,DateTime createTime)
+        public Article(int id,string title,string author,string textSection,ArticleType articleType,bool isDraft, int praiseCount, int browserCount, string commentIds,DateTime createTime)
         {
             Id = id;
             Title = title;
@@ -49,6 +48,8 @@ namespace Blog.Domain
             ArticleType = articleType;
             TextSection = textSection;
             IsDraft = isDraft;
+            PraiseCount = praiseCount;
+            BrowserCount = browserCount;
             CommentIds = commentIds;
             CreateTime = createTime;
         }

@@ -39,6 +39,14 @@ namespace Blog.Application.ViewModel
         /// </summary>
         public string IsDraft { get; set; }
         /// <summary>
+        /// 点赞数量
+        /// </summary>
+        public int PraiseCount { get; set; }
+        /// <summary>
+        /// 浏览数量
+        /// </summary>
+        public int BrowserCount { get; set; }
+        /// <summary>
         /// 图片路径
         /// </summary>
         public IList<string> FilePaths { get; set; }

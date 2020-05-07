@@ -37,6 +37,10 @@ namespace Blog.Application.ViewModel
         /// 评论集合
         /// </summary>
         public IList<CommentDataModel> Commentdatas { get; set; }
+        /// <summary>
+        /// 总数
+        /// </summary>
+        public int Count { get; set; }
     }
     /// <summary>
     /// 评论模型DTO

@@ -79,8 +79,15 @@ namespace Blog.Common
             for (int i = 0; i < urlPaths.Count; i++)
             {
                 string fileName = urlPaths[i].Substring(urlPaths[i].LastIndexOf("/") + 1);
-                PathValue pathValue =Upload(GetFilePath(urlPaths[i]), fileName).GetAwaiter().GetResult();
-                pathValues.Add(pathValue);
+                try
+                {
+                    PathValue pathValue = Upload(GetFilePath(urlPaths[i]), fileName).GetAwaiter().GetResult();
+                    pathValues.Add(pathValue);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
             }
             return pathValues;
         }

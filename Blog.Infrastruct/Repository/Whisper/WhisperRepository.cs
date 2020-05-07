@@ -68,8 +68,6 @@ namespace Blog.Infrastruct
                 , d.user_username
                 , d.whisper_content
                 , (string)d.whisper_commentguids
-                , d.whisper_praisecount==null ? 0 : d.whisper_praisecount
-                , d.whisper_praiseaccount
                 , d.whisper_createtime);
                 whispers.Add(whisper);
                 commentGuids.AddRange(Whisper.GetCommentGuidList(whisper));
@@ -83,8 +81,6 @@ namespace Blog.Infrastruct
                 , item.Account
                 , item.Content
                 , comments.Where(s => item.CommentGuids.Contains(s.Guid)).ToList()
-                , item.PraiseCount
-                , item.PraiseAccount
                 , item.CreateTime);
                 list.Add(whisper);
             }

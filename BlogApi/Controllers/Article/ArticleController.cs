@@ -7,6 +7,8 @@ using Blog.Common;
 using Blog.Common.CacheFactory;
 using Blog.Domain;
 using Blog.Domain.Core;
+using Blog.Domain.Core.Event;
+using Blog.Domain.Core.Notifications;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -26,11 +28,14 @@ namespace BlogApi
         private IArticleService _articleService;
         private IArticleRepository _articleRepository;
         private IHttpContextAccessor _httpContext;
-        public ArticleController(IArticleService articleService,IArticleRepository articleRepository,IHttpContextAccessor httpContext)
+        private NotifyValidationHandler _notifyValidationHandler;
+        public ArticleController(IArticleService articleService,IArticleRepository articleRepository,IHttpContextAccessor httpContext
+            , IEventHandler<NotifyValidation> notifyValidationHandler)
         {
             _articleService = articleService;
             _articleRepository = articleRepository;
             _httpContext = httpContext;
+            _notifyValidationHandler = (NotifyValidationHandler)notifyValidationHandler;
         }
         [HttpPost]
         public IActionResult AddArticle([FromBody]ArticleModel articleModel)
@@ -175,6 +180,42 @@ namespace BlogApi
             commentModel.PostDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
             commentModel.Guid = "";
             return new JsonResult(new ReturnResult("0", commentModel));
+        }
+
+        [HttpPost("{id}")]
+        public JsonResult Praise(int id)
+        {
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            _articleService.Praise(id, userModel.Account,false);
+            string message= _notifyValidationHandler.GetErrorList().Select(s=>s.Value).FirstOrDefault();
+            if(!string.IsNullOrEmpty(message))
+                return new JsonResult(new ReturnResult("0",message));
+            return new JsonResult(new ReturnResult("0","0"));
+        }
+        [HttpPost("{id}")]
+        public JsonResult PraiseOut(int id)
+        {
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            _articleService.Praise(id, userModel.Account,true);
+            return new JsonResult(new ReturnResult("0"));
+        }
+
+        public JsonResult HotArticle()
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                IList<ArticleModel> articleModels = _articleService.SelectHotArticles();
+                returnResult.Data = articleModels;
+                returnResult.Code = "0";
+            }
+            catch (Exception e)
+            {
+                returnResult.Data = null;
+                returnResult.Code = "1";
+                returnResult.Message = e.Message;
+            }
+            return new JsonResult(returnResult);
         }
     }
 }

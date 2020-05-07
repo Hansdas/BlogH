@@ -34,8 +34,7 @@ namespace Blog.Application
                 model.Author = item.Account;
                 model.Content = item.Content;
                 model.Reply = item.CommentCount;
-                model.Praise = item.PraiseCount;
-                model.Date = item.CreateTime.ToString("yyyy/MM/dd hh:mm");
+                model.Date = item.CreateTime.ToString("yyyy年MM月dd hh点mm分");
                 IEnumerable<CommentDataModel> commentDataModels = from comment in item.CommentList
                                                                   select GetCommentDataModel(comment);
                 model.Commentdatas = commentDataModels.ToList();

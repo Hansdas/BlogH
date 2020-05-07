@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -53,12 +54,14 @@ namespace Blog.Application
             {
                 ArticleModel articleModel = new ArticleModel();
                 articleModel.Id = item.Id;
-                articleModel.ArticleType = item.ArticleType.GetEnumText<ArticleType>();
+                articleModel.ArticleType = item.ArticleType.GetEnumText();
                 articleModel.TextSection = item.TextSection.Trim();
                 articleModel.Title = item.Title;
                 articleModel.Author = item.Author;
                 articleModel.CreateTime = item.CreateTime.ToString("yyyy-MM-dd hh:mm");
                 articleModel.IsDraft = item.IsDraft ? "是" : "否";
+                articleModel.PraiseCount = item.PraiseCount;
+                articleModel.BrowserCount = item.BrowserCount;
                 articleModel.CommentCount = string.IsNullOrEmpty(item.CommentIds)?0: item.CommentIds.Split(',').Length;
                 articleModels.Add(articleModel);
             }
@@ -121,6 +124,29 @@ namespace Blog.Application
             Comment comment = new Comment(guid, commentModel.Content,commentModel.PostUser, commentModel.ReplyGuid);
             UpdateArticleCommand command = new UpdateArticleCommand(comment, id);
             _eventBus.Publish(command);
+        }
+
+        public void Praise(int articleId, string account,bool cancle)
+        {
+            PraiseArticleCommand praiseArticleCommand = new PraiseArticleCommand(articleId,account, cancle);
+            _eventBus.Publish(praiseArticleCommand);
+        }
+
+        public IList<ArticleModel> SelectHotArticles()
+        {
+            NameValueCollection collection = new NameValueCollection();
+            collection.Add("article_praisecount", "DESC");
+            IEnumerable<Article> articles = _articleRepository.SelectTop(5, collection);
+            IList<ArticleModel> articleModels = new List<ArticleModel>();
+            foreach (var item in articles)
+            {
+                ArticleModel articleModel = new ArticleModel();
+                articleModel.Id = item.Id;
+                articleModel.ArticleType = item.ArticleType.GetEnumText();
+                articleModel.Title = item.Title.Length>22?item.Title.Substring(0,20):item.Title;
+                articleModels.Add(articleModel);
+            }
+            return articleModels;
         }
     }
 }
