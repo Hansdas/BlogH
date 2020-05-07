@@ -42,8 +42,8 @@ namespace BlogApi.Controllers
             }
             return new JsonResult(returnResult);
         }
-        [HttpGet("{page}")]
-        public JsonResult LoadWhisper(int page)
+        [HttpGet]
+        public JsonResult LoadWhisper(int pageIndex, int pageSize)
         {
             ReturnResult returnResult = new ReturnResult();
             try
@@ -51,7 +51,7 @@ namespace BlogApi.Controllers
                 UserModel userModel = Auth.GetLoginUser(_httpContext);
                 WhisperCondiiton condiiton = new WhisperCondiiton();
                 condiiton.Account = userModel.Account;
-                IList<WhisperModel> whisperModels=_whisperService.SelectByPage(page, 3, condiiton);
+                IList<WhisperModel> whisperModels=_whisperService.SelectByPage(pageIndex, pageSize, condiiton);
                 returnResult.Code = "0";
                 returnResult.Data = new { lis= whisperModels ,count=LoadTotal()};
             }

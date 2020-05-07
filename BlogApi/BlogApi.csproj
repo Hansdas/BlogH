@@ -44,4 +44,6 @@
     <ProjectReference Include="..\Blog.Infrastruct\Blog.Infrastruct.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+
 </Project>
