@@ -16,24 +16,20 @@ namespace Blog.Domain
             Account = account;
             Content = content;
         }
-        public Whisper(int id, string account, string content, string commentGuids, int praiseCount, string praiseAccount, DateTime createTime)
+        public Whisper(int id, string account, string content, string commentGuids, DateTime createTime)
         {
             Id = id;
             Account = account;
             Content = content;
             CommentGuids = commentGuids;
-            PraiseAccount = praiseAccount;
-            PraiseCount = praiseCount;
             CreateTime = createTime;
         }
-        public Whisper(int id, string account, string content, IList<Comment> commentList, int praiseCount, string praiseAccount,DateTime createTime)
+        public Whisper(int id, string account, string content, IList<Comment> commentList,DateTime createTime)
         {
             Id = id;
             Account = account;
             Content = content;
             CommentList = commentList;
-            PraiseAccount = praiseAccount;
-            PraiseCount = praiseCount;
             CreateTime = createTime;
         }
         /// <summary>
@@ -60,13 +56,9 @@ namespace Blog.Domain
             get { return CommentList.Count; }
         }
         /// <summary>
-        /// 点赞数
+        /// 创建时间
         /// </summary>
-        public int PraiseCount { get; private set; }
-        /// <summary>
-        /// 点赞账号
-        /// </summary>
-        public string PraiseAccount { get; private set; }
+        public DateTime CreateDate { get; private set; }
         /// <summary>
         /// 获取评论guid集合
         /// </summary>

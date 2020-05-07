@@ -17,7 +17,7 @@ namespace BlogApi.Controllers
         private IWhisperRepository _whisperRepository;
         private IWhisperService _whisperService;
         private IHttpContextAccessor _httpContext;
-        public WhisperController(IWhisperRepository whisperRepository,IWhisperService whisperService,IHttpContextAccessor httpContext)
+        public WhisperController(IWhisperRepository whisperRepository, IWhisperService whisperService, IHttpContextAccessor httpContext)
         {
             _whisperRepository = whisperRepository;
             _whisperService = whisperService;
@@ -42,8 +42,8 @@ namespace BlogApi.Controllers
             }
             return new JsonResult(returnResult);
         }
-        [HttpGet]
-        public JsonResult LoadWhisper(int pageIndex,int pageSize)
+        [HttpGet("{page}")]
+        public JsonResult LoadWhisper(int page)
         {
             ReturnResult returnResult = new ReturnResult();
             try
@@ -51,13 +51,13 @@ namespace BlogApi.Controllers
                 UserModel userModel = Auth.GetLoginUser(_httpContext);
                 WhisperCondiiton condiiton = new WhisperCondiiton();
                 condiiton.Account = userModel.Account;
-               IList<WhisperModel> whisperModels=_whisperService.SelectByPage(pageIndex, pageSize, condiiton);
-                returnResult.Code = "200";
-                returnResult.Data = whisperModels;
+                IList<WhisperModel> whisperModels=_whisperService.SelectByPage(page, 3, condiiton);
+                returnResult.Code = "0";
+                returnResult.Data = new { lis= whisperModels ,count=LoadTotal()};
             }
             catch (Exception e)
             {
-                returnResult.Code = "500";
+                returnResult.Code = "1";
                 returnResult.Data = e.Message;
             }
             return new JsonResult(returnResult) ;

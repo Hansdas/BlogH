@@ -7,6 +7,8 @@ using System.Data;
 using Blog.Domain.Core;
 using System.Linq;
 using Blog.AOP.Transaction;
+using System.Collections.Specialized;
+using System.Text;
 
 namespace Blog.Infrastruct
 {
@@ -105,7 +107,7 @@ namespace Blog.Infrastruct
             dynamicParameters.Add("pageId", pageId, DbType.Int32);
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condition, ref dynamicParameters);
-            string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_comments,article_createtime " +
+            string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_praisecount,article_browsercount,article_comments,article_createtime " +
                          "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE " + where +
                          " AND  article_createtime <=(" +
                          "SELECT article_createtime FROM T_Article WHERE "
@@ -127,7 +129,9 @@ namespace Blog.Infrastruct
                 , d.article_textsection
                 , (ArticleType)d.article_articletype
                 , Convert.ToBoolean(d.article_isdraft)
-                , d.article_comments
+                ,d.article_praisecount
+                ,d.article_browsercount
+                ,d.article_comments
                 , (DateTime)d.article_createtime
                 );
                 articles.Add(article);
@@ -251,6 +255,44 @@ namespace Blog.Infrastruct
                 , d.article_createtime
                 );
             return article;
+        }
+
+        public void Praise(int id,bool cancle)
+        {
+            string sql = "";
+            if(cancle)
+                sql = "UPDATE T_Article SET article_praisecount=article_praisecount-1 WHERE article_id=@id";
+            else
+                sql = "UPDATE T_Article SET article_praisecount=article_praisecount+1 WHERE article_id=@id";
+            DbConnection.Execute(sql,new { id });
+        }
+
+        public IList<Article> SelectTop(int num, NameValueCollection orderByCollection)
+        {
+            StringBuilder sb = new StringBuilder("SELECT article_id,article_title,article_articletype FROM T_Article ORDER BY ");
+            foreach(string key in orderByCollection.AllKeys)
+            {
+                sb.Append(key);
+                sb.Append(" ");
+                sb.Append(orderByCollection[key]);
+                sb.Append(" ");
+            }
+            sb.Append("LIMIT 0,@num");
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("num", num);
+            IEnumerable<dynamic> resultList = DbConnection.Query(sb.ToString(),parameters);
+            IList<Article> articles = new List<Article>();
+            foreach (var d in resultList)
+            {
+
+                Article article = new Article(
+                  d.article_id
+                , d.article_title
+                , (ArticleType)d.article_articletype
+                );
+                articles.Add(article);
+            }
+            return articles;
         }
     }
 }

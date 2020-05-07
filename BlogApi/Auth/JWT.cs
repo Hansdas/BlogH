@@ -57,7 +57,7 @@ namespace BlogApi
             TokenModel tokenModel = new TokenModel();
             tokenModel.ExpireTime = DateTime.Now.AddDays(7);
             tokenModel.token = jwtToken;
-            _cacheClient.Set(jwtToken, tokenModel, TimeSpan.FromDays(7));
+            _cacheClient.StringSet(jwtToken, tokenModel, TimeSpan.FromDays(7));
             return jwtToken;
         }
         public  void RemoveToken(string token)
@@ -73,7 +73,7 @@ namespace BlogApi
         {
             if(token==null)
                 throw new ValidationException("expires");
-            TokenModel tokenMode = _cacheClient.Get<TokenModel>(token);
+            TokenModel tokenMode = _cacheClient.StringGet<TokenModel>(token);
             if (tokenMode == null)
                 throw new ValidationException("expires");
             JwtSecurityToken jwtSecurityToken= new JwtSecurityTokenHandler().ReadJwtToken(token);
@@ -81,7 +81,7 @@ namespace BlogApi
                 token = CreateToken(jwtSecurityToken.Claims);
             tokenMode.ExpireTime = tokenMode.ExpireTime.AddDays(7);
             if(tokenMode.ExpireTime.Day-DateTime.Now.Day==1)//实现最后一天如果访问了就自动续期
-                _cacheClient.Set(token, tokenMode, TimeSpan.FromDays(7));
+                _cacheClient.StringSet(token, tokenMode, TimeSpan.FromDays(7));
 
         }
         /// <summary>

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Blog.Domain
 {
@@ -34,5 +35,18 @@ namespace Blog.Domain
         /// <param name="id"></param>
         /// <returns></returns>
         string SelectAuthorById(int id);
+        /// <summary>
+        /// 更新赞数量
+        /// </summary>
+        /// <param name="praiseCount"></param>
+        /// <param name="id"></param>
+        void Praise(int id,bool cancle);
+        /// <summary>
+        /// orderby查询
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="orderByCollection"></param>
+        /// <returns></returns>
+        IList<Article> SelectTop(int num, NameValueCollection orderByCollection);
     }
 }

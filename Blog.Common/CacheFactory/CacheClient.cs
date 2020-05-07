@@ -11,30 +11,49 @@ namespace Blog.Common.CacheFactory
         /// <summary>
         /// 过期时间
         /// </summary>
-        private  TimeSpan ExpireTime = new TimeSpan(24,0,0);
+        private TimeSpan ExpireTime = new TimeSpan(24, 0, 0);
         private IDatabase database => CacheProvider.database;
         private IServer server => CacheProvider.server;
-        public void Set(string key, string value,TimeSpan expiry)
+        #region String操作
+        public void StringSet(string key, string value, TimeSpan expiry)
         {
             database.StringSet(key, value, expiry);
         }
-        public void Set<T>(string key, T t, TimeSpan? expiry = null)
+        public void StringSet<T>(string key, T t, TimeSpan? expiry = null)
         {
             string json = JsonHelper.Serialize(t);
-            Set(key, json, expiry??ExpireTime);
+            StringSet(key, json, expiry ?? ExpireTime);
         }
-        public string Get(string key)
+        public string StringGet(string key)
         {
             return database.StringGet(key);
         }
-        public T Get<T>(string key)
+        public T StringGet<T>(string key)
         {
-            string value = Get(key);
+            string value = StringGet(key);
             if (string.IsNullOrEmpty(value))
                 return default(T);
             return JsonHelper.DeserializeObject<T>(value);
         }
+        #endregion
 
+        #region 集合（Set）操作
+        public void AddSet(string key, string value)
+        {
+            database.SetAdd(key, value);
+        }
+        public string[] GetMembers(string key)
+        {
+           string[] members= database.SetMembers(key).ToStringArray();
+           return members;
+        }
+
+        public bool SetRemove(string key,string value)
+        {
+            return database.SetRemove(key,value);
+        }
+
+        #endregion
         public void Remove(string key)
         {
             database.KeyDelete(key);
@@ -57,5 +76,6 @@ namespace Blog.Common.CacheFactory
             var keys = server.Keys(database.Database, keyPattern).ToArray();
             return keys.Select(s => s.ToString()).ToArray();
         }
+
     }
 }

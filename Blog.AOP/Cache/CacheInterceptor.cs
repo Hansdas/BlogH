@@ -45,7 +45,7 @@ namespace Blog.AOP.Cache
             var methodArguments = ParseArgumentsToPartOfCacheKey(invocation.Arguments);
             var cacheKey = BuildCacheKey(typeName, methodName, methodArguments, mapCacheAttribute.prefixs);
 
-            var cacheValue = _cacheClient.Get(cacheKey);
+            var cacheValue = _cacheClient.StringGet(cacheKey);
             if (cacheValue != null)
             {
                 //基元类型和string类型不需要序列化
@@ -67,7 +67,7 @@ namespace Blog.AOP.Cache
 
             if (!string.IsNullOrWhiteSpace(cacheKey))
             {
-                _cacheClient.Set(cacheKey, invocation.ReturnValue);
+                _cacheClient.StringSet(cacheKey, invocation.ReturnValue);
             }
         }
         /// <summary>
