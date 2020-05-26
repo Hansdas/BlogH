@@ -31,15 +31,22 @@ namespace Blog.Infrastruct
                     dynamicParameters.Add("Account", condition.Account);
                     sqlList.Add("whisper_account = @Account");
                 }
+                if (condition.IsPassing.HasValue)
+                {
+                    dynamicParameters.Add("IsPassing", condition.IsPassing.Value,DbType.Boolean);
+                    sqlList.Add("whisper_ispassing = @IsPassing");
+                }
             }
             sqlList.Add(" 1=1 ");
             string sql = string.Join(" AND ", sqlList);
             return sql;
         }
-        public void Insert(Whisper whisper)
+        public int Insert(Whisper whisper)
         {
-            string sql = "INSERT INTO T_Whisper(whisper_account,whisper_content,whisper_createtime) VALUES(@Account,@Content,NOW())";
-            DbConnection.Execute(sql, whisper);
+            string sql = "INSERT INTO T_Whisper(whisper_account,whisper_content,whisper_createtime) VALUES(@Account,@Content,NOW())" +
+                ";SELECT LAST_INSERT_ID()";
+             int id=Convert.ToInt32(DbConnection.ExecuteScalar(sql, whisper));
+            return id;
         }
 
         public IEnumerable<Whisper> SelectByPage(int pageIndex, int pageSize, WhisperCondiiton condiiton = null)
@@ -49,8 +56,8 @@ namespace Blog.Infrastruct
             parameters.Add("pageId", pageId, DbType.Int32);
             parameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condiiton, ref parameters);
-            string sql = "SELECT W.*,U.user_username " +
-                        "FROM T_Whisper W INNER JOIN T_User U ON user_account=whisper_account WHERE " + where +
+            string sql = "SELECT w.*,u.user_username " +
+                        "FROM T_Whisper  w INNER JOIN T_User u on w.whisper_account=u.user_account  WHERE " + where +
                         " AND  whisper_id <=(" +
                         "SELECT whisper_id FROM T_Whisper WHERE "
                         + where +
@@ -65,8 +72,10 @@ namespace Blog.Infrastruct
             {
                 Whisper whisper = new Whisper(
                 d.whisper_id
-                , d.user_username
+                , d.whisper_account
+                ,d.user_username
                 , d.whisper_content
+                , Convert.ToBoolean(d.whisper_ispassing)
                 , (string)d.whisper_commentguids
                 , d.whisper_createtime);
                 whispers.Add(whisper);
@@ -79,9 +88,11 @@ namespace Blog.Infrastruct
                 Whisper whisper = new Whisper(
                 item.Id
                 , item.Account
+                ,item.AccountName
                 , item.Content
+                , item.IsPassing
                 , comments.Where(s => item.CommentGuids.Contains(s.Guid)).ToList()
-                , item.CreateTime);
+                , item.CreateTime.Value);
                 list.Add(whisper);
             }
             return list;

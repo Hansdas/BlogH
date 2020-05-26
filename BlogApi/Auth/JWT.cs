@@ -69,13 +69,13 @@ namespace BlogApi
         /// </summary>
         /// <param name="token">token</param>
         /// <param name="isExpires">是否失效</param>
-        public  void RefreshToken(string token,bool isExpires=false)
+        public  void IfRefreshToken(string token,bool isExpires=false)
         {
             if(token==null)
-                throw new ValidationException("expires");
+                throw new AuthException("expires");
             TokenModel tokenMode = _cacheClient.StringGet<TokenModel>(token);
             if (tokenMode == null)
-                throw new ValidationException("expires");
+                throw new AuthException("expires");
             JwtSecurityToken jwtSecurityToken= new JwtSecurityTokenHandler().ReadJwtToken(token);
             if(isExpires)
                 token = CreateToken(jwtSecurityToken.Claims);
@@ -92,10 +92,10 @@ namespace BlogApi
         {
             bool IsAuthorized = _context.HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
             if (!IsAuthorized)
-                throw new ValidationException("not login");
+                throw new AuthException("not login");
             string token = authStr.ToString().Substring("Bearer ".Length).Trim();
             if(token=="null")
-                throw new ValidationException("not login");
+                throw new AuthException("not login");
             IJsonSerializer serializer = new JsonNetSerializer();
             IDateTimeProvider provider = new UtcDateTimeProvider();
             IJwtValidator validator = new JwtValidator(serializer, provider);

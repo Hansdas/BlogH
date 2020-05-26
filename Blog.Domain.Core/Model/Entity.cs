@@ -17,7 +17,7 @@ namespace Blog.Domain.Core
         /// <summary>
         /// 记录时间
         /// </summary>
-        public DateTime CreateTime { get; protected set; }
+        public DateTime? CreateTime { get; protected set; }
         /// <summary>
         /// 更新时间
         /// </summary>

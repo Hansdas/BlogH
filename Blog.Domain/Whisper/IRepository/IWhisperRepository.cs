@@ -10,7 +10,7 @@ namespace Blog.Domain
         /// <summary>
         /// 发表微语
         /// </summary>
-        void Insert(Whisper whisper);
+        int Insert(Whisper whisper);
         /// <summary>
         /// 分页查询微语
         /// </summary>

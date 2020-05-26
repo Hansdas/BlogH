@@ -217,5 +217,41 @@ namespace BlogApi
             }
             return new JsonResult(returnResult);
         }
+        [HttpGet]
+        public JsonResult SelectArticleByTypeMaxTime()
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                IList<ArticleModel> articleModels = _articleService.SelectByTypeMaxTime();
+                returnResult.Data = articleModels;
+                returnResult.Code = "0";
+            }
+            catch (Exception e)
+            {
+                returnResult.Data = null;
+                returnResult.Code = "1";
+                returnResult.Message = e.Message;
+            }
+            return new JsonResult(returnResult);
+        }
+        [HttpGet]
+        public JsonResult ArticleTypes()
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                IList<KeyValueItem> articleTypes = EnumConvert<ArticleType>.AsKeyValueItem();
+                returnResult.Data = articleTypes;
+                returnResult.Code = "0";
+            }
+            catch (Exception e)
+            {
+                returnResult.Data = null;
+                returnResult.Code = "1";
+                returnResult.Message = e.Message;
+            }
+            return new JsonResult(returnResult);
+        }
     }
 }

@@ -47,7 +47,7 @@ namespace Blog.Domain
             HeadPhoto = headPhoto;
         }
         /// <summary>
-        /// 用户名
+        /// 用户昵称
         /// </summary>
         public string Username { get; private set; }
         /// <summary>

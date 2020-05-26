@@ -17,6 +17,15 @@ namespace Blog.Domain
             Title = title;
             ArticleType = articleType;
         }
+        public Article(int id, string author, string title, string textSection, ArticleType articleType,DateTime createTime)
+        {
+            Id = id;
+            Title = title;
+            ArticleType = articleType;
+            Author = author;
+            TextSection = textSection;
+            CreateTime = createTime;
+        }
         public Article(int id,string author, string title,string textSection, string content, ArticleType articleType, bool isDraft)
         {
             Id = id;

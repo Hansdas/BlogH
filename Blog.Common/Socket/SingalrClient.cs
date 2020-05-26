@@ -14,29 +14,34 @@ namespace Blog.Common
     /// </summary>
     public interface ISingalrClient
     {
+        /// <summary>
+        /// 发送到指定客户端
+        /// </summary>
+        /// <param name="sendMessage"></param>
+        /// <returns></returns>
+        Task InvokeSomeConnectionMessage(Message sendMessage);
+        /// <summary>
+        /// 发送所有客户端
+        /// </summary>
+        /// <param name="sendMessage"></param>
+        /// <returns></returns>
         Task InvokeMessage(Message sendMessage);
     }
-    public class SingalrService : Hub<ISingalrClient>
+    public class SingalrClient : Hub<ISingalrClient>
     {
-        private ISingalrSvc _singalrSvc;
-        public SingalrService(ISingalrSvc singalrSvc)
+        private ISingalrContent _content;
+        public SingalrClient(ISingalrContent content)
         {
-            _singalrSvc = singalrSvc;
+            _content = content;
         }
-      
-        public async Task SendMessageAsync(Message sendMessage)
-        {
-            await Clients.All.InvokeMessage(sendMessage);
-        }
-
         public void SetConnectionMaps(string account)
         {
             string connectionid = Context.ConnectionId;
-            _singalrSvc.SetConnectionMaps(connectionid, account);
+            _content.SetConnectionMaps(connectionid, account);
         }
         public override Task OnDisconnectedAsync(Exception exception)
         {
-            _singalrSvc.Remove(Context.ConnectionId);           
+            _content.Remove(Context.ConnectionId);
             return base.OnDisconnectedAsync(exception);
         }
     }

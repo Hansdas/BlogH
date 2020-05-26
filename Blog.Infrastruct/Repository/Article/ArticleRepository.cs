@@ -9,6 +9,7 @@ using System.Linq;
 using Blog.AOP.Transaction;
 using System.Collections.Specialized;
 using System.Text;
+using Blog.Common;
 
 namespace Blog.Infrastruct
 {
@@ -30,7 +31,9 @@ namespace Blog.Infrastruct
             IList<string> sqlList = new List<string>();
             if (!string.IsNullOrEmpty(condition.ArticleType))
             {
-                dynamicParameters.Add("articleType", Convert.ToInt32(condition.ArticleType), DbType.Int32);
+                ArticleType type = Enum.Parse<ArticleType>(condition.ArticleType);
+                int value = type.GetEnumValue();
+                dynamicParameters.Add("articleType", value);
                 sqlList.Add("article_articletype = @articleType");
             }
             if (condition.Id.HasValue)
@@ -290,6 +293,27 @@ namespace Blog.Infrastruct
                 , d.article_title
                 , (ArticleType)d.article_articletype
                 );
+                articles.Add(article);
+            }
+            return articles;
+        }
+
+        public IList<Article> SelectByTypeMaxTime()
+        {
+            string sql = "select article_id,article_title,article_author,article_textsection,article_articletype,article_createtime " +
+                 "from T_Article a where not exists(select * from T_Article where a.article_createtime<article_createtime and a.article_articletype=article_articletype )";
+            IEnumerable<dynamic> resultList = DbConnection.Query(sql);
+            IList<Article> articles = new List<Article>();
+            foreach(dynamic d in resultList)
+            {
+                Article article = new Article(
+                    d.article_id,
+                    d.article_author,
+                    d.article_title,
+                    d.article_textsection,
+                    (ArticleType)d.article_articletype,
+                    d.article_createtime
+                    );
                 articles.Add(article);
             }
             return articles;

@@ -22,5 +22,9 @@ namespace Blog.Common
         /// </summary>
 
         public static string WebRoot = "";
+        /// <summary>
+        /// 广场页面加载微语cache的ky
+        /// </summary>
+        public const string CACHE_SQUARE_WHISPER = "SQUARE_WHISPER";
     }
 }

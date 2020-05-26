@@ -1,5 +1,6 @@
 ﻿using Blog.Common;
 using Blog.Common.CacheFactory;
+using Blog.Common.Json;
 using Castle.DynamicProxy;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

@@ -24,9 +24,9 @@ namespace Blog.Common
         /// <typeparam name="T"></typeparam>
         /// <param name="json"></param>
         /// <returns></returns>
-        public static T DeserializeObject<T>(string json)
+        public static T DeserializeObject<T>(string json, JsonSerializerSettings settings=null)
         {
-            T t = JsonConvert.DeserializeObject<T>(json);
+            T t = JsonConvert.DeserializeObject<T>(json, settings);
             return t;
         }
         /// <summary>

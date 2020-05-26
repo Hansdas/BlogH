@@ -21,6 +21,11 @@ namespace Blog.Application
         /// </summary>
         /// <returns></returns>
         IList<ArticleModel> SelectHotArticles();
+        /// <summary>
+        /// 查询每种文章发布最新的
+        /// </summary>
+        /// <returns></returns>
+        IList<ArticleModel> SelectByTypeMaxTime();
 
     }
 }

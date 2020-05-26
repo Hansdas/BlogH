@@ -4,36 +4,46 @@ using System.Linq;
 using System.Threading.Tasks;
 using Blog.Application;
 using Blog.Application.ViewModel;
+using Blog.Common;
+using Blog.Common.Socket;
 using Blog.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BlogApi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api")]
     [ApiController]
     public class WhisperController : ControllerBase
     {
         private IWhisperRepository _whisperRepository;
         private IWhisperService _whisperService;
         private IHttpContextAccessor _httpContext;
-        public WhisperController(IWhisperRepository whisperRepository, IWhisperService whisperService, IHttpContextAccessor httpContext)
+        public WhisperController(IWhisperRepository whisperRepository, IWhisperService whisperService, IHttpContextAccessor httpContext
+            ,IHubContext<SingalrClient, ISingalrClient> hubContext)
         {
             _whisperRepository = whisperRepository;
             _whisperService = whisperService;
             _httpContext = httpContext;
         }
         [HttpPost]
+        [Route("whisper/add")]
         public JsonResult Publish()
         {
             ReturnResult returnResult = new ReturnResult();
-            UserModel userModel = Auth.GetLoginUser(_httpContext);
             string content = Request.Form["content"];
-            Whisper whisper = new Whisper(userModel.Account, content);
             try
             {
+                UserModel userModel = Auth.GetLoginUser(_httpContext);
+                Whisper whisper = new Whisper(userModel.Account, content);
                 _whisperService.Insert(whisper);
                 returnResult.Code = "200";
+            }
+            catch(AuthException)
+            {
+                returnResult.Code = "401";
+                returnResult.Message ="not login";
             }
             catch (Exception e)
             {
@@ -61,6 +71,30 @@ namespace BlogApi.Controllers
                 returnResult.Data = e.Message;
             }
             return new JsonResult(returnResult) ;
+        }
+        /// <summary>
+        /// 加载广场模块的微语
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="top"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("whisper/square")]
+        public async Task<JsonResult> LoadSquareWhisper(int pageIndex, int top)
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                IList<WhisperModel> whisperModels = await _whisperService.SelectByPageCache(pageIndex, top);
+                returnResult.Code = "0";
+                returnResult.Data = whisperModels;
+            }
+            catch (Exception e)
+            {
+                returnResult.Code = "1";
+                returnResult.Data = e.Message;
+            }
+            return new JsonResult(returnResult);
         }
         [HttpGet]
         public int LoadTotal()

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Blog.Common.CacheFactory
 {
@@ -33,6 +35,60 @@ namespace Blog.Common.CacheFactory
         /// <param name="value"></param>
         /// <returns></returns>
         bool SetRemove(string key, string value);
+        #endregion
+
+        #region list操作
+        /// <summary>
+        /// 添加到list集合头部，返回集合长度
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        Task<long> AddListTop<T>(string key,T t);
+        /// <summary>
+        ///  添加到list集合头部，返回集合长度
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        Task<long> AddListTop(string key, string value);
+        /// <summary>
+        /// 添加到list集合尾部，返回集合长度
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        Task<long> AddListTail<T>(string key, T t);
+        /// <summary>
+        ///  添加到list集合尾部，返回集合长度
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        Task<long> AddListTail(string key, string value);
+        /// <summary>
+        /// 获取集合长度
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Task<long> ListLenght(string key);
+        /// <summary>
+        /// 从头部移走一个对象
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Task listPop(string key);
+        /// <summary>
+        /// 默认从指定索引，返回指定数量结合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="startindex"></param>
+        /// <param name="endIndex"></param>
+        /// <returns></returns>
+        Task<List<T>> ListRange<T>(string key,int startindex, int endIndex, JsonSerializerSettings settings);
         #endregion
         void Remove(string key);
         void BatchRemove(string[] keys);

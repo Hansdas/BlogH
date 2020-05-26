@@ -3,6 +3,7 @@ using Blog.Domain;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Blog.Application
 {
@@ -10,5 +11,7 @@ namespace Blog.Application
     {
         void Insert(Whisper whisper);
         IList<WhisperModel> SelectByPage(int pageIndex, int pageSize, WhisperCondiiton condiiton = null);
+
+        Task<IList<WhisperModel>> SelectByPageCache(int pageIndex, int pageSize);
     }
 }

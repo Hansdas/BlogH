@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace Blog.AOP
+namespace Blog.Common.Json
 {
     /// <summary>
     /// 针对领域模型的属性重写Newtonsoft的反序列化规则
@@ -21,6 +21,14 @@ namespace Blog.AOP
     /// </remarks>
     public class JsonContractResolver : DefaultContractResolver
     {
+        public JsonSerializerSettings SetJsonSerializerSettings()
+        {
+            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings()
+            {
+                ContractResolver = new JsonContractResolver()
+            };
+            return jsonSerializerSettings;
+        }
         protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
         {
             var jsonProperty = base.CreateProperty(member, memberSerialization);

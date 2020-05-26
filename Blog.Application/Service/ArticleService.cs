@@ -18,11 +18,14 @@ namespace Blog.Application
         private IArticleRepository _articleRepository;
         private IEventBus _eventBus;
         private ICommentRepository _commentRepository;
-        public ArticleService(IEventBus eventBus, IArticleRepository articleRepository, ICommentRepository commentRepository)
+        private IUserRepository _userRepository;
+        public ArticleService(IEventBus eventBus, IArticleRepository articleRepository, ICommentRepository commentRepository
+            ,IUserRepository userRepository)
         {
             _eventBus = eventBus;
             _articleRepository = articleRepository;
             _commentRepository = commentRepository;
+            _userRepository = userRepository;
         }
         public void AddOrUpdate(ArticleModel model)
         {
@@ -58,7 +61,7 @@ namespace Blog.Application
                 articleModel.TextSection = item.TextSection.Trim();
                 articleModel.Title = item.Title;
                 articleModel.Author = item.Author;
-                articleModel.CreateTime = item.CreateTime.ToString("yyyy-MM-dd hh:mm");
+                articleModel.CreateTime = item.CreateTime.Value.ToString("yyyy-MM-dd hh:mm");
                 articleModel.IsDraft = item.IsDraft ? "是" : "否";
                 articleModel.PraiseCount = item.PraiseCount;
                 articleModel.BrowserCount = item.BrowserCount;
@@ -75,7 +78,7 @@ namespace Blog.Application
                 Id = article.Id,
                 Title = article.Title,
                 ArticleType = article.ArticleType.GetEnumText(),
-                CreateTime = article.CreateTime.ToString("yyyy/MM/dd"),
+                CreateTime = article.CreateTime.Value.ToString("yyyy/MM/dd"),
                 Content = article.Content,
                 Author = article.Author,
                 IsDraft = article.IsDraft ? "是" : "否",
@@ -144,6 +147,25 @@ namespace Blog.Application
                 articleModel.Id = item.Id;
                 articleModel.ArticleType = item.ArticleType.GetEnumText();
                 articleModel.Title = item.Title.Length>22?item.Title.Substring(0,20):item.Title;
+                articleModels.Add(articleModel);
+            }
+            return articleModels;
+        }
+        public IList<ArticleModel> SelectByTypeMaxTime()
+        {
+            IEnumerable<Article> articles = _articleRepository.SelectByTypeMaxTime();
+            Dictionary<string, string> users = _userRepository.SelectNameWithAccountDic(articles.Select(s => s.Author).Distinct());
+            IList<ArticleModel> articleModels = new List<ArticleModel>();
+            foreach(var item in articles)
+            {
+                ArticleModel articleModel = new ArticleModel();
+                articleModel.ArticleType = item.ArticleType.GetEnumText();
+                articleModel.Id = item.Id;
+                articleModel.Title = item.Title;
+                articleModel.Author = users[item.Author];
+                articleModel.AuthorAccount = item.Author;
+                articleModel.TextSection = item.TextSection.Trim();
+                articleModel.CreateTime = item.CreateTime.Value.ToString("yyyy-MM-dd hh:mm");
                 articleModels.Add(articleModel);
             }
             return articleModels;

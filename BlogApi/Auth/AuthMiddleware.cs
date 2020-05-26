@@ -33,14 +33,13 @@ namespace BlogApi
                     bool isExpires = context.Request.Headers.TryGetValue("isExpires", out StringValues expires);
                     bool IsAuthorized = context.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
                     string token = authStr.ToString().Substring("Bearer ".Length).Trim();
-                    //每次访问都更新token有效期
-                    new JWT(_cacheClient).RefreshToken(token, isExpires);
+                    new JWT(_cacheClient).IfRefreshToken(token, isExpires);
                     context.Response.Headers.Add("refreshToken", token);
                     context.Response.Headers.Add("Access-Control-Expose-Headers", "refreshToken");
                 }
 
             }
-            catch (ValidationException)
+            catch (AuthException)
             {
                 if (_requestPaths.Contains(context.Request.Path.Value.ToLower()))
                 {

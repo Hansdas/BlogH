@@ -10,5 +10,9 @@ namespace Blog.Domain
         /// 根账号查询
         /// </summary>
         public string Account { get; set; }
+        /// <summary>
+        /// 审核是否通过
+        /// </summary>
+        public bool? IsPassing { get; set; }
     }
 }

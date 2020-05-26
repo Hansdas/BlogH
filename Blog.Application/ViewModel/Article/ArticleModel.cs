@@ -31,6 +31,10 @@ namespace Blog.Application.ViewModel
         /// </summary>
         public string Content { get; set; }
         /// <summary>
+        /// 作者账号
+        /// </summary>
+        public string AuthorAccount { get; set; }
+        /// <summary>
         /// 作者
         /// </summary>
         public string Author { get; set; }

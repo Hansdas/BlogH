@@ -48,5 +48,12 @@ namespace Blog.Domain
         /// <param name="orderByCollection"></param>
         /// <returns></returns>
         IList<Article> SelectTop(int num, NameValueCollection orderByCollection);
+        /// <summary>
+        /// 查询每种类型时间最大的
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="orderByCollection"></param>
+        /// <returns></returns>
+        IList<Article> SelectByTypeMaxTime();
     }
 }

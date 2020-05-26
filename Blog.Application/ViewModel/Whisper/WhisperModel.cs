@@ -10,9 +10,13 @@ namespace Blog.Application.ViewModel
    public class WhisperModel
     {
         /// <summary>
-        /// 作者
+        /// 作者账号
         /// </summary>
-        public string Author { get; set; }
+        public string Account { get; set; }
+        /// <summary>
+        /// 作者名字
+        /// </summary>
+        public string AccountName { get; set; }
         /// <summary>
         ///  内容
         /// </summary>
@@ -24,7 +28,7 @@ namespace Blog.Application.ViewModel
         /// <summary>
         /// 发表日期
         /// </summary>
-        public string Date { get; set; }
+        public string CreateDate { get; set; }
         /// <summary>
         /// 点赞数
         /// </summary>
@@ -37,6 +41,10 @@ namespace Blog.Application.ViewModel
         /// 评论集合
         /// </summary>
         public IList<CommentDataModel> Commentdatas { get; set; }
+        public int CommentCount
+        {
+            get { return Commentdatas==null?0:Commentdatas.Count; }
+        }
         /// <summary>
         /// 总数
         /// </summary>

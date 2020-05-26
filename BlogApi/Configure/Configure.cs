@@ -21,6 +21,7 @@ using Blog.Common.Socket;
 using Blog.Application.IService;
 using Blog.Application.Service;
 using Microsoft.Extensions.Hosting;
+using Blog.Common;
 
 namespace BlogApi.Configure
 {
@@ -80,7 +81,7 @@ namespace BlogApi.Configure
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
             //注册消息通讯SignalR
             services.AddSignalR();
-            services.AddTransient<ISingalrSvc, SingalrSvc>();
+            services.AddTransient<ISingalrContent, SingalrContent>();
         }
         /// <summary>
         /// 3.0不支持返回IServiceProvider

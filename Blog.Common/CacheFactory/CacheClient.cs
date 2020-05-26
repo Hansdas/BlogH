@@ -1,8 +1,10 @@
-﻿using StackExchange.Redis;
+﻿using Newtonsoft.Json;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Blog.Common.CacheFactory
 {
@@ -76,6 +78,51 @@ namespace Blog.Common.CacheFactory
             var keys = server.Keys(database.Database, keyPattern).ToArray();
             return keys.Select(s => s.ToString()).ToArray();
         }
+        #region list操作
+        public async  Task<long> AddListTop<T>(string key, T t)
+        {
+            if (t == null)
+                throw new ServiceException("对象t为null");
+            string value = JsonHelper.Serialize(t);
+            return await AddListTop(key, value);
+        }
 
+        public async Task<long> AddListTop(string key, string value)
+        {          
+           return  await database.ListLeftPushAsync(key, value);
+        }
+        public async Task<long> AddListTail<T>(string key, T t)
+        {
+            if (t == null)
+                throw new ServiceException("对象t为null");
+            string value = JsonHelper.Serialize(t);
+            return await AddListTail(key, value);
+        }
+
+        public async Task<long> AddListTail(string key, string value)
+        {
+            return await database.ListRightPushAsync(key, value);
+        }
+        public async Task<long> ListLenght(string key)
+        {
+          return await  database.ListLengthAsync(key);
+        }
+
+        public async Task listPop(string key)
+        {
+            await database.ListRightPopAsync(key);
+        }
+
+        public async Task<List<T>> ListRange<T>(string key, int startindex, int endIndex, JsonSerializerSettings settings=null)
+        {
+            var rediusValue = await database.ListRangeAsync(key, startindex, endIndex);
+            List<T> list = new List<T>();
+            foreach (var item in rediusValue)
+            {
+                list.Add(JsonHelper.DeserializeObject<T>(item, settings));
+            }
+            return list;
+        }
+        #endregion
     }
 }

@@ -20,6 +20,8 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Blog.Common;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.SignalR;
+using Blog.Common.Socket;
 
 namespace BlogApi
 {
@@ -119,7 +121,7 @@ namespace BlogApi
             });
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<SingalrService>("/chatHub");
+                endpoints.MapHub<SingalrClient>("/chatHub");
                 endpoints.MapControllers();
             });
         }

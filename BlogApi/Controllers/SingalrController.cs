@@ -15,10 +15,10 @@ namespace BlogApi.Controllers
     [ApiController]
     public class SingalrController : ControllerBase
     {
-        private IHubContext<SingalrService, ISingalrClient> _hubContext;
-        private ISingalrSvc _singalrSvc;
+        private IHubContext<SingalrClient, ISingalrClient> _hubContext;
+        private ISingalrContent _singalrSvc;
         private ITidingsService _tidingsService;
-        public SingalrController(IHubContext<SingalrService, ISingalrClient> hubContext, ISingalrSvc singalrSvc
+        public SingalrController(IHubContext<SingalrClient, ISingalrClient> hubContext, ISingalrContent singalrSvc
             , ITidingsService tidingsService)
         {
             _hubContext = hubContext;
@@ -37,7 +37,7 @@ namespace BlogApi.Controllers
             int count=  _tidingsService.SelectCountByAccount(account);
             Message sendMessage = new Message();
             sendMessage.Data = count;
-            await _hubContext.Clients.Clients(connectionIds).InvokeMessage(sendMessage);
+            await _hubContext.Clients.Clients(connectionIds).InvokeSomeConnectionMessage(sendMessage);
         }
     }
 }
