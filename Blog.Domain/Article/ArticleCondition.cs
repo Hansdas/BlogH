@@ -34,5 +34,9 @@ namespace Blog.Domain
         /// 标题模糊查询
         /// </summary>
         public string TitleContain { get; set; }
+        /// <summary>
+        /// 全文索引查询
+        /// </summary>
+        public string FullText { get; set; }
     }
 }

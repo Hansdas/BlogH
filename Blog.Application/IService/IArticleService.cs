@@ -11,7 +11,8 @@ namespace Blog.Application
    public interface IArticleService
     {
         void AddOrUpdate(ArticleModel model);
-        IList<ArticleModel> SelectByPage(int pageIndex, int pageSize,ArticleCondition condition=null);
+        IList<ArticleModel> SelectByPage(ArticleConditionModel articleConditionModel);
+        int SelectCount(ArticleConditionModel articleConditionModel=null);
         ArticleModel Select(ArticleCondition articleCondition = null);
         PageInfoMode SelectNextUp(int id, ArticleCondition articleCondition = null);
         void Review(CommentModel commentModel, int id);

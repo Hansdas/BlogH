@@ -93,17 +93,16 @@ namespace BlogApi
             return count;
         }
 
-        [HttpGet]
-        public JsonResult LoadArticle(int pageIndex, int pageSize, string articleType)
+        [HttpPost]
+        [Route("article/page")]
+        public JsonResult LoadArticle([FromBody]ArticleConditionModel condition)
         {
-            PageResult pageResult = new PageResult();
-            ArticleCondition condition = new ArticleCondition();
-            condition.ArticleType = articleType;
-            condition.IsDraft = false;
+            PageResult pageResult = new PageResult();      
             try
             {
-                IList<ArticleModel> articleModels = _articleService.SelectByPage(pageIndex, pageSize, condition);
+                IList<ArticleModel> articleModels = _articleService.SelectByPage(condition);
                 pageResult.Data = articleModels;
+                pageResult.Total = _articleService.SelectCount(condition);
                 pageResult.Code = "0";
             }
             catch (Exception e)

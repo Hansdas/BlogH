@@ -27,6 +27,14 @@ namespace Blog.Application
             _commentRepository = commentRepository;
             _userRepository = userRepository;
         }
+        private ArticleCondition ConvertCondition(ArticleConditionModel articleConditionModel)
+        {
+            ArticleCondition articleCondition = new ArticleCondition();
+            articleCondition.ArticleType = articleConditionModel.ArticleType;
+            articleCondition.FullText = articleConditionModel.FullText;
+            articleCondition.IsDraft = false;
+            return articleCondition;
+        }
         public void AddOrUpdate(ArticleModel model)
         {
             Article article = new Article(
@@ -49,9 +57,12 @@ namespace Blog.Application
             }
         }
 
-        public IList<ArticleModel> SelectByPage(int pageIndex, int pageSize, ArticleCondition condition = null)
+        public IList<ArticleModel> SelectByPage(ArticleConditionModel articleConditionModel)
         {
-            IEnumerable<Article> articles = _articleRepository.SelectByPage(pageSize, pageIndex, condition);
+            ArticleCondition condition=ConvertCondition(articleConditionModel);
+            IEnumerable<Article> articles = _articleRepository.SelectByPage(articleConditionModel.PageSize, articleConditionModel.PageIndex, condition);
+            if (!string.IsNullOrEmpty(condition.FullText))
+                articles = articles.Where(s => s.Title.Contains(condition.FullText) || s.Content.Contains(condition.FullText));
             IList<ArticleModel> articleModels = new List<ArticleModel>();
             foreach (var item in articles)
             {
@@ -65,10 +76,17 @@ namespace Blog.Application
                 articleModel.IsDraft = item.IsDraft ? "是" : "否";
                 articleModel.PraiseCount = item.PraiseCount;
                 articleModel.BrowserCount = item.BrowserCount;
-                articleModel.CommentCount = string.IsNullOrEmpty(item.CommentIds)?0: item.CommentIds.Split(',').Length;
+                articleModel.CommentCount = string.IsNullOrEmpty(item.CommentIds) ? 0 : item.CommentIds.Split(',').Length;
                 articleModels.Add(articleModel);
             }
             return articleModels;
+        }
+        public int SelectCount(ArticleConditionModel articleConditionModel = null)
+        {
+            ArticleCondition articleCondition = null;
+            if (articleConditionModel != null)
+                articleCondition = ConvertCondition(articleConditionModel);
+            return _articleRepository.SelectCount(articleCondition);
         }
         public ArticleModel Select(ArticleCondition articleCondition = null)
         {

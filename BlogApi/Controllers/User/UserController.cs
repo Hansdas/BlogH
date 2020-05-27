@@ -159,34 +159,34 @@ namespace BlogApi.Controllers.User
             }
 
         }
-        [HttpPost]
-        public JsonResult SelectArticle()
-        {
-            int page = Convert.ToInt32(Request.Form["page"]);
-            int limit = Convert.ToInt32(Request.Form["limit"]);
-            string titleContain = Request.Form["title"];
-            bool isDraft = Convert.ToBoolean(Request.Form["isDraft"]);
-            PageResult pageResult = new PageResult();
-            ArticleCondition condition = new ArticleCondition();
-            UserModel userModel = Auth.GetLoginUser(_httpContext);
-            condition.TitleContain = titleContain;
-            condition.IsDraft = isDraft;
-            condition.Account = userModel.Account;
-            try
-            {
-                IList<ArticleModel> articleModels = _articleService.SelectByPage(page, limit, condition);
-                pageResult.Total = _articleRepository.SelectCount(condition);
-                pageResult.Data = articleModels;
-                pageResult.Code = "0";
-                pageResult.Message = "";
-            }
-            catch (Exception e)
-            {
-                pageResult.Data = null;
-                pageResult.Code = "1";
-                pageResult.Message = e.Message;
-            }
-            return new JsonResult(pageResult);
-        }
+        //[HttpPost]
+        //public JsonResult SelectArticle()
+        //{
+        //    int page = Convert.ToInt32(Request.Form["page"]);
+        //    int limit = Convert.ToInt32(Request.Form["limit"]);
+        //    string titleContain = Request.Form["title"];
+        //    bool isDraft = Convert.ToBoolean(Request.Form["isDraft"]);
+        //    PageResult pageResult = new PageResult();
+        //    ArticleCondition condition = new ArticleCondition();
+        //    UserModel userModel = Auth.GetLoginUser(_httpContext);
+        //    condition.TitleContain = titleContain;
+        //    condition.IsDraft = isDraft;
+        //    condition.Account = userModel.Account;
+        //    try
+        //    {
+        //        IList<ArticleModel> articleModels = _articleService.SelectByPage(page, limit, condition);
+        //        pageResult.Total = _articleRepository.SelectCount(condition);
+        //        pageResult.Data = articleModels;
+        //        pageResult.Code = "0";
+        //        pageResult.Message = "";
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        pageResult.Data = null;
+        //        pageResult.Code = "1";
+        //        pageResult.Message = e.Message;
+        //    }
+        //    return new JsonResult(pageResult);
+        //}
     }
 }

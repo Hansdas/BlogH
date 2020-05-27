@@ -56,6 +56,11 @@ namespace Blog.Infrastruct
                 dynamicParameters.Add("isDraft", condition.IsDraft.Value);
                 sqlList.Add("article_isdraft = @isDraft");
             }
+            if (!string.IsNullOrEmpty(condition.FullText))
+            {
+             
+                sqlList.Add("MATCH(article_title,article_content) AGAINST('"+ condition.FullText + "')");
+            }
             sqlList.Add(" 1=1 ");
             string sql = string.Join(" AND ", sqlList);
             return sql;

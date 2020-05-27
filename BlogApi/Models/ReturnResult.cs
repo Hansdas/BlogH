@@ -42,14 +42,4 @@ namespace BlogApi
         public dynamic Data { get; set; }
 
     }
-    /// <summary>
-    /// 分页返回数据
-    /// </summary>
-    public class PageResult : ReturnResult
-    {
-        /// <summary>
-        /// 结果数量
-        /// </summary>
-        public int Total { get; set; }
-    }
 }
