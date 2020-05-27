@@ -44,6 +44,6 @@
     <ProjectReference Include="..\Blog.Infrastruct\Blog.Infrastruct.csproj" />
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties configs_4appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

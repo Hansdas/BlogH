@@ -46,6 +46,10 @@ namespace BlogApi
                     context.Response.Headers.Add("auth", "false");
                 }
             }
+            catch (Exception)
+            {
+
+            }
             await _next(context);
 
         }

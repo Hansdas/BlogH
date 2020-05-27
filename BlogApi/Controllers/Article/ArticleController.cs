@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 
 namespace BlogApi
 {
+    [Route("api")]
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class ArticleController : ControllerBase
@@ -83,6 +84,7 @@ namespace BlogApi
         }
 
         [HttpGet]
+        [Route("article/total")]
         public int LoadTotal(string articleType)
         {
             ArticleCondition condition = new ArticleCondition();
