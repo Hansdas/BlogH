@@ -58,8 +58,8 @@ namespace Blog.Infrastruct
             }
             if (!string.IsNullOrEmpty(condition.FullText))
             {
-             
-                sqlList.Add("MATCH(article_title,article_content) AGAINST('"+ condition.FullText + "')");
+                dynamicParameters.Add("fullText", condition.FullText,DbType.String);
+                sqlList.Add("MATCH(article_title,article_content) AGAINST(@fullText IN BOOLEAN MODE)");
             }
             sqlList.Add(" 1=1 ");
             string sql = string.Join(" AND ", sqlList);
@@ -116,14 +116,8 @@ namespace Blog.Infrastruct
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condition, ref dynamicParameters);
             string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_praisecount,article_browsercount,article_comments,article_createtime " +
-                         "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE " + where +
-                         " AND  article_createtime <=(" +
-                         "SELECT article_createtime FROM T_Article WHERE "
-                         + where +
-                         "ORDER BY article_createtime DESC " +
-                         "LIMIT @pageId, 1) " +
-                         "ORDER BY article_createtime DESC " +
-                         "LIMIT @pageSize";
+                  "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE " + where +
+                  " ORDER BY article_createtime DESC LIMIT @pageId,@pageSize";
 
             IEnumerable<dynamic> dynamics = Select(sql, dynamicParameters);
             IList<Article> articles = new List<Article>();

@@ -61,8 +61,6 @@ namespace Blog.Application
         {
             ArticleCondition condition=ConvertCondition(articleConditionModel);
             IEnumerable<Article> articles = _articleRepository.SelectByPage(articleConditionModel.PageSize, articleConditionModel.PageIndex, condition);
-            if (!string.IsNullOrEmpty(condition.FullText))
-                articles = articles.Where(s => s.Title.Contains(condition.FullText) || s.Content.Contains(condition.FullText));
             IList<ArticleModel> articleModels = new List<ArticleModel>();
             foreach (var item in articles)
             {
