@@ -53,24 +53,26 @@ namespace BlogApi.Controllers
             return new JsonResult(returnResult);
         }
         [HttpGet]
+        [Route("whisper/page")]
         public JsonResult LoadWhisper(int pageIndex, int pageSize)
         {
-            ReturnResult returnResult = new ReturnResult();
+            PageResult pageResult = new PageResult();
             try
             {
                 UserModel userModel = Auth.GetLoginUser(_httpContext);
                 WhisperCondiiton condiiton = new WhisperCondiiton();
                 condiiton.Account = userModel.Account;
                 IList<WhisperModel> whisperModels=_whisperService.SelectByPage(pageIndex, pageSize, condiiton);
-                returnResult.Code = "0";
-                returnResult.Data = new { lis= whisperModels ,count=LoadTotal()};
+                pageResult.Code = "0";
+                pageResult.Data = whisperModels;
+                pageResult.Total = LoadTotal();
             }
             catch (Exception e)
             {
-                returnResult.Code = "1";
-                returnResult.Data = e.Message;
+                pageResult.Code = "1";
+                pageResult.Data = e.Message;
             }
-            return new JsonResult(returnResult) ;
+            return new JsonResult(pageResult) ;
         }
         /// <summary>
         /// 加载广场模块的微语
