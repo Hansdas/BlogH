@@ -102,7 +102,7 @@ namespace BlogApi
             loggerFactory.AddNLog();
             loggerFactory.ConfigureNLog("Configs/nlog.config");
             app.UseCors("cores");
-            ConstantKey.WebRoot = env.ContentRootPath;
+            ConstantKey.WebRoot = env.ContentRootPath; 
             //自定义使用资源目录
             app.UseStaticFiles(new StaticFileOptions()
             {

@@ -59,6 +59,8 @@ namespace BlogApi.Configure
 
             services.AddTransient<ICacheInterceptor, CacheInterceptor>();
             services.AddTransient<ITransactionInterceptor, TransactionInterceptor>();
+
+            services.DisposeServiceTypes();
         }
         /// <summary>
         /// 基础配置
@@ -75,7 +77,7 @@ namespace BlogApi.Configure
             //注册领域验证
             services.AddNotifyValidation();
             //注册Redis
-            services.AddSingleton(new CacheProvider());
+            services.AddSingleton(new CacheProvider("Redis"));
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));

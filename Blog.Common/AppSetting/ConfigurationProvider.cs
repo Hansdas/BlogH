@@ -14,6 +14,9 @@ namespace Blog.Common
   public  class ConfigurationProvider
     {
         public static IConfiguration configuration;
+        /// <summary>
+        /// 指定路径加载配置文件
+        /// </summary>
         static ConfigurationProvider()
         {
             var builder = new ConfigurationBuilder();

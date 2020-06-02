@@ -63,6 +63,7 @@ namespace BlogApi
         /// <param name="content"></param>
         /// <param name="pathValues"></param>
         /// <returns></returns>
+        [HttpPost]
         private string RegexContent(string content, IEnumerable<string> pathValues)
         {
             string pattern = @"((http|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?";
@@ -200,7 +201,7 @@ namespace BlogApi
             _articleService.Praise(id, userModel.Account,true);
             return new JsonResult(new ReturnResult("0"));
         }
-
+        [HttpGet]
         public JsonResult HotArticle()
         {
             ReturnResult returnResult = new ReturnResult();

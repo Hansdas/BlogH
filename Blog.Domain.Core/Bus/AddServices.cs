@@ -19,6 +19,14 @@ namespace Blog.Domain.Core.Event
         /// 临时存储类型数组
         /// </summary>
         private static Type[] serviceTypes = Assembly.Load("Blog.Domain").GetTypes();
+        /// <summary>
+        /// 加载完成时释放serviceTypes
+        /// </summary>
+        /// <param name="serviceDescriptors"></param>
+        public static void DisposeServiceTypes(this IServiceCollection serviceDescriptors)
+        {
+            serviceTypes = null;
+        }
         public static IList<Type> GetOrAddHandlerMapping(this Type eventType)
         {
            return handlerMapping.GetOrAdd(eventType,(Type type)=>new List<Type>());

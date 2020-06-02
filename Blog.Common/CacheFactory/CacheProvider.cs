@@ -7,20 +7,24 @@ using System.Text;
 
 namespace Blog.Common.CacheFactory
 {
-  public  class CacheProvider
+    public class CacheProvider
     {
-        private static ConcurrentDictionary<string, ConnectionMultiplexer> connectionDic;
-        public static IDatabase database =null;
+        private static ConcurrentDictionary<string, ConnectionMultiplexer> connectionDic=new ConcurrentDictionary<string, ConnectionMultiplexer>();
+        public static IDatabase database = null;
         public static IServer server = null;
         private int _defaultDB;
-        public CacheProvider()
+        private CacheProvider()
         {
-            connectionDic = new ConcurrentDictionary<string, ConnectionMultiplexer>();
-            database =GetConnection().GetDatabase(_defaultDB);
+
         }
-        private ConnectionMultiplexer GetConnection()
+        public CacheProvider(string section)
         {
-            RedisSettingModel model = ConfigurationProvider.GetSettingModel<RedisSettingModel>("Redis");
+            if(database==null)
+                database = GetConnection(section).GetDatabase(_defaultDB);
+        }
+        private ConnectionMultiplexer GetConnection(string section)
+        {
+            RedisSettingModel model = ConfigurationProvider.GetSettingModel<RedisSettingModel>(section);
              string connStr = string.Format("{0}:{1}", model.Host, model.Port);
             _defaultDB = model.DefaultDB;
             ConfigurationOptions options = new ConfigurationOptions() {

@@ -14,12 +14,11 @@ namespace Blog.Common.CacheFactory
         /// 过期时间
         /// </summary>
         private TimeSpan ExpireTime = new TimeSpan(24, 0, 0);
-        private IDatabase database => CacheProvider.database;
         private IServer server => CacheProvider.server;
         #region String操作
         public void StringSet(string key, string value, TimeSpan expiry)
         {
-            database.StringSet(key, value, expiry);
+            CacheProvider.database.StringSet(key, value, expiry);
         }
         public void StringSet<T>(string key, T t, TimeSpan? expiry = null)
         {
@@ -28,7 +27,7 @@ namespace Blog.Common.CacheFactory
         }
         public string StringGet(string key)
         {
-            return database.StringGet(key);
+            return CacheProvider.database.StringGet(key);
         }
         public T StringGet<T>(string key)
         {
@@ -42,27 +41,27 @@ namespace Blog.Common.CacheFactory
         #region 集合（Set）操作
         public void AddSet(string key, string value)
         {
-            database.SetAdd(key, value);
+            CacheProvider.database.SetAdd(key, value);
         }
         public string[] GetMembers(string key)
         {
-           string[] members= database.SetMembers(key).ToStringArray();
+           string[] members= CacheProvider.database.SetMembers(key).ToStringArray();
            return members;
         }
 
         public bool SetRemove(string key,string value)
         {
-            return database.SetRemove(key,value);
+            return CacheProvider.database.SetRemove(key,value);
         }
 
         #endregion
         public void Remove(string key)
         {
-            database.KeyDelete(key);
+            CacheProvider.database.KeyDelete(key);
         }
         public void BatchRemove(string[] keys)
         {
-            var tran = database.CreateTransaction();
+            var tran = CacheProvider.database.CreateTransaction();
             foreach (var item in keys)
                 tran.KeyDeleteAsync(item);
             tran.Execute();
@@ -75,7 +74,7 @@ namespace Blog.Common.CacheFactory
 
         public string[] GetKeys(string keyPattern)
         {
-            var keys = server.Keys(database.Database, keyPattern).ToArray();
+            var keys = server.Keys(CacheProvider.database.Database, keyPattern).ToArray();
             return keys.Select(s => s.ToString()).ToArray();
         }
         #region list操作
@@ -89,7 +88,7 @@ namespace Blog.Common.CacheFactory
 
         public async Task<long> AddListTop(string key, string value)
         {          
-           return  await database.ListLeftPushAsync(key, value);
+           return  await CacheProvider.database.ListLeftPushAsync(key, value);
         }
         public async Task<long> AddListTail<T>(string key, T t)
         {
@@ -101,21 +100,21 @@ namespace Blog.Common.CacheFactory
 
         public async Task<long> AddListTail(string key, string value)
         {
-            return await database.ListRightPushAsync(key, value);
+            return await CacheProvider.database.ListRightPushAsync(key, value);
         }
         public async Task<long> ListLenght(string key)
         {
-          return await  database.ListLengthAsync(key);
+          return await CacheProvider.database.ListLengthAsync(key);
         }
 
         public async Task listPop(string key)
         {
-            await database.ListRightPopAsync(key);
+            await CacheProvider.database.ListRightPopAsync(key);
         }
 
         public async Task<List<T>> ListRange<T>(string key, int startindex, int endIndex, JsonSerializerSettings settings=null)
         {
-            var rediusValue = await database.ListRangeAsync(key, startindex, endIndex);
+            var rediusValue = await CacheProvider.database.ListRangeAsync(key, startindex, endIndex);
             List<T> list = new List<T>();
             foreach (var item in rediusValue)
             {
