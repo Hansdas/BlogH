@@ -63,7 +63,6 @@ namespace BlogApi
         /// <param name="content"></param>
         /// <param name="pathValues"></param>
         /// <returns></returns>
-        [HttpPost]
         private string RegexContent(string content, IEnumerable<string> pathValues)
         {
             string pattern = @"((http|https)://)(([a-zA-Z0-9\._-]+\.[a-zA-Z]{2,6})|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,4})*(/[a-zA-Z0-9\&%_\./-~-]*)?";
@@ -245,6 +244,26 @@ namespace BlogApi
             {
                 IList<KeyValueItem> articleTypes = EnumConvert<ArticleType>.AsKeyValueItem();
                 returnResult.Data = articleTypes;
+                returnResult.Code = "0";
+            }
+            catch (Exception e)
+            {
+                returnResult.Data = null;
+                returnResult.Code = "1";
+                returnResult.Message = e.Message;
+            }
+            return new JsonResult(returnResult);
+        }
+
+        [HttpGet]
+        [Route("article/all/{articleId}")]
+        public JsonResult SelectAllByArticle(int articleId)
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                IList<ArticleModel> articleModels = _articleService.SelectAllByArticle(articleId);
+                returnResult.Data = articleModels;
                 returnResult.Code = "0";
             }
             catch (Exception e)

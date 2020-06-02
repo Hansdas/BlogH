@@ -55,5 +55,10 @@ namespace Blog.Domain
         /// <param name="orderByCollection"></param>
         /// <returns></returns>
         IList<Article> SelectByTypeMaxTime();
+        /// <summary>
+        /// 根据文章id查询该作者的所有文章
+        /// </summary>
+        /// <returns></returns>
+        IList<Article> SelectAllByArticle(int articleId);
     }
 }

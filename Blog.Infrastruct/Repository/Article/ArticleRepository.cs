@@ -317,5 +317,24 @@ namespace Blog.Infrastruct
             }
             return articles;
         }
+
+        public IList<Article> SelectAllByArticle(int articleId)
+        {
+            string sql = "SELECT article_id, article_title, article_articletype,article_createtime FROM T_Article " +
+                "WHERE article_author = (SELECT article_author FROM T_Article where article_id = @articleId) ORDER BY article_createtime DESC";
+             IEnumerable<dynamic> resultList= Select(sql, new { articleId });
+            IList<Article> articles = new List<Article>();
+            foreach (dynamic d in resultList)
+            {
+                Article article = new Article(
+                    d.article_id,
+                    d.article_title,
+                    (ArticleType)d.article_articletype,
+                    d.article_createtime
+                    );
+                articles.Add(article);
+            }
+            return articles;
+        }
     }
 }

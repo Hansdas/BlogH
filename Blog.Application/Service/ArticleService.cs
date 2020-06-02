@@ -186,5 +186,21 @@ namespace Blog.Application
             }
             return articleModels;
         }
+
+        public IList<ArticleModel> SelectAllByArticle(int articleId)
+        {
+            IEnumerable<Article> articles = _articleRepository.SelectAllByArticle(articleId);
+            IList<ArticleModel> articleModels = new List<ArticleModel>();
+            foreach (var item in articles)
+            {
+                ArticleModel articleModel = new ArticleModel();
+                articleModel.ArticleType = item.ArticleType.GetEnumText();
+                articleModel.Id = item.Id;
+                articleModel.Title = item.Title;
+                articleModel.CreateTime = item.CreateTime.Value.ToString("yyyy-MM-dd");
+                articleModels.Add(articleModel);
+            }
+            return articleModels;
+        }
     }
 }

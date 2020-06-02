@@ -27,6 +27,11 @@ namespace Blog.Application
         /// </summary>
         /// <returns></returns>
         IList<ArticleModel> SelectByTypeMaxTime();
+        /// <summary>
+        /// 根据文章id查询该作者的所有文章
+        /// </summary>
+        /// <returns></returns>
+        IList<ArticleModel> SelectAllByArticle(int articleId);
 
     }
 }
