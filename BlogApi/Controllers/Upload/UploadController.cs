@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogApi.Controllers.Upload
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api")]
     [ApiController]
     public class UploadController : Controller
     {
@@ -28,27 +28,17 @@ namespace BlogApi.Controllers.Upload
             _webHostEnvironment = webHostEnvironment;
             _accessor = accessor;
         }
-        [HttpGet]
-        public IActionResult InitPage()
-        {
-            Array array= Enum.GetValues(typeof(ArticleType));
-            Dictionary<string, string> pairs = new Dictionary<string, string>();
-            foreach (var item in array)
-            {
-                pairs.Add(item.ToString(), Enum.GetName(typeof(ArticleType), item));
-            }
-            ReturnResult returnResult = new ReturnResult();
-            returnResult.Code = "0";
-            returnResult.Data = pairs;
-            return Json(returnResult);
-        }
-        [HttpGet]
-        public string GetIp()
+        private string GetIp()
         {
             return HttpHelper.GetRequestIP(_accessor);
         }
+        /// <summary>
+        /// 上传图片
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Consumes("multipart/form-data")]
+        [Route("upload/image")]
         public IActionResult UploadImage()
         {   
             int height =Convert.ToInt32(Request.Form["height"]);
@@ -69,8 +59,12 @@ namespace BlogApi.Controllers.Upload
             //string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
             return Json(new { Code = "0", Data = new { Src = virtualPath, Title = imgFile.FileName } });
         }
-    
-        [HttpPost]
+         /// <summary>
+         /// 删除图片
+         /// </summary>
+         /// <returns></returns>
+        [HttpDelete]
+        [Route("upload/image/delete")]
         public IActionResult DeleteFile()
         {
             string imgpath = Request.Form["imgpath"];

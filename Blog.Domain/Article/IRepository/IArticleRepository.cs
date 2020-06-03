@@ -16,7 +16,7 @@ namespace Blog.Domain
         /// </summary>
         /// <param name="articleCondition"></param>
         /// <returns></returns>
-        IEnumerable<dynamic> SelectNextUp(int id, ArticleCondition articleCondition = null);
+        IEnumerable<dynamic> SelectContext(int id, ArticleCondition articleCondition = null);
         void Update(Article article);
         void Delete(int id);
         /// <summary>

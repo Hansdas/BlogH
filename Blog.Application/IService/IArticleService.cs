@@ -14,7 +14,7 @@ namespace Blog.Application
         IList<ArticleModel> SelectByPage(ArticleConditionModel articleConditionModel);
         int SelectCount(ArticleConditionModel articleConditionModel=null);
         ArticleModel Select(ArticleCondition articleCondition = null);
-        PageInfoMode SelectNextUp(int id, ArticleCondition articleCondition = null);
+        PageInfoMode SelectContext(int id, ArticleCondition articleCondition = null);
         void Review(CommentModel commentModel, int id);
         void Praise(int articleId, string account, bool cancle);
         /// <summary>

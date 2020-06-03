@@ -6,7 +6,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace BlogApi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -23,16 +23,16 @@ namespace BlogApi.Controllers
             {
                 bool noLogin = Response.Headers.TryGetValue("auth", out StringValues value);
                 if (noLogin)
-                    throw new ValidationException();
+                    throw new AuthException();
                 string json = new JWT(_context).ResolveToken();
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
-                returnResult.Code = "200";
+                returnResult.Code = "0";
                 returnResult.Data = userModel;
             }
-            catch (ValidationException)
+            catch (AuthException)
             {
-                returnResult.Code = "500";
-                returnResult.Message = "checkfail";
+                returnResult.Code = "401";
+                returnResult.Message = "not login";
             }
             return new JsonResult(returnResult);
         }
@@ -40,6 +40,7 @@ namespace BlogApi.Controllers
         /// 是否登录，通过中间件处理
         /// </summary>
         [HttpPost]
+        [Route("islogin")]
         public string IsLogin()
         {
             bool noLogin =Response.Headers.TryGetValue("auth", out StringValues value);

@@ -49,11 +49,11 @@ namespace Blog.Infrastruct
             if(!string.IsNullOrEmpty(condition.TitleContain))
             {
                 dynamicParameters.Add("titleContain", condition.TitleContain);
-                sqlList.Add("article_title like '%@titleContain%'");
+                sqlList.Add("article_title like CONCAT('%',@titleContain,'%')");
             }
             if(condition.IsDraft.HasValue)
             {
-                dynamicParameters.Add("isDraft", condition.IsDraft.Value);
+                dynamicParameters.Add("isDraft", condition.IsDraft.Value,DbType.Boolean);
                 sqlList.Add("article_isdraft = @isDraft");
             }
             if (!string.IsNullOrEmpty(condition.FullText))
@@ -162,7 +162,7 @@ namespace Blog.Infrastruct
             return article;
         }
 
-        public IEnumerable<dynamic> SelectNextUp(int id, ArticleCondition articleCondition = null)
+        public IEnumerable<dynamic> SelectContext(int id, ArticleCondition articleCondition = null)
         {
 
             DynamicParameters dynamicParameters = new DynamicParameters();

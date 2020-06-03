@@ -21,7 +21,7 @@ namespace BlogApi
         public AuthMiddleware(RequestDelegate next, ICacheClient cacheClient, IList<string> whiteList)
         {
             _next = next;
-            _cacheClient = cacheClient;
+            _cacheClient = cacheClient;    
             _whiteList = whiteList;
         }
         public async Task InvokeAsync(HttpContext context)

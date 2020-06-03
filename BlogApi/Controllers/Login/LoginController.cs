@@ -15,7 +15,7 @@ using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace BlogApi.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/login")]
     [ApiController]
     public class LoginController : Controller
     {
@@ -59,6 +59,7 @@ namespace BlogApi.Controllers
         }
 
         [HttpPost]
+        [Route("logon")]
         public IActionResult Logon([FromBody]UserModel userModel)
         {
             string message = string.Empty;
@@ -84,6 +85,7 @@ namespace BlogApi.Controllers
             return Json(new ReturnResult() { Code = "0", Data = jwtToken });
         }
         [HttpPost]
+        [Route("out")]
         public void LoginOut()
         {
             string token = Request.Form["token"].ToString();

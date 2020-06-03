@@ -20,7 +20,7 @@
     "BlogApi": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "api/default",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

@@ -22,6 +22,9 @@ using Blog.Application.IService;
 using Blog.Application.Service;
 using Microsoft.Extensions.Hosting;
 using Blog.Common;
+using Microsoft.OpenApi.Models;
+using System.Linq;
+using System;
 
 namespace BlogApi.Configure
 {
@@ -84,6 +87,15 @@ namespace BlogApi.Configure
             //注册消息通讯SignalR
             services.AddSignalR();
             services.AddTransient<ISingalrContent, SingalrContent>();
+            bool enableSwagger = Convert.ToBoolean(configuration.GetSection("EnableSwagger").Value);
+            if (enableSwagger)//本地开发使用swagger
+            {
+                services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "BlogAPI", Version = "v1" });
+                    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+                });
+            }
         }
         /// <summary>
         /// 3.0不支持返回IServiceProvider

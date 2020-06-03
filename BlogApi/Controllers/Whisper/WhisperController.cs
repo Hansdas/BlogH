@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace BlogApi.Controllers
 {
-    [Route("api")]
+    [Route("api/whisper")]
     [ApiController]
     public class WhisperController : ControllerBase
     {
@@ -28,7 +28,7 @@ namespace BlogApi.Controllers
             _httpContext = httpContext;
         }
         [HttpPost]
-        [Route("whisper/add")]
+        [Route("add")]
         public JsonResult Publish()
         {
             ReturnResult returnResult = new ReturnResult();
@@ -53,16 +53,13 @@ namespace BlogApi.Controllers
             return new JsonResult(returnResult);
         }
         [HttpGet]
-        [Route("whisper/page")]
+        [Route("page")]
         public JsonResult LoadWhisper(int pageIndex, int pageSize)
         {
             PageResult pageResult = new PageResult();
             try
             {
-                UserModel userModel = Auth.GetLoginUser(_httpContext);
-                WhisperCondiiton condiiton = new WhisperCondiiton();
-                condiiton.Account = userModel.Account;
-                IList<WhisperModel> whisperModels=_whisperService.SelectByPage(pageIndex, pageSize, condiiton);
+                IList<WhisperModel> whisperModels=_whisperService.SelectByPage(pageIndex, pageSize);
                 pageResult.Code = "0";
                 pageResult.Data = whisperModels;
                 pageResult.Total = LoadTotal();
@@ -81,7 +78,7 @@ namespace BlogApi.Controllers
         /// <param name="top"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("whisper/square")]
+        [Route("square")]
         public async Task<JsonResult> LoadSquareWhisper(int pageIndex, int top)
         {
             ReturnResult returnResult = new ReturnResult();
@@ -98,7 +95,12 @@ namespace BlogApi.Controllers
             }
             return new JsonResult(returnResult);
         }
+        /// <summary>
+        /// 查询数量
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [Route("total")]
         public int LoadTotal()
         {
             int total = _whisperRepository.SelectCount();

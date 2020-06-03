@@ -23,7 +23,7 @@ using Blog.Application.ViewMode;
 namespace BlogApi.Controllers.User
 {
 
-    [Route("api/[controller]/[action]")]
+    [Route("api/user")]
     [ApiController]
     public class UserController : Controller
     {
@@ -32,20 +32,19 @@ namespace BlogApi.Controllers.User
         private readonly ICacheClient _cacheClient;
         private IHttpContextAccessor _httpContext;
         private ITidingsService _tidingsService;
-        private IArticleService _articleService;
-        private IArticleRepository _articleRepository;
         public UserController(IUserService userService, IEventHandler<NotifyValidation> notifyValidationHandler
-            , ICacheClient cacheClient, IHttpContextAccessor httpContext, ITidingsService tidingsService, IArticleService articleService
-            , IArticleRepository articleRepository)
+            , ICacheClient cacheClient, IHttpContextAccessor httpContext, ITidingsService tidingsService)
         {
             _userService = userService;
             _notifyValidationHandler = (NotifyValidationHandler)notifyValidationHandler;
             _cacheClient = cacheClient;
             _httpContext = httpContext;
             _tidingsService = tidingsService;
-            _articleService = articleService;
-            _articleRepository = articleRepository;
         }
+        /// <summary>
+        /// 获取登录信息
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult UserInfo()
         {
@@ -55,15 +54,20 @@ namespace BlogApi.Controllers.User
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
                 return new JsonResult(new ReturnResult("0", userModel));
             }
-            catch(ValidationException)
+            catch(AuthException)
             {
-                return new JsonResult(new ReturnResult("1", "auth fail"));
+                return new JsonResult(new ReturnResult("1", "not login"));
             }
             catch (Exception ex)
             {
                 return new JsonResult(new ReturnResult("1", ex.Message));
             }
         }
+        /// <summary>
+        /// 更新
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public IActionResult UpdateUser([FromBody]UserModel userModel)
         {
@@ -95,8 +99,13 @@ namespace BlogApi.Controllers.User
                 return new JsonResult(new ReturnResult("1", ex.Message));
             }
         }
+        /// <summary>
+        /// 更改头像
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Consumes("multipart/form-data")]
+        [Route("update/photo")]
         public JsonResult UploadPhoto()
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
@@ -123,7 +132,12 @@ namespace BlogApi.Controllers.User
             string jwtToken = new JWT(_cacheClient).CreateToken(claims);
             return new JsonResult(new ReturnResult() { Code = "200", Data = new { Path = pathValue.FilePath, token = jwtToken } });
         }
+        /// <summary>
+        /// 更改密码
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
+        [Route("update/password")]
         public IActionResult UpdatePassword()
         {
             string password = Request.Form["password"];
@@ -136,13 +150,25 @@ namespace BlogApi.Controllers.User
                 return new JsonResult(new ReturnResult() { Code = "500", Message = domainNotification });
             return new JsonResult(new ReturnResult() { Code = "200" });
         }
+        /// <summary>
+        /// 获取头像
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [Route("photo")]
         public string GetPhoto()
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             return userModel.HeadPhoto;
         }
+        /// <summary>
+        /// 获取消息
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
         [HttpGet]
+        [Route("tidings")]
         public JsonResult GetTidings(int pageIndex, int pageSize)
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
@@ -159,34 +185,5 @@ namespace BlogApi.Controllers.User
             }
 
         }
-        //[HttpPost]
-        //public JsonResult SelectArticle()
-        //{
-        //    int page = Convert.ToInt32(Request.Form["page"]);
-        //    int limit = Convert.ToInt32(Request.Form["limit"]);
-        //    string titleContain = Request.Form["title"];
-        //    bool isDraft = Convert.ToBoolean(Request.Form["isDraft"]);
-        //    PageResult pageResult = new PageResult();
-        //    ArticleCondition condition = new ArticleCondition();
-        //    UserModel userModel = Auth.GetLoginUser(_httpContext);
-        //    condition.TitleContain = titleContain;
-        //    condition.IsDraft = isDraft;
-        //    condition.Account = userModel.Account;
-        //    try
-        //    {
-        //        IList<ArticleModel> articleModels = _articleService.SelectByPage(page, limit, condition);
-        //        pageResult.Total = _articleRepository.SelectCount(condition);
-        //        pageResult.Data = articleModels;
-        //        pageResult.Code = "0";
-        //        pageResult.Message = "";
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        pageResult.Data = null;
-        //        pageResult.Code = "1";
-        //        pageResult.Message = e.Message;
-        //    }
-        //    return new JsonResult(pageResult);
-        //}
     }
 }

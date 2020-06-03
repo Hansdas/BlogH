@@ -109,6 +109,15 @@ namespace BlogApi
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath , "TempFile")),
                 RequestPath = ConstantKey.STATIC_FILE
             });
+            bool enableSwagger = Convert.ToBoolean(Configuration.GetSection("EnableSwagger").Value);
+            if (enableSwagger)//本地开发使用
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "BlogApi");
+                });
+            }
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthMiddleware(s=> {

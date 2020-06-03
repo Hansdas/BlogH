@@ -21,8 +21,7 @@ using System.Threading.Tasks;
 
 namespace BlogApi
 {
-    [Route("api")]
-    [Route("api/[controller]/[action]")]
+    [Route("api/article")]
     [ApiController]
     public class ArticleController : ControllerBase
     {
@@ -38,7 +37,13 @@ namespace BlogApi
             _httpContext = httpContext;
             _notifyValidationHandler = (NotifyValidationHandler)notifyValidationHandler;
         }
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="articleModel"></param>
+        /// <returns></returns>
         [HttpPost]
+        [Route("add")]
         public IActionResult AddArticle([FromBody]ArticleModel articleModel)
         {
             try
@@ -82,9 +87,13 @@ namespace BlogApi
             }
             return content;
         }
-
+        /// <summary>
+        /// 数量
+        /// </summary>
+        /// <param name="articleType"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("article/total")]
+        [Route("total")]
         public int LoadTotal(string articleType)
         {
             ArticleCondition condition = new ArticleCondition();
@@ -92,12 +101,16 @@ namespace BlogApi
             int count = _articleRepository.SelectCount(condition);
             return count;
         }
-
+        /// <summary>
+        /// 分页
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
         [HttpPost]
-        [Route("article/page")]
-        public JsonResult LoadArticle([FromBody]ArticleConditionModel condition)
+        [Route("page")]
+        public JsonResult SelectArticle([FromBody]ArticleConditionModel condition)
         {
-            PageResult pageResult = new PageResult();      
+            PageResult pageResult = new PageResult();
             try
             {
                 IList<ArticleModel> articleModels = _articleService.SelectByPage(condition);
@@ -112,8 +125,14 @@ namespace BlogApi
                 pageResult.Message = e.Message;
             }
             return new JsonResult(pageResult);
-        }     
-        [HttpGet("{id}")]
+        }
+        /// <summary>
+        /// 详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{id}")]
         public IActionResult Detail(int id)
         {
             PageResult pageResult = new PageResult();
@@ -133,16 +152,24 @@ namespace BlogApi
             }
             return new JsonResult(pageResult);
         }
-        [HttpGet("{id}/{articletype}")]
-        public IActionResult NextUp(int id, string articletype)
+        /// <summary>
+        /// 上一篇下一篇
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="articletype"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("context/{id}/{articletype}")]
+        public IActionResult SelectContext(int id, string articletype)
         {
             ReturnResult returnResult = new ReturnResult();
             ArticleCondition condition = new ArticleCondition();
-            if(string.IsNullOrEmpty(articletype))
+            condition.IsDraft = false;
+            if (string.IsNullOrEmpty(articletype))
                 condition.ArticleType = Enum.Parse<ArticleType>(articletype).GetEnumValue().ToString();
             try
             {
-                PageInfoMode result = _articleService.SelectNextUp(id, condition);
+                PageInfoMode result = _articleService.SelectContext(id, condition);
                 returnResult.Data = result;
                 returnResult.Code = "0";
             }
@@ -155,7 +182,13 @@ namespace BlogApi
             return new JsonResult(returnResult);
         }
 
-        [HttpDelete("{id}")]
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("{id}")]
         public JsonResult Delete(int id)
         {
             ReturnResult result = new ReturnResult();
@@ -171,7 +204,14 @@ namespace BlogApi
             }
             return new JsonResult(result);
         }
-        [HttpPost("{articleId}")]
+        /// <summary>
+        /// 评论
+        /// </summary>
+        /// <param name="commentModel"></param>
+        /// <param name="articleId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("review/{articleId}")]
         public  JsonResult Review([FromBody]CommentModel commentModel,int articleId)
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
@@ -182,8 +222,13 @@ namespace BlogApi
             commentModel.Guid = "";
             return new JsonResult(new ReturnResult("0", commentModel));
         }
-
-        [HttpPost("{id}")]
+        /// <summary>
+        /// 点赞
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("praise/{id}")]
         public JsonResult Praise(int id)
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
@@ -193,14 +238,25 @@ namespace BlogApi
                 return new JsonResult(new ReturnResult("0",message));
             return new JsonResult(new ReturnResult("0","0"));
         }
-        [HttpPost("{id}")]
+        /// <summary>
+        /// 取消点赞
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("praiseout/{id}")]
         public JsonResult PraiseOut(int id)
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             _articleService.Praise(id, userModel.Account,true);
             return new JsonResult(new ReturnResult("0"));
         }
+        /// <summary>
+        /// 热门推荐
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [Route("hot")]
         public JsonResult HotArticle()
         {
             ReturnResult returnResult = new ReturnResult();
@@ -218,7 +274,12 @@ namespace BlogApi
             }
             return new JsonResult(returnResult);
         }
+        /// <summary>
+        /// 查询每种文章最新发布
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [Route("type/maxtime")]
         public JsonResult SelectArticleByTypeMaxTime()
         {
             ReturnResult returnResult = new ReturnResult();
@@ -236,7 +297,12 @@ namespace BlogApi
             }
             return new JsonResult(returnResult);
         }
+        /// <summary>
+        /// 获取文章类型
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [Route("types")]
         public JsonResult ArticleTypes()
         {
             ReturnResult returnResult = new ReturnResult();
@@ -254,9 +320,13 @@ namespace BlogApi
             }
             return new JsonResult(returnResult);
         }
-
+        /// <summary>
+        /// 根据文章获取改作者的所有
+        /// </summary>
+        /// <param name="articleId"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("article/all/{articleId}")]
+        [Route("all/{articleId}")]
         public JsonResult SelectAllByArticle(int articleId)
         {
             ReturnResult returnResult = new ReturnResult();

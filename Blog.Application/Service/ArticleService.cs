@@ -32,7 +32,8 @@ namespace Blog.Application
             ArticleCondition articleCondition = new ArticleCondition();
             articleCondition.ArticleType = articleConditionModel.ArticleType;
             articleCondition.FullText = articleConditionModel.FullText;
-            articleCondition.IsDraft = false;
+            articleCondition.IsDraft =Convert.ToBoolean(articleConditionModel.IsDraft);
+            articleCondition.TitleContain = articleConditionModel.TitleContain;
             return articleCondition;
         }
         public void AddOrUpdate(ArticleModel model)
@@ -117,9 +118,9 @@ namespace Blog.Application
             }
             return commentModels;
         }
-        public PageInfoMode SelectNextUp(int id, ArticleCondition articleCondition = null)
+        public PageInfoMode SelectContext(int id, ArticleCondition articleCondition = null)
         {
-            IEnumerable<dynamic> dynamics = _articleRepository.SelectNextUp(id, articleCondition);
+            IEnumerable<dynamic> dynamics = _articleRepository.SelectContext(id, articleCondition);
             PageInfoMode pageInfoMode = new PageInfoMode();
             foreach (dynamic d in dynamics)
             {
