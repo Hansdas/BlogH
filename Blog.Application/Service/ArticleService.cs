@@ -203,5 +203,18 @@ namespace Blog.Application
             }
             return articleModels;
         }
+        public IList<ArticleFileModel> SelectArticleFile(ArticleCondition articleCondition)
+        {
+            IEnumerable<dynamic> resultList = _articleRepository.SelectArticleFile(articleCondition);
+            IList<ArticleFileModel> fileModels = new List<ArticleFileModel>();
+            foreach(var item in resultList)
+            {
+                ArticleFileModel model = new ArticleFileModel();
+                model.ArticleType = item.article_articletype;
+                model.Total = (int)item.count;
+                fileModels.Add(model);
+            }
+            return fileModels;
+        }
     }
 }

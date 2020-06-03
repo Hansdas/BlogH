@@ -14,7 +14,7 @@ namespace BlogApi.Controllers
         [HttpGet]
         public JsonResult Default()
         {
-            return new JsonResult("application start OK");
+            return new JsonResult("api application start OK");
         }
     }
 }

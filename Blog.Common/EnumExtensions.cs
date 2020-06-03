@@ -27,6 +27,16 @@ namespace Blog.Common
         {
             return Enum.GetName(typeof(T), enumValue);
         }
+        /// <summary>
+        /// 根据值返回枚举名字
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="enumValue"></param>
+        /// <returns></returns>
+        public static string GetEnumText<T>(this int enumValue)
+        {
+            return Enum.GetName(typeof(T), enumValue);
+        }
         public static IEnumerable<T> AsEnumerable<T>() where T : Enum
         {
             EnumQuery<T> query = new EnumQuery<T>();

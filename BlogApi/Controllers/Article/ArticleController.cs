@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Asn1.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -341,6 +342,38 @@ namespace BlogApi
                 returnResult.Data = null;
                 returnResult.Code = "1";
                 returnResult.Message = e.Message;
+            }
+            return new JsonResult(returnResult);
+        }
+        /// <summary>
+        /// 获取个人归档
+        /// </summary>
+        /// <param name="articleId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("file")]
+        public JsonResult SelectArticleFile()
+        {
+            ReturnResult returnResult = new ReturnResult();
+            string account = Request.Form["account"];
+            try
+            {
+                if(string.IsNullOrEmpty(account))
+                {
+                    string json = new JWT(_httpContext).ResolveToken();
+                    UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
+                    account = userModel.Account;
+                }
+                ArticleCondition articleCondition = new ArticleCondition();
+                articleCondition.Account = account;
+                IList<ArticleFileModel> fileModels = _articleService.SelectArticleFile(articleCondition);
+                returnResult.Data = fileModels;
+                returnResult.Code = "0";
+            }
+            catch (AuthException)
+            {
+                returnResult.Message = "not login";
+                returnResult.Code = "401";
             }
             return new JsonResult(returnResult);
         }

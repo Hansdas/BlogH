@@ -32,6 +32,12 @@ namespace Blog.Application
         /// </summary>
         /// <returns></returns>
         IList<ArticleModel> SelectAllByArticle(int articleId);
+        /// <summary>
+        /// 查询文章归档
+        /// </summary>
+        /// <param name="articleCondition"></param>
+        /// <returns></returns>
+        IList<ArticleFileModel> SelectArticleFile(ArticleCondition articleCondition);
 
     }
 }

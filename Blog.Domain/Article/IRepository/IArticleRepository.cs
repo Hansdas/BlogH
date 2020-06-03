@@ -60,5 +60,11 @@ namespace Blog.Domain
         /// </summary>
         /// <returns></returns>
         IList<Article> SelectAllByArticle(int articleId);
+        /// <summary>
+        /// 查询文章归档
+        /// </summary>
+        /// <param name="articleCondition"></param>
+        /// <returns></returns>
+        IEnumerable<dynamic> SelectArticleFile(ArticleCondition articleCondition);
     }
 }

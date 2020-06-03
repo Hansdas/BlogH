@@ -48,7 +48,7 @@ namespace BlogApi.Controllers
                     new Claim("headPhoto", string.IsNullOrEmpty(user.HeadPhoto)?"":user.HeadPhoto)
                 };
                 string jwtToken = new JWT(_cacheClient).CreateToken(claims);
-                return new JsonResult(new ReturnResult() { Code = "0", Data = jwtToken });
+                return new JsonResult(new ReturnResult() { Code = "0", Data = jwtToken});
             }
             catch (ValidationException e)
             {
