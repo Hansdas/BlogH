@@ -1,9 +1,7 @@
 ﻿using Autofac;
-using Blog.Domain.Core;
 using BlogApi.Configure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -11,30 +9,19 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using NLog.Extensions.Logging;
 using NLog.Web;
-using System.Net;
-using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Blog.Common;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.SignalR;
-using Blog.Common.Socket;
+using ConfigProvider = Blog.Common.ConfigurationProvider;
 
 namespace BlogApi
 {
     public class Startup
     {
 
-        public IConfiguration Configuration
-        {
-            get
-            {
-                return Blog.Common.ConfigurationProvider.configuration;
-            }
-        }
         public void ConfigureContainer(ContainerBuilder containerBuilder)
         {
             containerBuilder.GetAutofacServiceProvider();
@@ -49,7 +36,7 @@ namespace BlogApi
             {
                 s.AddPolicy("cores", build =>
                 {
-                    IConfigurationSection section = Configuration.GetSection("Policy");
+                    IConfigurationSection section = ConfigProvider.configuration.GetSection("Policy");
                     string[] origins= section.GetSection("Origins").Value.Split(',');
                     string[] headers = section.GetSection("Headers").Value.Split(',');
                     build.WithOrigins(origins)
@@ -61,7 +48,7 @@ namespace BlogApi
 
             });
             services.AddServices();
-            services.AddInfrastructure(Configuration);
+            services.AddInfrastructure();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = "JwtBearer";
@@ -109,7 +96,7 @@ namespace BlogApi
                 FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath , "TempFile")),
                 RequestPath = ConstantKey.STATIC_FILE
             });
-            bool enableSwagger = Convert.ToBoolean(Configuration.GetSection("EnableSwagger").Value);
+            bool enableSwagger = Convert.ToBoolean(ConfigProvider.configuration.GetSection("EnableSwagger").Value);
             if (enableSwagger)//本地开发使用
             {
                 app.UseSwagger();

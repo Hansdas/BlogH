@@ -25,6 +25,7 @@ using Blog.Common;
 using Microsoft.OpenApi.Models;
 using System.Linq;
 using System;
+using ConfigProvider = Blog.Common.ConfigurationProvider;
 
 namespace BlogApi.Configure
 {
@@ -69,7 +70,7 @@ namespace BlogApi.Configure
         /// 基础配置
         /// </summary>
         /// <param name="services"></param>
-        public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static void AddInfrastructure(this IServiceCollection services)
         {
             //注册全局过滤器
             services.AddMvc(s => s.Filters.Add<GlobaExceptionFilterAttribute>());
@@ -82,12 +83,12 @@ namespace BlogApi.Configure
             //注册Redis
             services.AddSingleton(new CacheProvider("Redis"));
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
-            services.Configure<ApiSettingModel>(configuration.GetSection("webapi"));
-            services.Configure<RedisSettingModel>(configuration.GetSection("Redis"));
+            services.Configure<ApiSettingModel>(ConfigProvider.configuration.GetSection("webapi"));
+            services.Configure<RedisSettingModel>(ConfigProvider.configuration.GetSection("Redis"));
             //注册消息通讯SignalR
             services.AddSignalR();
             services.AddTransient<ISingalrContent, SingalrContent>();
-            bool enableSwagger = Convert.ToBoolean(configuration.GetSection("EnableSwagger").Value);
+            bool enableSwagger = Convert.ToBoolean(ConfigProvider.configuration.GetSection("EnableSwagger").Value);
             if (enableSwagger)//本地开发使用swagger
             {
                 services.AddSwaggerGen(c =>

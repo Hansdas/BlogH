@@ -11,7 +11,6 @@ using Blog.Domain.Core;
 using Blog.Domain.Core.Event;
 using Blog.Domain.Core.Notifications;
 using Microsoft.AspNetCore.Mvc;
-using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace BlogApi.Controllers
 {
