@@ -29,11 +29,9 @@ namespace Blog.Infrastruct
         private string Where(ArticleCondition condition, ref DynamicParameters dynamicParameters)
         {
             IList<string> sqlList = new List<string>();
-            if (!string.IsNullOrEmpty(condition.ArticleType))
+            if (condition.ArticleType.HasValue&&condition.ArticleType!=0)
             {
-                ArticleType type = Enum.Parse<ArticleType>(condition.ArticleType);
-                int value = type.GetEnumValue();
-                dynamicParameters.Add("articleType", value);
+                dynamicParameters.Add("articleType", condition.ArticleType.Value);
                 sqlList.Add("article_articletype = @articleType");
             }
             if (condition.Id.HasValue)
@@ -144,15 +142,15 @@ namespace Blog.Infrastruct
         {
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(articleCondition, ref dynamicParameters);
-            string sql = "SELECT article_id,user_username,article_title,article_content,article_articletype,article_comments,article_isdraft,article_createtime " +
-                         "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE 1=1 AND " + where;
+            string sql = "SELECT article_id,article_author,article_title,article_content,article_articletype,article_comments,article_isdraft,article_createtime " +
+                         "FROM T_Article  WHERE 1=1 AND " + where;
             dynamic d = base.SelectSingle(sql, dynamicParameters);
             IList<Comment> comments = new List<Comment>();
             if (!string.IsNullOrEmpty(d.article_comments))
                 comments = _commentRepository.SelectByIds(d.article_comments.Split(','));
             Article article = new Article(
                 d.article_title
-                , d.user_username
+                , d.article_author
                 , d.article_content
                 , (ArticleType)d.article_articletype
                 , Convert.ToBoolean(d.article_isdraft)

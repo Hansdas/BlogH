@@ -46,7 +46,7 @@ namespace BlogApi.Controllers.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult UserInfo()
+        public IActionResult loginUser()
         {
             try
             {
@@ -57,6 +57,24 @@ namespace BlogApi.Controllers.User
             catch(AuthException)
             {
                 return new JsonResult(new ReturnResult("1", "not login"));
+            }
+            catch (Exception ex)
+            {
+                return new JsonResult(new ReturnResult("1", ex.Message));
+            }
+        }
+        /// <summary>
+        /// 获取登录信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{account}")]
+        public IActionResult SelectUser(string account)
+        {
+            try
+            {
+                UserModel userModel = _userService.SelectUser(account);
+                return new JsonResult(new ReturnResult("0", userModel));
             }
             catch (Exception ex)
             {

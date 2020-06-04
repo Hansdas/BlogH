@@ -9,7 +9,7 @@ namespace Blog.Domain
         /// <summary>
         /// 精确查询
         /// </summary>
-        public string ArticleType { get; set; }
+        public int? ArticleType { get; set; }
         /// <summary>
         /// id查询
         /// </summary>

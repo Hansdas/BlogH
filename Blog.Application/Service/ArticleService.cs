@@ -19,13 +19,15 @@ namespace Blog.Application
         private IEventBus _eventBus;
         private ICommentRepository _commentRepository;
         private IUserRepository _userRepository;
+        private IUserService _userService;
         public ArticleService(IEventBus eventBus, IArticleRepository articleRepository, ICommentRepository commentRepository
-            ,IUserRepository userRepository)
+            ,IUserRepository userRepository, IUserService userService)
         {
             _eventBus = eventBus;
             _articleRepository = articleRepository;
             _commentRepository = commentRepository;
             _userRepository = userRepository;
+            _userService = userService;
         }
         private ArticleCondition ConvertCondition(ArticleConditionModel articleConditionModel)
         {
@@ -90,6 +92,8 @@ namespace Blog.Application
         public ArticleModel Select(ArticleCondition articleCondition = null)
         {
             Article article = _articleRepository.Select(articleCondition);
+            UserModel userModel= _userService.SelectUser(article.Author);
+
             ArticleModel articleModel = new ArticleModel()
             {
                 Id = article.Id,
@@ -97,7 +101,8 @@ namespace Blog.Application
                 ArticleType = article.ArticleType.GetEnumText(),
                 CreateTime = article.CreateTime.Value.ToString("yyyy/MM/dd"),
                 Content = article.Content,
-                Author = article.Author,
+                Author = userModel.Username,
+                AuthorAccount=userModel.Account,
                 IsDraft = article.IsDraft ? "是" : "否",
                 Comments = GetCommentModels(article.Comments)
             };

@@ -9,7 +9,7 @@ namespace Blog.Application.ViewModel
         /// <summary>
         /// 类型
         /// </summary>
-        public string ArticleType { get; set; }
+        public int ArticleType { get; set; }
         /// <summary>
         /// 全文索引查询
         /// </summary>

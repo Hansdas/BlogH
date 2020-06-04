@@ -95,7 +95,7 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("total")]
-        public int LoadTotal(string articleType)
+        public int LoadTotal(int articleType)
         {
             ArticleCondition condition = new ArticleCondition();
             condition.ArticleType = articleType;
@@ -160,14 +160,12 @@ namespace BlogApi
         /// <param name="articletype"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("context/{id}/{articletype}")]
-        public IActionResult SelectContext(int id, string articletype)
+        [Route("context/{id}")]
+        public IActionResult SelectContext(int id)
         {
             ReturnResult returnResult = new ReturnResult();
             ArticleCondition condition = new ArticleCondition();
             condition.IsDraft = false;
-            if (string.IsNullOrEmpty(articletype))
-                condition.ArticleType = Enum.Parse<ArticleType>(articletype).GetEnumValue().ToString();
             try
             {
                 PageInfoMode result = _articleService.SelectContext(id, condition);

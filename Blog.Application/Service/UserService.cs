@@ -39,6 +39,24 @@ namespace Blog.Application
                 ,userModel.HeadPhoto);
             return user;
         }
+        /// <summary>
+        /// 根据实体转model
+        /// </summary>
+        /// <param name="userModel"></param>
+        /// <returns></returns>
+        private UserModel TransferUser(User user)
+        {
+            UserModel userModel = new UserModel();
+            userModel.Account = user.Account;
+            userModel.BirthDate = user.BirthDate.HasValue ? user.BirthDate.Value.ToString("yyyy-MM-dd") : "";
+            userModel.Email = user.Email;
+            userModel.HeadPhoto = user.HeadPhoto;
+            userModel.Phone = user.Phone;
+            userModel.Sex = user.Sex.GetEnumText();
+            userModel.Sign = user.Sign;
+            userModel.Username = user.Username;
+            return userModel;
+        }
         public UserService(IUserRepository userRepository, IEventBus eventBus)
         {
             _userRepository = userRepository;
@@ -73,6 +91,12 @@ namespace Blog.Application
             userModel.Account = account;
             var command = new UpdateUserCommand(TransferModel(userModel), EncrypUtil.MD5Encry(oldPassword));
             _eventBus.Publish(command);
+        }
+
+        public UserModel SelectUser(string Account)
+        {
+            User user = _userRepository.SelectUserByAccount(Account);
+            return TransferUser(user);
         }
     }
 }

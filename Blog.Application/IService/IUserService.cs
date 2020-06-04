@@ -16,6 +16,12 @@ namespace Blog.Application
         /// <returns></returns>
         User SelectUser(string Account, string password);
         /// <summary>
+        /// 查询单个用户
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <returns></returns>
+        UserModel SelectUser(string Account);
+        /// <summary>
         /// 插入数据
         /// </summary>
         /// <param name="user"></param>
