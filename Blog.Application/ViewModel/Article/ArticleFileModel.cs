@@ -29,5 +29,6 @@ namespace Blog.Application.ViewModel
                 return ArticleType.GetEnumText<ArticleType>();
             }
         }
+        public string Account { get; set; }
     }
 }

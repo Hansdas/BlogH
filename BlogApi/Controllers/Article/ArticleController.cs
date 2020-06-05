@@ -344,24 +344,17 @@ namespace BlogApi
             return new JsonResult(returnResult);
         }
         /// <summary>
-        /// 获取个人归档
+        /// 根据账号获取个人归档
         /// </summary>
         /// <param name="articleId"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("file")]
-        public JsonResult SelectArticleFile()
+        [HttpGet]
+        [Route("archive/{account}")]
+        public JsonResult SelectArticleFile(string account)
         {
             ReturnResult returnResult = new ReturnResult();
-            string account = Request.Form["account"];
             try
             {
-                if(string.IsNullOrEmpty(account))
-                {
-                    string json = new JWT(_httpContext).ResolveToken();
-                    UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
-                    account = userModel.Account;
-                }
                 ArticleCondition articleCondition = new ArticleCondition();
                 articleCondition.Account = account;
                 IList<ArticleFileModel> fileModels = _articleService.SelectArticleFile(articleCondition);

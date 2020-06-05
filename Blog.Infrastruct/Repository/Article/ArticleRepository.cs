@@ -338,7 +338,7 @@ namespace Blog.Infrastruct
         {
             DynamicParameters parameters = new DynamicParameters();
             string where = Where(articleCondition, ref parameters);
-            string sql = "SELECT COUNT(*) as count,article_articletype FROM T_Article WHERE " + where + "   GROUP BY article_articletype";
+            string sql = "SELECT COUNT(*) as count,article_author,article_articletype FROM T_Article WHERE " + where + "   GROUP BY article_author,article_articletype";
             IEnumerable<dynamic> resultList = Select(sql, parameters);
             return resultList;
         }

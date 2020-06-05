@@ -32,14 +32,17 @@ namespace BlogApi.Controllers.User
         private readonly ICacheClient _cacheClient;
         private IHttpContextAccessor _httpContext;
         private ITidingsService _tidingsService;
+        private IArticleService _articleService;
         public UserController(IUserService userService, IEventHandler<NotifyValidation> notifyValidationHandler
-            , ICacheClient cacheClient, IHttpContextAccessor httpContext, ITidingsService tidingsService)
+            , ICacheClient cacheClient, IHttpContextAccessor httpContext, ITidingsService tidingsService
+            , IArticleService articleService)
         {
             _userService = userService;
             _notifyValidationHandler = (NotifyValidationHandler)notifyValidationHandler;
             _cacheClient = cacheClient;
             _httpContext = httpContext;
             _tidingsService = tidingsService;
+            _articleService = articleService;
         }
         /// <summary>
         /// 获取登录信息
@@ -54,7 +57,7 @@ namespace BlogApi.Controllers.User
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
                 return new JsonResult(new ReturnResult("0", userModel));
             }
-            catch(AuthException)
+            catch (AuthException)
             {
                 return new JsonResult(new ReturnResult("1", "not login"));
             }
@@ -110,7 +113,7 @@ namespace BlogApi.Controllers.User
                 if (Response.Headers.ContainsKey("refreshToken"))
                     Response.Headers.Remove("refreshToken");
                 Response.Headers.Add("refreshToken", jwtToken);
-                return new JsonResult(new ReturnResult() { Code = "0"});
+                return new JsonResult(new ReturnResult() { Code = "0" });
             }
             catch (Exception ex)
             {
@@ -195,13 +198,40 @@ namespace BlogApi.Controllers.User
             try
             {
                 IList<TidingsModel> tidingsModels = _tidingsService.SelectByPage(pageIndex, pageSize, tidingsCondition);
-                return new JsonResult(new ReturnResult() { Code = "0", Data=tidingsModels });
+                return new JsonResult(new ReturnResult() { Code = "0", Data = tidingsModels });
             }
             catch (Exception ex)
             {
-                return new JsonResult(new ReturnResult() { Code = "1", Message=ex.Message });
+                return new JsonResult(new ReturnResult() { Code = "1", Message = ex.Message });
             }
 
+        }
+        /// <summary>
+        /// 获取个人归档
+        /// </summary>
+        /// <param name="articleId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("article/archive")]
+        public JsonResult SelectArchive()
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                string json = new JWT(_httpContext).ResolveToken();
+                UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
+                ArticleCondition articleCondition = new ArticleCondition();
+                articleCondition.Account = userModel.Account;
+                IList<ArticleFileModel> fileModels = _articleService.SelectArticleFile(articleCondition);
+                returnResult.Data = fileModels;
+                returnResult.Code = "0";
+            }
+            catch (AuthException)
+            {
+                returnResult.Message = "not login";
+                returnResult.Code = "401";
+            }
+            return new JsonResult(returnResult);
         }
     }
 }

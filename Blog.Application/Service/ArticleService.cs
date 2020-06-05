@@ -217,6 +217,7 @@ namespace Blog.Application
                 ArticleFileModel model = new ArticleFileModel();
                 model.ArticleType = item.article_articletype;
                 model.Total = (int)item.count;
+                model.Account = item.article_author;
                 fileModels.Add(model);
             }
             return fileModels;
