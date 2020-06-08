@@ -27,7 +27,7 @@ namespace BlogCommon
                 mailServerConfig.SMTP = "smtp.qq.com";
                 mailServerConfig.Port = 465;
                 mailServerConfig.Account = "3248996258@qq.com";
-                mailServerConfig.Password = "phnibmehwablcijj";
+                mailServerConfig.Password = "xznincisbaetcjei";
                 new Mail().SendMail(mailBody, mailServerConfig).GetAwaiter().GetResult();
             }
             catch (AggregateException ex)

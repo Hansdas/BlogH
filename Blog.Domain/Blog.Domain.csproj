@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="User\EventHandler\" />
+    <Compile Remove="User\EventHandler\**" />
+    <EmbeddedResource Remove="User\EventHandler\**" />
+    <None Remove="User\EventHandler\**" />
   </ItemGroup>
 
   <ItemGroup>
