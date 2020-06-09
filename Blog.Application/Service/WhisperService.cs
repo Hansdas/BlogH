@@ -55,12 +55,12 @@ namespace Blog.Application
         {
             IList<WhisperModel> whisperModels = new List<WhisperModel>();
             foreach (var item in whispers)
-            {
+            {                                                
                 WhisperModel model = new WhisperModel();
+                model.Id = item.Id.ToString();
                 model.Account = item.Account;
                 model.AccountName = item.AccountName;
                 model.Content = item.Content;
-                model.Reply = item.CommentCount;
                 model.CreateDate = item.CreateTime.Value.ToString("yyyy-MM-dd hh:mm");
                 if (item.CommentList != null)
                 {
