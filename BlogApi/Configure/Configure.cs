@@ -26,6 +26,8 @@ using Microsoft.OpenApi.Models;
 using System.Linq;
 using System;
 using ConfigProvider = Blog.Common.ConfigurationProvider;
+using Quartz;
+using Quartz.Impl;
 
 namespace BlogApi.Configure
 {
@@ -59,6 +61,8 @@ namespace BlogApi.Configure
             services.AddTransient<ITidingsRepository, TidingsRepository>();
             services.AddTransient<ITidingsService, TidingsService>();
 
+            services.AddTransient<INewsRepository, NewsRepository>();
+
             services.AddTransient<ICacheClient, CacheClient>();
 
             services.AddTransient<ICacheInterceptor, CacheInterceptor>();
@@ -82,6 +86,7 @@ namespace BlogApi.Configure
             services.AddNotifyValidation();
             //注册Redis
             services.AddSingleton(new CacheProvider("Redis"));
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<ApiSettingModel>(ConfigProvider.configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(ConfigProvider.configuration.GetSection("Redis"));

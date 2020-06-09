@@ -15,10 +15,14 @@ namespace Blog.Dapper
         {
                 return new MySqlConnection(connStr);
         }
-        private static string connStr = ConfigurationProvider.configuration.GetSection("ConnectionStrings:MySqlConnection").Value;
+        private static string connStr = null;
         private DapperProvider()
         {
 
+        }
+        static DapperProvider()
+        {
+            connStr = ConfigurationProvider.configuration.GetSection("ConnectionStrings:MySqlConnection").Value;
         }
     }
 }

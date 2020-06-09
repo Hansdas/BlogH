@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <UserSecretsId>b6fe15d9-c7f5-465b-848a-8f29ce757461</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +29,7 @@
     <PackageReference Include="JWT" Version="5.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.0.0-rc1.19456.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
     <PackageReference Include="MySql.Data" Version="8.0.20" />
     <PackageReference Include="NLog" Version="4.6.7" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.5.4" />
@@ -38,6 +41,7 @@
     <ProjectReference Include="..\Blog.Application\Blog.Application.csproj" />
     <ProjectReference Include="..\Blog.Domain\Blog.Domain.csproj" />
     <ProjectReference Include="..\Blog.Infrastruct\Blog.Infrastruct.csproj" />
+    <ProjectReference Include="..\Blog.Quartz\Blog.Quartz.csproj" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties configs_4appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>

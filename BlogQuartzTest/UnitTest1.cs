@@ -13,7 +13,7 @@ namespace BlogQuartzTest
         {
             try
             {
-                new NewsQuartz().StartJob().GetAwaiter().GetResult();
+                //new NewsQuartz().StartJob().GetAwaiter().GetResult();
             }
             catch (AggregateException ex)
             {

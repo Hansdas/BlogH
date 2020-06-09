@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Blog.Common;
 using ConfigProvider = Blog.Common.ConfigurationProvider;
+using Blog.Quartz;
 
 namespace BlogApi
 {
@@ -29,8 +30,6 @@ namespace BlogApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddControllers();
             services.AddCors(s =>
             {
@@ -81,6 +80,7 @@ namespace BlogApi
                     },
                 };
             });
+            new QuartzApplication().StartJob().GetAwaiter().GetResult();
 
         }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
