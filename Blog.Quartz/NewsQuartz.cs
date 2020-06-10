@@ -1,5 +1,6 @@
 ﻿using Blog.Common;
 using Blog.Domain;
+using Blog.Domain.Core;
 using HtmlAgilityPack;
 using Quartz;
 using System;
@@ -20,13 +21,9 @@ namespace Blog.Quartz
         {
             _newsRepository = newsRepository;
         }
-        enum NewsOrigin
+        public NewsQuartz()
         {
-            知乎,
-            游侠咨询,
-            搜狗微信,
-            CSDN,
-            新浪新闻
+
         }
         class NewsUrlItem
         {

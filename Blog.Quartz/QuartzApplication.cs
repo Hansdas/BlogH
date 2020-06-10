@@ -13,18 +13,13 @@ namespace Blog.Quartz
         private  ISchedulerFactory _schedulerFactory;
         public QuartzApplication()
         {
-
-        }
-        public QuartzApplication(ISchedulerFactory schedulerFactory)
-        {
-           _schedulerFactory = schedulerFactory;
+            _schedulerFactory = new StdSchedulerFactory();
         }
         public async Task StartJob()
         {
-            _schedulerFactory = new StdSchedulerFactory();
             _scheduler = await _schedulerFactory.GetScheduler();
             await _scheduler.Start();
-            await CreateJon<NewsQuartz>("news","news", "0 0 1 * * ? *");
+            await CreateJon<NewsQuartz>("news","news", "0 0 1 * * ? *");//每天1点
         }
         private async Task CreateJon<T>(string name, string group, string cron) where T:IJob
         {
