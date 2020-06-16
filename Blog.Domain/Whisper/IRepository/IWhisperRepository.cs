@@ -12,6 +12,11 @@ namespace Blog.Domain
         /// </summary>
         int Insert(Whisper whisper);
         /// <summary>
+        /// 根据id查询
+        /// </summary>
+        /// <returns></returns>
+        Whisper SelectById(int id);
+        /// <summary>
         /// 分页查询微语
         /// </summary>
         /// <returns></returns>
@@ -21,5 +26,23 @@ namespace Blog.Domain
         /// </summary>
         /// <returns></returns>
         int SelectCount(WhisperCondiiton condiiton=null);
+        /// <summary>
+        /// 根据微语获取评论
+        /// </summary>
+        /// <param name="whisper"></param>
+        /// <returns></returns>
+        IList<Comment> SelectCommnetsByWhisper(int whisperId);
+        /// <summary>
+        /// 插入评论
+        /// </summary>
+        /// <param name="comment"></param>
+        /// <param name="whisperId"></param>
+        void InsertComment(Comment comment, int whisperId, IList<string> whisperCommentGuids);
+        /// <summary>
+        /// 查询评论id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        IList<string> SelectCommentIds(int id);
     }
 }

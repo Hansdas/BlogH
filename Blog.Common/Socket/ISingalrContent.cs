@@ -27,18 +27,25 @@ namespace Blog.Common.Socket
         /// <param name="key"></param>
         void Remove(string key);
         /// <summary>
-        /// 向所有客户端发送消息
+        /// 向所有客户端（用户）发送消息
         /// </summary>
         /// <param name="message"></param>
         /// <returns></returns>
         Task SendAllClientsMessage(Message message);
         /// <summary>
-        /// 向指定的客户端发送消息
+        /// 向指定的部分客户端（用户）发送消息
         /// </summary>
         /// <param name="connectionIds"></param>
         /// <param name="message"></param>
         /// <returns></returns>
         Task SendSomeClientsMessage(IReadOnlyList<string> connectionIds, Message message);
+        /// <summary>
+        /// 向指定的客户端（用户）发送消息
+        /// </summary>
+        /// <param name="connectionIds"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        Task SendClientMessage(string connection, Message message);
     }
 
     public class SingalrContent:ISingalrContent
@@ -73,13 +80,21 @@ namespace Blog.Common.Socket
         #region 向客户端发送消息
         public  async Task SendAllClientsMessage(Message message)
         {
-            await _hubContext.Clients.All.InvokeMessage(message);
+            await _hubContext.Clients.All.SendAllClientsMessage(message);
         }
         public async Task SendSomeClientsMessage(IReadOnlyList<string> connectionIds, Message message)
         {
             if (connectionIds == null || connectionIds.Count == 0)
                 throw new ServiceException("指定的客户端连接为空");
-            await _hubContext.Clients.Clients(connectionIds).InvokeMessage(message);
+            await _hubContext.Clients.Clients(connectionIds).SendSomeClientsMessage(message);
+        }
+
+        public async Task SendClientMessage(string connection, Message message)
+        {
+            if (string.IsNullOrEmpty(connection))
+                throw new ArgumentNullException("指定的客户端连接为空");
+            IReadOnlyList<string> connectionsByUser = (IReadOnlyList<string>)GetConnectionIds(connection);
+            await _hubContext.Clients.Clients(connectionsByUser).SendClientMessage(message);
         }
         #endregion
     }

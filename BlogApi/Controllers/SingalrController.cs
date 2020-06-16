@@ -37,7 +37,7 @@ namespace BlogApi.Controllers
             int count=  _tidingsService.SelectCountByAccount(account);
             Message sendMessage = new Message();
             sendMessage.Data = count;
-            await _hubContext.Clients.Clients(connectionIds).InvokeSomeConnectionMessage(sendMessage);
+            await _hubContext.Clients.Clients(connectionIds).SendClientMessage(sendMessage);
         }
     }
 }

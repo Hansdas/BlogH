@@ -216,9 +216,7 @@ namespace Blog.Infrastruct
                 "SET article_comments = @Comments" +
                 " WHERE article_id =@Id";
             DbConnection.Execute(sql, parameters);
-            string insert = "INSERT INTO T_Comment(comment_guid,comment_content,comment_postuser,comment_replyguid,comment_postdate)" +
-                " VALUES (@Guid,@Content,@PostUser,@ReplyGuid,NOW())";
-            DbConnection.Execute(insert, comment);//最后一条数据为最新评论
+            _commentRepository.Insert(comment);
         }
 
         public IList<string> SelectCommentIds(int id)

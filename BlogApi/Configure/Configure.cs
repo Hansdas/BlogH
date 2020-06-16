@@ -55,6 +55,8 @@ namespace BlogApi.Configure
             services.AddTransient<IWhisperRepository, WhisperRepository>();
             services.AddTransient<IWhisperService, WhisperService>();
             services.AddEventBus<ICommandHandler<CreateWhisperCommand>, CreateWhisperCommand>();
+            services.AddEventBus<ICommandHandler<WhisperCommentCommand>, WhisperCommentCommand>();
+            services.AddEventBus<IEventHandler<ReviewWhiperEvent>, ReviewWhiperEvent>();
             services.AddTransient<ICommentRepository, CommentRepository>();
 
 

@@ -4,8 +4,13 @@ using System.Text;
 
 namespace Blog.Domain
 {
-  public  interface ICommentRepository: IRepository<Article, int>
+    public interface ICommentRepository : IRepository<Article, int>
     {
+        /// <summary>
+        /// 插入
+        /// </summary>
+        /// <param name="comment"></param>
+        void Insert(Comment comment);
         /// <summary>
         /// 查询评论
         /// </summary>

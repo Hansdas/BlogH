@@ -3,6 +3,7 @@ using Blog.Common;
 using Blog.Common.CacheFactory;
 using Blog.Common.Json;
 using Blog.Domain;
+using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;
 using Newtonsoft.Json;
 using System;
@@ -64,22 +65,29 @@ namespace Blog.Application
                 model.CreateDate = item.CreateTime.Value.ToString("yyyy-MM-dd hh:mm");
                 if (item.CommentList != null)
                 {
-                    IEnumerable<CommentDataModel> commentDataModels = from comment in item.CommentList
-                                                                      select GetCommentDataModel(comment);
-                    model.Commentdatas = commentDataModels.ToList();
+                    IEnumerable<CommentModel> commentDataModels = CommentModel.ConvertToCommentModels(item.CommentList);
+                    model.Commentdatas = commentDataModels.ToList() ;
                 }
                 whisperModels.Add(model);
             }
             return whisperModels;
         }
-        private CommentDataModel GetCommentDataModel(Comment comment)
+        public IList<CommentModel> SelectCommnetsByWhisper(int whisperId)
         {
-            CommentDataModel commentDataModel = new CommentDataModel();
-            commentDataModel.CommentContent = comment.Content;
-            commentDataModel.CommentUser = comment.PostUser;
-            commentDataModel.UserPhotoPath = "";
-            commentDataModel.CommentDate = "";
-            return commentDataModel;
+            IList<Comment> comments = _whisperRepository.SelectCommnetsByWhisper(whisperId);
+            return CommentModel.ConvertToCommentModels(comments);
+        }
+        public void Review(CommentModel commentModel, int whisperId)
+        {
+            string guid = Guid.NewGuid().ToString();
+            Comment comment = new Comment(guid,
+                commentModel.Content,
+                Enum.Parse<CommentType>(commentModel.CommentType.ToString()),
+                commentModel.PostUser,
+                commentModel.Revicer,
+                commentModel.AdditionalData);
+            WhisperCommentCommand command = new WhisperCommentCommand(comment,whisperId);
+            _eventBus.Publish(command);
         }
     }
 }

@@ -15,17 +15,24 @@ namespace Blog.Common
     public interface ISingalrClient
     {
         /// <summary>
-        /// 发送到指定客户端
+        ///  向指定的部分客户端（用户）发送消息
         /// </summary>
         /// <param name="sendMessage"></param>
         /// <returns></returns>
-        Task InvokeSomeConnectionMessage(Message sendMessage);
+        Task SendSomeClientsMessage(Message sendMessage);
         /// <summary>
         /// 发送所有客户端
         /// </summary>
         /// <param name="sendMessage"></param>
         /// <returns></returns>
-        Task InvokeMessage(Message sendMessage);
+        Task SendAllClientsMessage(Message sendMessage);
+        /// <summary>
+        /// 向指定的客户端（用户）发送消息
+        /// </summary>
+        /// <param name="connectionIds"></param>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        Task SendClientMessage(Message message);
     }
     public class SingalrClient : Hub<ISingalrClient>
     {

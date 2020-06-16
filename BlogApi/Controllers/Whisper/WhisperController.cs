@@ -10,6 +10,8 @@ using Blog.Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Ubiety.Dns.Core;
 
 namespace BlogApi.Controllers
 {
@@ -79,7 +81,7 @@ namespace BlogApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("square")]
-        public async Task<JsonResult> LoadSquareWhisper(int pageIndex, int top)
+        public async  Task<JsonResult> LoadSquareWhisper(int pageIndex, int top)
         {
             ReturnResult returnResult = new ReturnResult();
             try
@@ -105,6 +107,67 @@ namespace BlogApi.Controllers
         {
             int total = _whisperRepository.SelectCount();
             return total;
+        }
+        /// <summary>
+        /// 获取微语评论
+        /// </summary>
+        /// <param name="whisperId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{whisperId}/comments")]
+        public JsonResult LoadComments(int whisperId)
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                returnResult.Data = _whisperService.SelectCommnetsByWhisper(whisperId);
+                returnResult.Code = "0";
+            }
+            catch (Exception e)
+            {
+                returnResult.Code = "1";
+                returnResult.Message = e.Message;
+            }
+            return new JsonResult(returnResult);
+        }
+        /// <summary>
+        /// 评论微语
+        /// </summary>
+        /// <param name="whisperId"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("comment/add")]
+        public JsonResult AddComment()
+        {
+            string content = Request.Form["content"];
+            int whisperId =Convert.ToInt32(Request.Form["whisperId"]);
+            string revicer = Request.Form["revicer"];
+            string replyId = Request.Form["replyId"];
+            int commentType = Convert.ToInt32(Request.Form["commentType"]);
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                CommentModel commentModel = new CommentModel();
+                commentModel.Content = content;
+                commentModel.AdditionalData = replyId;
+                commentModel.PostUser = Auth.GetLoginUser(_httpContext).Account;
+                commentModel.Revicer = revicer;
+                commentModel.CommentType = commentType;
+                _whisperService.Review(commentModel, whisperId);
+                returnResult.Code = "0";
+            }
+            catch (AuthException)
+            {
+                returnResult.Code = "401";
+                returnResult.Data ="auth fail";
+            }
+            catch (Exception e)
+            {
+                returnResult.Code = "1";
+                returnResult.Data = e.Message;
+            }
+
+            return new JsonResult(returnResult);
         }
     }
 }

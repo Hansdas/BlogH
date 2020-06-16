@@ -72,7 +72,7 @@ namespace Blog.Domain
             {
                 if (string.IsNullOrEmpty(CommentGuids))
                     return 0;
-                return CommentList.Count;
+                return CommentGuids.Split(",").Length;
             }
         }
         /// <summary>
@@ -92,7 +92,7 @@ namespace Blog.Domain
         /// <returns></returns>
         public static IList<string> GetCommentGuidList(Whisper whisper)
         {
-            if (whisper.CommentGuids == null)
+            if (whisper.CommentGuids == null||String.IsNullOrEmpty(whisper.CommentGuids))
                 return new List<string>();
             return whisper.CommentList.Select(s => s.Guid).ToList();
         }

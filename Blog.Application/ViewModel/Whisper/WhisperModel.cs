@@ -29,32 +29,10 @@ namespace Blog.Application.ViewModel
         /// <summary>
         /// 评论集合
         /// </summary>
-        public IList<CommentDataModel> Commentdatas { get; set; }
+        public IList<CommentModel> Commentdatas { get; set; }
         public int CommentCount
         {
             get { return Commentdatas==null?0:Commentdatas.Count; }
         }
-    }
-    /// <summary>
-    /// 评论模型DTO
-    /// </summary>
-    public class CommentDataModel
-    {
-        /// <summary>
-        /// 头像路径
-        /// </summary>
-      public string UserPhotoPath { get; set; }
-        /// <summary>
-        /// 评论内容
-        /// </summary>
-      public string CommentContent { get; set; }
-        /// <summary>
-        /// 评论者
-        /// </summary>
-        public string CommentUser { get; set; }
-        /// <summary>
-        /// 评论时间
-        /// </summary>
-        public string CommentDate { get; set; }
     }
 }

@@ -3,33 +3,71 @@ using Dapper;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using Blog.Domain.Core;
 
 namespace Blog.Infrastruct
 {
     public class CommentRepository : Repository<Comment, int>, ICommentRepository
     {
-        public Comment Map(dynamic d)
+        private IUserRepository _userRepository;
+        public CommentRepository(IUserRepository userRepository)
         {
-            return new Comment(d.comment_guid,d.comment_content, d.comment_postuser, d.user_username,d.comment_postdate);
+            _userRepository = userRepository;
+        }
+        private Comment Map(dynamic d, Dictionary<string, string> accountAndName=null)
+        {
+            if(accountAndName == null)
+            {
+                List<string> accounts = new List<string>();
+                accounts.Add(d.comment_postuser);
+                accounts.Add(d.comment_revicer);
+                accountAndName = _userRepository.SelectNameWithAccountDic(accounts.Distinct());
+            }
+            string postUsername = accountAndName[d.comment_postuser];
+            string revicerUsername = accountAndName[d.comment_revicer];
+            return new Comment(
+                d.comment_guid,
+                d.comment_content,
+                (CommentType)d.comment_type,
+                d.comment_postuser,
+                postUsername, 
+                d.comment_revicer,
+                revicerUsername,
+                d.comment_additional,
+                d.comment_postdate);
         }
 
         public IList<Comment> Map(IEnumerable<dynamic> dynamics)
         {
             IList<Comment> comments = new List<Comment>();
+            List<string> accounts = new List<string>();
             foreach (var item in dynamics)
             {
-                Comment comment = Map(item);
+                accounts.Add(item.comment_postuser);
+                accounts.Add(item.comment_revicer);
+            }
+           Dictionary<string,string> pairs =_userRepository.SelectNameWithAccountDic(accounts.Distinct());
+            foreach (var item in dynamics)
+            {
+                Comment comment = Map(item, pairs);
                 comments.Add(comment);
             }
             return comments;
         }
 
+        public void Insert(Comment comment)
+        {
+            string insert = "INSERT INTO T_Comment(comment_guid,comment_content,comment_type,comment_postuser,comment_revicer,comment_additional,comment_postdate)" +
+               " VALUES (@Guid,@Content,@CommentType,@PostUser,@RevicerUser,@AdditioanlData,NOW())";
+            DbConnection.Execute(insert, comment);
+        }
         public Comment SelectById(string guid)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("guid", guid);
-            string sql = "SELECT comment_guid,comment_content,comment_postuser,user_username,comment_postdate " +
-                "FROM T_Comment INNER JOIN T_User ON comment_postuser=user_account WHERE comment_guid =@guid";
+            string sql = "SELECT comment_guid,comment_content,comment_type,comment_postuser,comment_revicer,comment_additional,comment_postdate " +
+                "FROM T_Comment WHERE comment_guid =@guid";
             dynamic d = SelectSingle(sql, parameters);
             return Map(d);
         }
@@ -39,8 +77,8 @@ namespace Blog.Infrastruct
             IList<Comment> comments = new List<Comment>();
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Guids", guids);
-            string sql = "SELECT comment_guid,comment_content,comment_postuser,user_username,comment_postdate " +
-                "FROM T_Comment INNER JOIN T_User ON comment_postuser=user_account WHERE comment_guid in @Guids ORDER BY comment_postdate DESC";
+            string sql = "SELECT comment_guid,comment_content,comment_type,comment_postuser,comment_revicer,comment_additional,comment_postdate " +
+                "FROM T_Comment  WHERE comment_guid in @Guids ORDER BY comment_postdate DESC";
             IEnumerable<dynamic> dynamics = Select(sql, parameters);
             foreach (var d in dynamics)
             {

@@ -43,15 +43,21 @@ namespace Blog.Domain
         {
             if (command.Comment != null)
             {
-                Comment comment = new Comment(command.Comment.Guid, command.Comment.Content, command.Comment.PostUser, command.Comment.ReplyGuid);
+                Comment comment = new Comment(command.Comment.Guid, 
+                    command.Comment.Content,
+                    command.Comment.CommentType,
+                    command.Comment.PostUser,
+                    command.Comment.RevicerUser, 
+                    command.Comment.AdditionalData);
 
                 IList<string> commentIds = _articleRepository.SelectCommentIds(command.Id);
                 commentIds.Add(comment.Guid);
                 _articleRepository.Review(commentIds,comment, command.Id);
-
+                Task.Run(() => {
+                    ReviewEvent reviewEvent = new ReviewEvent(comment, command.Id);
+                    _eventBus.RaiseEvent(reviewEvent);
+                });
                 //消息
-                ReviewEvent reviewEvent = new ReviewEvent(comment,command.Id);
-                _eventBus.RaiseEvent(reviewEvent);
               
             }
             else

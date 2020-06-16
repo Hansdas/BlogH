@@ -69,6 +69,10 @@ namespace Blog.Common.CacheFactory
         /// <returns></returns>
         Task<long> AddListTail(string key, string value);
         /// <summary>
+        /// 指定位置插入值
+        /// </summary>
+        Task ListInsert<T>(string key, int index, T t);
+        /// <summary>
         /// 获取集合长度
         /// </summary>
         /// <param name="key"></param>

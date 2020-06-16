@@ -93,7 +93,7 @@ namespace Blog.Common.CacheFactory
         public async Task<long> AddListTail<T>(string key, T t)
         {
             if (t == null)
-                throw new ServiceException("对象t为null");
+                throw new ArgumentException("对象t为null");
             string value = JsonHelper.Serialize(t);
             return await AddListTail(key, value);
         }
@@ -101,6 +101,13 @@ namespace Blog.Common.CacheFactory
         public async Task<long> AddListTail(string key, string value)
         {
             return await CacheProvider.database.ListRightPushAsync(key, value);
+        }
+        public async Task ListInsert<T>(string key, int index, T t)
+        {
+            if (t == null)
+                throw new ArgumentException("对象t为null");
+            string value = JsonHelper.Serialize(t);
+             await  CacheProvider.database.ListSetByIndexAsync(key, index, value);
         }
         public async Task<long> ListLenght(string key)
         {
@@ -122,6 +129,7 @@ namespace Blog.Common.CacheFactory
             }
             return list;
         }
+
         #endregion
     }
 }

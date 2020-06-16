@@ -10,25 +10,39 @@ namespace Blog.Domain
     /// </summary>
     public class Comment : ValueObject
     {
-        public Comment(string guid,string content, string postUser,string replyGuid)
+        public Comment()
+        {
+
+        }
+        public Comment(string guid,string content, CommentType commentType, string postUser, string revicer,string additioanlDate)
         {
             Guid = guid;
             Content = content;
             PostUser = postUser;
-            ReplyGuid = replyGuid;
+            AdditionalData = additioanlDate;
+            RevicerUser = revicer;
+            CommentType = commentType;
         }
-        public Comment(string guid, string content,  string postUser, string postUsername, DateTime postDate)
+        public Comment(string guid, string content, CommentType commentType, string postUser, string postUsername, string revicer,string revicerUsername, string additioanlDate, DateTime postDate)
         {
             Guid = guid;
             Content = content;
             PostUser = postUser;
             PostUsername = postUsername;
             PostDate = postDate;
+            AdditionalData = additioanlDate;
+            RevicerUser = revicer;
+            RevicerUsername = revicerUsername;
+            CommentType = commentType;
         }
         /// <summary>
         /// guid(数据持久化，存入实体表)
         /// </summary>
         public string Guid { get; private set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public CommentType CommentType { get; private set; }
         /// <summary>
         /// 评论内容
         /// </summary>
@@ -42,9 +56,17 @@ namespace Blog.Domain
         /// </summary>
         public string PostUsername { get; private set; }
         /// <summary>
-        /// 被评论的id
+        /// 附加数据
         /// </summary>
-        public string ReplyGuid { get;private set; }
+        public string AdditionalData { get;private set; }
+        /// <summary>
+        /// 评论接收人
+        /// </summary>
+        public string RevicerUser { get; private set; }
+        /// <summary>
+        ///  评论接收人昵称（不存库）
+        /// </summary>
+        public string RevicerUsername { get; private set; }
         /// <summary>
         /// 评论时间
         /// </summary>
