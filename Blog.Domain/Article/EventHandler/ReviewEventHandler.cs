@@ -1,4 +1,5 @@
-﻿using Blog.Domain.Core;
+﻿using Blog.Common.Socket;
+using Blog.Domain.Core;
 using Blog.Domain.Core.Event;
 using Blog.Domain.Core.Notifications;
 using System;
@@ -15,11 +16,14 @@ namespace Blog.Domain
         private ICommentRepository _commentRepository;
         private ITidingsRepository  _tidingsRepository;
         private IArticleRepository _articleRepository;
-        public ReviewEventHandler(ICommentRepository commentRepository, ITidingsRepository tidingsRepository, IArticleRepository articleRepository)
+        private ISingalrContent _singalrContent;
+        public ReviewEventHandler(ICommentRepository commentRepository, ITidingsRepository tidingsRepository, IArticleRepository articleRepository
+            , ISingalrContent singalrContent)
         {
             _commentRepository = commentRepository;
             _tidingsRepository = tidingsRepository;
             _articleRepository = articleRepository;
+            _singalrContent = singalrContent;
         }
         /// <summary>
         /// 触发评论事件
@@ -37,11 +41,14 @@ namespace Blog.Domain
             else//回复评论 
             {
                 Comment comment = _commentRepository.SelectById(reviewEvent.Comment.AdditionalData);//被评论的数据;
-                tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content.Substring(0, 200)
-                    , comment.PostUser, false, url, comment.Content.Substring(0,200),DateTime.Now);
-            }
-           
+                tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content
+                    , comment.PostUser, false, url, comment.Content,DateTime.Now);
+            }           
             _tidingsRepository.Insert(tidings);
+            int count = _tidingsRepository.SelectCountByAccount(reviewEvent.Comment.RevicerUser);
+            Message message = new Message();
+            message.Data = count;
+            _singalrContent.SendClientMessage(reviewEvent.Comment.RevicerUser, message);
         }
     }
 }

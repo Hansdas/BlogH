@@ -146,7 +146,7 @@ namespace Blog.Application
         public void Review(CommentModel commentModel, int id)
         {
             string guid = Guid.NewGuid().ToString();           
-            Comment comment = new Comment(guid, commentModel.Content,CommentType.文章,commentModel.PostUser,commentModel.Revicer, commentModel.AdditionalData);
+            Comment comment = new Comment(guid, commentModel.Content, Enum.Parse<CommentType>(commentModel.CommentType.ToString()),commentModel.PostUser,commentModel.Revicer, commentModel.AdditionalData);
             UpdateArticleCommand command = new UpdateArticleCommand(comment, id);
             _eventBus.Publish(command);
         }

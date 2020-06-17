@@ -29,12 +29,13 @@ namespace Blog.Domain
             CreateTime = createTime;
             IsPassing = isPassing;
         }
-        public Whisper(int id, string account,string accountName, string content, bool isPassing, IList<Comment> commentList, DateTime createTime)
+        public Whisper(int id, string account,string accountName, string content, bool isPassing, string commentGuids, IList<Comment> commentList, DateTime createTime)
         {
             Id = id;
             Account = account;
             AccountName = accountName;
             Content = content;
+            CommentGuids = commentGuids;
             CommentList = commentList;
             CreateTime = createTime;
             IsPassing = isPassing;
@@ -94,7 +95,7 @@ namespace Blog.Domain
         {
             if (whisper.CommentGuids == null||String.IsNullOrEmpty(whisper.CommentGuids))
                 return new List<string>();
-            return whisper.CommentList.Select(s => s.Guid).ToList();
+            return whisper.CommentGuids.Split(',');
         }
         /// <summary>
         /// 对评论guids赋值

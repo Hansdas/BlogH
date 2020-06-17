@@ -210,16 +210,38 @@ namespace BlogApi
         /// <param name="articleId"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("review/{articleId}")]
-        public  JsonResult Review([FromBody]CommentModel commentModel,int articleId)
+        [Route("comment/add")]
+        public  JsonResult Review()
         {
-            UserModel userModel = Auth.GetLoginUser(_httpContext);
-            commentModel.PostUser = userModel.Account;
-            _articleService.Review(commentModel, articleId);
-            commentModel.PostUsername = userModel.Username;
-            commentModel.PostDate = DateTime.Now.ToString("yyyy-MM-dd hh:mm");
-            commentModel.Guid = "";
-            return new JsonResult(new ReturnResult("0", commentModel));
+            string content = Request.Form["content"];
+            int articleId = Convert.ToInt32(Request.Form["articleId"]);
+            string revicer = Request.Form["revicer"];
+            string replyId = Request.Form["replyId"];
+            int commentType = Convert.ToInt32(Request.Form["commentType"]);
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                CommentModel commentModel = new CommentModel();
+                commentModel.Content = content;
+                commentModel.AdditionalData = replyId;
+                commentModel.PostUser = Auth.GetLoginUser(_httpContext).Account;
+                commentModel.Revicer = revicer;
+                commentModel.CommentType = commentType;
+                _articleService.Review(commentModel, articleId);
+                returnResult.Code = "0";
+            }
+            catch (AuthException)
+            {
+                returnResult.Code = "401";
+                returnResult.Data = "auth fail";
+            }
+            catch (Exception e)
+            {
+                returnResult.Code = "1";
+                returnResult.Data = e.Message;
+            }
+
+            return new JsonResult(returnResult);
         }
         /// <summary>
         /// 点赞

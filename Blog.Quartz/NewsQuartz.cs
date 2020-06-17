@@ -57,55 +57,63 @@ namespace Blog.Quartz
                 HtmlDocument document = new HtmlDocument();
                 HtmlNode node = null;
                 News news = null;
-                switch (item.NewsOrigin)
+                try
                 {
-                    case NewsOrigin.知乎:
-                        document.LoadHtml(html);
-                        node = document.DocumentNode.SelectNodes("//a[@class='link-button']")[0];
-                        news = new News(
-                         node.InnerText,
-                          item.HttpUrl + node.GetAttributeValue("href", ""),
-                          item.NewsOrigin.GetEnumText(),
-                          item.HttpUrl
-                         );                     
-                        break;
-                    case NewsOrigin.游侠咨询:
-                        node = document.DocumentNode.SelectNodes("//h2[@class='lone_t']/a")[0];
-                        news = new News(
-                        node.InnerText,
-                         node.GetAttributeValue("href", ""),
-                         item.NewsOrigin.GetEnumText(),
-                         item.HttpUrl
-                        ); ;
-                        break;
-                    case NewsOrigin.搜狗微信:
-                        node = document.DocumentNode.SelectNodes("//div[@class='txt-box']/h3/a")[0];
-                        news = new News(
-                         node.InnerText,
-                          node.GetAttributeValue("href", ""),
-                          item.NewsOrigin.GetEnumText(),
-                          item.HttpUrl
-                         ); ;
-                        break;
-                    case NewsOrigin.CSDN:
-                        string href = document.DocumentNode.SelectNodes("//div[@class='carousel-inner']/div/a")[0].GetAttributeValue("href", "");
-                        string title = document.DocumentNode.SelectNodes("//div[@class='carousel-inner']/div/a/div")[0].InnerText;
-                        news = new News(
-                        title,
-                        href,
-                         item.NewsOrigin.GetEnumText(),
-                         item.HttpUrl
-                        ); ;
-                        break;
-                    case NewsOrigin.新浪新闻:
-                        node = document.DocumentNode.SelectNodes("//div[@class='blk122']/a")[0];
-                        //News news = new News(
-                        // title,
-                        // href,
-                        //  item.NewsOrigin.GetEnumText(),
-                        //  item.HttpUrl
-                        // ); ;
-                        break;
+                    switch (item.NewsOrigin)
+                    {
+                        case NewsOrigin.知乎:
+                            document.LoadHtml(html);
+                            node = document.DocumentNode.SelectNodes("//a[@class='link-button']")[0];
+                            news = new News(
+                             node.InnerText,
+                              item.HttpUrl + node.GetAttributeValue("href", ""),
+                              item.NewsOrigin.GetEnumText(),
+                              item.HttpUrl
+                             );
+                            break;
+                        case NewsOrigin.游侠咨询:
+                            node = document.DocumentNode.SelectNodes("//h2[@class='lone_t']/a")[0];
+                            news = new News(
+                            node.InnerText,
+                             node.GetAttributeValue("href", ""),
+                             item.NewsOrigin.GetEnumText(),
+                             item.HttpUrl
+                            ); ;
+                            break;
+                        case NewsOrigin.搜狗微信:
+                            node = document.DocumentNode.SelectNodes("//div[@class='txt-box']/h3/a")[0];
+                            news = new News(
+                             node.InnerText,
+                              node.GetAttributeValue("href", ""),
+                              item.NewsOrigin.GetEnumText(),
+                              item.HttpUrl
+                             ); ;
+                            break;
+                        case NewsOrigin.CSDN:
+                            string href = document.DocumentNode.SelectNodes("//div[@class='carousel-inner']/div/a")[0].GetAttributeValue("href", "");
+                            string title = document.DocumentNode.SelectNodes("//div[@class='carousel-inner']/div/a/div")[0].InnerText;
+                            news = new News(
+                            title,
+                            href,
+                             item.NewsOrigin.GetEnumText(),
+                             item.HttpUrl
+                            ); ;
+                            break;
+                        case NewsOrigin.新浪新闻:
+                            node = document.DocumentNode.SelectNodes("//div[@class='blk122']/a")[0];
+                            //News news = new News(
+                            // title,
+                            // href,
+                            //  item.NewsOrigin.GetEnumText(),
+                            //  item.HttpUrl
+                            // ); ;
+                            break;
+                    }
+                }
+                catch (Exception)
+                {
+
+                    continue;
                 }
                 newsList.Add(news);
             }

@@ -67,6 +67,7 @@ namespace Blog.Infrastruct
               , whisper.AccountName
               , whisper.Content
               , whisper.IsPassing
+              , (string)d.whisper_commentguids
               , comments
               , whisper.CreateTime.Value);
             return whisper1;
@@ -113,6 +114,7 @@ namespace Blog.Infrastruct
                 ,item.AccountName
                 , item.Content
                 , item.IsPassing
+                , item.CommentGuids
                 , comments.Where(s => item.CommentGuids.Contains(s.Guid)).ToList()
                 , item.CreateTime.Value);
                 list.Add(whisper);

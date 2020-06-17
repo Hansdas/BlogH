@@ -17,14 +17,16 @@ namespace Blog.Application
     public class WhisperService : IWhisperService
     {
         private  IWhisperRepository _whisperRepository;
+        private ICommentRepository _commentRepository;
         private IEventBus _eventBus;
         private ICacheClient _cacheClient;
         public WhisperService(IWhisperRepository whisperRepository, IEventBus eventBus
-            , ICacheClient cacheClient)
+            , ICacheClient cacheClient,ICommentRepository commentRepository)
         {
             _whisperRepository = whisperRepository;
             _eventBus = eventBus;
             _cacheClient = cacheClient;
+            _commentRepository = commentRepository;
         }
         public void Insert(Whisper whisper)
         {

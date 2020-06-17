@@ -90,6 +90,11 @@ namespace BlogApi.Controllers
                 returnResult.Code = "0";
                 returnResult.Data = whisperModels;
             }
+            catch(AggregateException ex)
+            {
+                returnResult.Code = "1";
+                returnResult.Data = ex.Message;
+            }
             catch (Exception e)
             {
                 returnResult.Code = "1";

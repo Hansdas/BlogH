@@ -48,7 +48,7 @@ namespace Blog.Domain
             else//回复评论 
             {
                 Comment comment = _commentRepository.SelectById(reviewEvent.Comment.AdditionalData);//被评论的数据;
-                tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content.Substring(0, 200)
+                tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content
                     , comment.PostUser, false, url, comment.Content, DateTime.Now);
             }
             _tidingsRepository.Insert(tidings);
@@ -69,16 +69,21 @@ namespace Blog.Domain
                  whispers[i].AccountName,
                  whispers[i].Content,
                  whispers[i].IsPassing,
+                 string.Join(",", comments.Select(s => s.Guid)),
                  comments,
                  Convert.ToDateTime(whispers[i].CreateDate));
+                whispers[i] = cacheWhisper;
             }
             if (cacheWhisper == null)
                 return;
             _cacheClient.ListInsert(ConstantKey.CACHE_SQUARE_WHISPER, index, cacheWhisper);
             int count = _tidingsRepository.SelectCountByAccount(reviewEvent.Comment.RevicerUser);
             Message message = new Message();
-            message.Data = whispers;
+            message.Data = count;
             _singalrContent.SendClientMessage(reviewEvent.Comment.RevicerUser,message);
+            //首页微语
+            message.Data = whispers;
+            _singalrContent.SendAllClientsMessage(message);
         }
     }
 }
