@@ -14,9 +14,7 @@ namespace Blog.Infrastruct
     /// <summary>
     /// 仓储接口实现基类
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="U"></typeparam>
-    public class Repository<T, U> : IRepository<T, U>
+    public class Repository : IRepository
     {
         public IDbConnection DbConnection => DapperProvider.connection();
         /// <summary>

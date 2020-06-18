@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Blog.Domain
 {
-  public  interface IUserRepository : IRepository<User,int>
+  public  interface IUserRepository : IRepository
     {
         /// <summary>
         /// 根据账号查询

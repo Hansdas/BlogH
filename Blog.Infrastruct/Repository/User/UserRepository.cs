@@ -10,7 +10,7 @@ using Blog.AOP;
 
 namespace Blog.Infrastruct
 {
-    public class UserRepository : Repository<User, int>, IUserRepository
+    public class UserRepository : Repository, IUserRepository
     {
         private static User Map(dynamic result)
         {

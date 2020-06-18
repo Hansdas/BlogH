@@ -13,7 +13,7 @@ using Blog.AOP;
 
 namespace Blog.Infrastruct
 {
-    public class WhisperRepository : Repository<Whisper, int>, IWhisperRepository, IInterceptorHandler
+    public class WhisperRepository : Repository, IWhisperRepository, IInterceptorHandler
     {
         private readonly ICommentRepository _commentRepository;
         public WhisperRepository(ICommentRepository commentRepository)

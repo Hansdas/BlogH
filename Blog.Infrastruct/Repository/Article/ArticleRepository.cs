@@ -13,7 +13,7 @@ using Blog.Common;
 
 namespace Blog.Infrastruct
 {
-    public class ArticleRepository : Repository<Article, int>, IArticleRepository, IInterceptorHandler
+    public class ArticleRepository : Repository, IArticleRepository, IInterceptorHandler
     {
         private ICommentRepository _commentRepository;
         public ArticleRepository(ICommentRepository commentRepository)
@@ -113,8 +113,8 @@ namespace Blog.Infrastruct
             dynamicParameters.Add("pageId", pageId, DbType.Int32);
             dynamicParameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condition, ref dynamicParameters);
-            string sql = "SELECT article_id,user_username,article_title,article_textsection,article_articletype,article_isdraft,article_praisecount,article_browsercount,article_comments,article_createtime " +
-                  "FROM T_Article INNER JOIN T_User ON user_account=article_author WHERE " + where +
+            string sql = "SELECT article_id,article_author,article_title,article_textsection,article_articletype,article_isdraft,article_praisecount,article_browsercount,article_comments,article_createtime " +
+                  "FROM T_Article  WHERE " + where +
                   " ORDER BY article_createtime DESC LIMIT @pageId,@pageSize";
 
             IEnumerable<dynamic> dynamics = Select(sql, dynamicParameters);
@@ -125,7 +125,7 @@ namespace Blog.Infrastruct
                 Article article = new Article(
                   d.article_id
                 , d.article_title
-                , d.user_username
+                , d.article_author
                 , d.article_textsection
                 , (ArticleType)d.article_articletype
                 , Convert.ToBoolean(d.article_isdraft)

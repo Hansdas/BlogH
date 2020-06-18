@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Blog.Infrastruct
 {
-   public class NewsRepository: Repository<News,int>, INewsRepository
+   public class NewsRepository: Repository, INewsRepository
     {
         public void InsertOrUpdate(IList<News> newsList)
         {

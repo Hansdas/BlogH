@@ -64,6 +64,7 @@ namespace Blog.Application
         {
             ArticleCondition condition=ConvertCondition(articleConditionModel);
             IEnumerable<Article> articles = _articleRepository.SelectByPage(articleConditionModel.PageSize, articleConditionModel.PageIndex, condition);
+            Dictionary<string, string> userNames = _userRepository.SelectNameWithAccountDic(articles.Select(s=>s.Author));
             IList<ArticleModel> articleModels = new List<ArticleModel>();
             foreach (var item in articles)
             {
@@ -72,7 +73,8 @@ namespace Blog.Application
                 articleModel.ArticleType = item.ArticleType.GetEnumText();
                 articleModel.TextSection = item.TextSection.Trim();
                 articleModel.Title = item.Title;
-                articleModel.Author = item.Author;
+                articleModel.AuthorAccount = item.Author;
+                articleModel.Author = userNames[item.Author];
                 articleModel.CreateTime = item.CreateTime.Value.ToString("yyyy-MM-dd hh:mm");
                 articleModel.IsDraft = item.IsDraft ? "是" : "否";
                 articleModel.PraiseCount = item.PraiseCount;

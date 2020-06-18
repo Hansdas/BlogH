@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 
 namespace Blog.Domain
 {
-    public interface IArticleRepository : IRepository<Article, int>
+    public interface IArticleRepository : IRepository
     {
         void Insert(Article article);
         int SelectCount(ArticleCondition condition = null);

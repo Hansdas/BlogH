@@ -9,9 +9,7 @@ namespace Blog.Domain
     /// <summary>
     /// 仓储接口
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="U"></typeparam>
-   public  interface IRepository<T,U>
+   public  interface IRepository
     {
         /// <summary>
         /// 查询所有

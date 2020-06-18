@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Blog.Infrastruct
 {
-    public class UploadFileRepository : Repository<UploadFile, int>, IUploadFileRepository
+    public class UploadFileRepository : Repository, IUploadFileRepository
     {
         /// <summary>
         /// 将查询结果转为实体

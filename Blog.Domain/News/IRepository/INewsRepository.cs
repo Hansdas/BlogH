@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Blog.Domain
 {
-   public interface INewsRepository: IRepository<News, int>
+   public interface INewsRepository: IRepository
     {
         /// <summary>
         /// 不存在则插入，否则更新

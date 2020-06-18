@@ -8,7 +8,7 @@ using Blog.Domain.Core;
 
 namespace Blog.Infrastruct
 {
-    public class CommentRepository : Repository<Comment, int>, ICommentRepository
+    public class CommentRepository : Repository, ICommentRepository
     {
         private IUserRepository _userRepository;
         public CommentRepository(IUserRepository userRepository)

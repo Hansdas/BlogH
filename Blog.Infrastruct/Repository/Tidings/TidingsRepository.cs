@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Blog.Infrastruct
 {
-    public class TidingsRepository : Repository<Tidings, int>, ITidingsRepository
+    public class TidingsRepository : Repository, ITidingsRepository
     {
         private Tidings Map(dynamic d)
         {

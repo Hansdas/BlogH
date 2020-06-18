@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Blog.Domain
 {
-    public interface ICommentRepository : IRepository<Article, int>
+    public interface ICommentRepository : IRepository
     {
         /// <summary>
         /// 插入

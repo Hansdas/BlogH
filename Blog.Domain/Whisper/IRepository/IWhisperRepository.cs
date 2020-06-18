@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Blog.Domain
 {
-   public interface IWhisperRepository : IRepository<Whisper, int>
+   public interface IWhisperRepository : IRepository
     {
         /// <summary>
         /// 发表微语
