@@ -69,5 +69,17 @@ namespace Blog.Common
                 ip = string.Format("http://{0}:{1}", ip, connectionInfo.LocalPort);
             return ip;
         }
+        /// <summary>
+        /// 获取真实的请求的ip信息
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <returns></returns>
+        public static string GetRequestRealIP(IHttpContextAccessor httpContext)
+        {
+            string realIp = httpContext.HttpContext.Request.Headers["X-Real-IP"];
+            if(string.IsNullOrEmpty(realIp))
+                realIp= httpContext.HttpContext.Request.Headers["X-Forwarded-For"];
+            return realIp;
+        }
     }
 }

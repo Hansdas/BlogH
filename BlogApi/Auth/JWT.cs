@@ -37,6 +37,10 @@ namespace BlogApi
         {
             _cacheClient = cacheClient;
         }
+        public JWT()
+        {
+
+        }
         /// <summary>
         /// 生成jwtToken
         /// </summary>
@@ -94,15 +98,9 @@ namespace BlogApi
             if (!IsAuthorized)
                 throw new AuthException("not login");
             string token = authStr.ToString().Substring("Bearer ".Length).Trim();
-            if(token=="null")
+            if (token == "null")
                 throw new AuthException("not login");
-            IJsonSerializer serializer = new JsonNetSerializer();
-            IDateTimeProvider provider = new UtcDateTimeProvider();
-            IJwtValidator validator = new JwtValidator(serializer, provider);
-            IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
-            IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder);
-            var json = decoder.Decode(token);
-            return json;
+            return ResolveToken(token);
         }
         /// <summary>
         /// 解析jwtToken到json

@@ -66,8 +66,7 @@ namespace Blog.Domain
             }
             catch (AggregateException ex)
             {
-
-                throw;
+                new LogUtils().LogError(ex, "Blog.Domain.WhisperCommandHandler", ex.Message, command.Comment.PostUser);
             }
         }
     }

@@ -54,7 +54,7 @@ namespace Blog.Domain
             _tidingsRepository.Insert(tidings);
             JsonSerializerSettings jsonSerializerSettings = new JsonContractResolver().SetJsonSerializerSettings();
             List<Whisper> whispers = _cacheClient.ListRange<Whisper>(ConstantKey.CACHE_SQUARE_WHISPER, 0, 5, jsonSerializerSettings).GetAwaiter().GetResult();
-
+    
             IList<Comment> comments = _commentRepository.SelectByIds(reviewEvent.WhisperCommentGuids);
             int index = 0;
             Whisper cacheWhisper = null;

@@ -26,18 +26,21 @@ namespace BlogApi
         }
         public async Task InvokeAsync(HttpContext context)
         {
+            UserModel userModel = null;
             try
             {
+             
                 if (!_whiteList.Contains(context.Request.Path.Value))
                 {
-                    bool isExpires = context.Request.Headers.TryGetValue("isExpires", out StringValues expires);
                     bool IsAuthorized = context.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
                     string token = authStr.ToString().Substring("Bearer ".Length).Trim();
+                    string json = new JWT().ResolveToken(token);
+                    bool isExpires = context.Request.Headers.TryGetValue("isExpires", out StringValues expires);                
                     new JWT(_cacheClient).IfRefreshToken(token, isExpires);
                     context.Response.Headers.Add("refreshToken", token);
                     context.Response.Headers.Add("Access-Control-Expose-Headers", "refreshToken");
-                }
-
+                    userModel = JsonHelper.DeserializeObject<UserModel>(json);
+                }               
             }
             catch (AuthException)
             {
@@ -46,10 +49,13 @@ namespace BlogApi
                     context.Response.Headers.Add("auth", "false");
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-
             }
+            context.Request.Headers.TryGetValue("requestIp", out StringValues ip);
+            context.Request.Headers.TryGetValue("requestAddress", out StringValues address);
+            string account = userModel == null ? "" : userModel.Account;
+            new LogUtils().LogInfo(null, context.Request.Path.Value, account,ip,address);
             await _next(context);
 
         }

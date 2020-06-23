@@ -11,7 +11,7 @@ namespace BlogCommon
     [TestClass]
     public class UnitTest1
     {
-        [TestMethod]
+       
         public void TestMail()
         {
             try
@@ -40,6 +40,18 @@ namespace BlogCommon
                 throw;
             }
 
+        }
+        [TestMethod]
+        public void TestLog()
+        {
+            try
+            {
+                throw new Exception("11");
+            }
+            catch (Exception ex)
+            {
+                new LogUtils().LogError(ex);
+            }
         }
     }
 }
