@@ -35,6 +35,7 @@ namespace Blog.Infrastruct
                 d.comment_revicer,
                 revicerUsername,
                 d.comment_additional,
+                d.usingcontent,
                 d.comment_postdate);
         }
 
@@ -59,15 +60,15 @@ namespace Blog.Infrastruct
         public void Insert(Comment comment)
         {
             string insert = "INSERT INTO T_Comment(comment_guid,comment_content,comment_type,comment_postuser,comment_revicer,comment_additional,comment_postdate)" +
-               " VALUES (@Guid,@Content,@CommentType,@PostUser,@RevicerUser,@AdditioanlData,NOW())";
+               " VALUES (@Guid,@Content,@CommentType,@PostUser,@RevicerUser,@AdditionalData,NOW())";
             DbConnection.Execute(insert, comment);
         }
         public Comment SelectById(string guid)
         {
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("guid", guid);
-            string sql = "SELECT comment_guid,comment_content,comment_type,comment_postuser,comment_revicer,comment_additional,comment_postdate " +
-                "FROM T_Comment WHERE comment_guid =@guid";
+            string sql = "SELECT a.*,b.comment_content as usingcontent FROM T_Comment a LEFT JOIN T_Comment b on a.comment_additional=b.comment_guid " +
+                " WHERE a.comment_guid =@guid";
             dynamic d = SelectSingle(sql, parameters);
             return Map(d);
         }
@@ -77,8 +78,8 @@ namespace Blog.Infrastruct
             IList<Comment> comments = new List<Comment>();
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("Guids", guids);
-            string sql = "SELECT comment_guid,comment_content,comment_type,comment_postuser,comment_revicer,comment_additional,comment_postdate " +
-                "FROM T_Comment  WHERE comment_guid in @Guids ORDER BY comment_postdate DESC";
+            string sql = "SELECT a.*,b.comment_content as usingcontent FROM T_Comment a LEFT JOIN T_Comment b on a.comment_additional=b.comment_guid " +
+                " WHERE a.comment_guid in @Guids ORDER BY comment_postdate DESC";
             IEnumerable<dynamic> dynamics = Select(sql, parameters);
             foreach (var d in dynamics)
             {

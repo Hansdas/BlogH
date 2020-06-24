@@ -33,9 +33,9 @@ namespace Blog.Application
             CreateWhisperCommand command = new CreateWhisperCommand(whisper);
             _eventBus.Publish(command); 
         }
-        public IList<WhisperModel> SelectByPage(int pageIndex, int pageSize, WhisperCondiiton condiiton = null)
+        public IList<WhisperModel> SelectByPage(int pageIndex, int pageSize, WhisperConditionModel condiiton = null)
         {
-            IEnumerable<Whisper> whispers = _whisperRepository.SelectByPage(pageIndex, pageSize, condiiton);
+            IEnumerable<Whisper> whispers = _whisperRepository.SelectByPage(pageIndex, pageSize, ConvertCondition(condiiton));
             return ConvertToModel(whispers);
         }
 
@@ -54,26 +54,6 @@ namespace Blog.Application
             }
             return ConvertToModel(whispers);
         }
-        private IList<WhisperModel> ConvertToModel(IEnumerable<Whisper> whispers)
-        {
-            IList<WhisperModel> whisperModels = new List<WhisperModel>();
-            foreach (var item in whispers)
-            {                                                
-                WhisperModel model = new WhisperModel();
-                model.Id = item.Id.ToString();
-                model.Account = item.Account;
-                model.AccountName = item.AccountName;
-                model.Content = item.Content;
-                model.CreateDate = item.CreateTime.Value.ToString("yyyy-MM-dd hh:mm");
-                if (item.CommentList != null)
-                {
-                    IEnumerable<CommentModel> commentDataModels = CommentModel.ConvertToCommentModels(item.CommentList);
-                    model.Commentdatas = commentDataModels.ToList() ;
-                }
-                whisperModels.Add(model);
-            }
-            return whisperModels;
-        }
         public IList<CommentModel> SelectCommnetsByWhisper(int whisperId)
         {
             IList<Comment> comments = _whisperRepository.SelectCommnetsByWhisper(whisperId);
@@ -89,7 +69,37 @@ namespace Blog.Application
                 commentModel.Revicer,
                 commentModel.AdditionalData);
             WhisperCommentCommand command = new WhisperCommentCommand(comment,whisperId);
-            _eventBus.Publish(command);
+          _eventBus.Publish(command);
         }
+
+        #region private method
+        private IList<WhisperModel> ConvertToModel(IEnumerable<Whisper> whispers)
+        {
+            IList<WhisperModel> whisperModels = new List<WhisperModel>();
+            foreach (var item in whispers)
+            {
+                WhisperModel model = new WhisperModel();
+                model.Id = item.Id.ToString();
+                model.Account = item.Account;
+                model.AccountName = item.AccountName;
+                model.Content = item.Content;
+                model.CreateDate = item.CreateTime.Value.ToString("yyyy-MM-dd hh:mm");
+                if (item.CommentList != null)
+                {
+                    IEnumerable<CommentModel> commentDataModels = CommentModel.ConvertToCommentModels(item.CommentList);
+                    model.Commentdatas = commentDataModels.ToList();
+                }
+                whisperModels.Add(model);
+            }
+            return whisperModels;
+        }
+
+        private WhisperCondiiton ConvertCondition(WhisperConditionModel whisperCondition)
+        {
+            WhisperCondiiton condiiton = new WhisperCondiiton();
+            condiiton.Account = whisperCondition.Account;
+            return condiiton;
+        }
+        #endregion
     }
 }

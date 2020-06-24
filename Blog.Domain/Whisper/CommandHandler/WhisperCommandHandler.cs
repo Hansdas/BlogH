@@ -57,17 +57,8 @@ namespace Blog.Domain
             IList<string> commentIds = _whisperRepository.SelectCommentIds(command.WhisperId);
             commentIds.Add(command.Comment.Guid);
             _whisperRepository.InsertComment(command.Comment, command.WhisperId, commentIds);
-            try
-            {
-                Task.Run(() => {
-                    ReviewWhiperEvent reviewEvent = new ReviewWhiperEvent(command.Comment, command.WhisperId, commentIds);
-                    _eventBus.RaiseEvent(reviewEvent);
-                });
-            }
-            catch (AggregateException ex)
-            {
-                new LogUtils().LogError(ex, "Blog.Domain.WhisperCommandHandler", ex.Message, command.Comment.PostUser);
-            }
+            ReviewWhiperEvent reviewEvent = new ReviewWhiperEvent(command.Comment, command.WhisperId, commentIds);
+            _eventBus.RaiseEventAsync(reviewEvent);
         }
     }
 }

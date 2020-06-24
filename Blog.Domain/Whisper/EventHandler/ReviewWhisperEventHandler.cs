@@ -10,6 +10,7 @@ using System.Text;
 using Blog.Common.Json;
 using System.Linq;
 using Blog.Domain.Core;
+using System.Threading.Tasks;
 
 namespace Blog.Domain
 {
@@ -38,52 +39,61 @@ namespace Blog.Domain
         /// <param name="notification"></param>
         public void Handler(ReviewWhiperEvent reviewEvent)
         {
-            Tidings tidings = null;
-            string url = "../wshiper/detail.html?id=" + reviewEvent.WhiperId;
-            if (reviewEvent.Comment.CommentType==CommentType.微语)
+            try
             {
-                Whisper whisper = _whisperRepository.SelectById(reviewEvent.WhiperId);
-                tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content, whisper.Account, false, url, whisper.Content, DateTime.Now);
+                Tidings tidings = null;
+                string url = "../wshiper/detail.html?id=" + reviewEvent.WhiperId;
+                if (reviewEvent.Comment.CommentType == CommentType.微语)
+                {
+                    Whisper whisper = _whisperRepository.SelectById(reviewEvent.WhiperId);
+                    tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content, whisper.Account, false, url, whisper.Content, DateTime.Now);
+                }
+                else//回复评论 
+                {
+                    Comment comment = _commentRepository.SelectById(reviewEvent.Comment.AdditionalData);//被评论的数据;
+                    tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content
+                        , comment.PostUser, false, url, comment.Content, DateTime.Now);
+                }
+                _tidingsRepository.Insert(tidings);
+                JsonSerializerSettings jsonSerializerSettings = new JsonContractResolver().SetJsonSerializerSettings();
+                List<Whisper> whispers = _cacheClient.ListRange<Whisper>(ConstantKey.CACHE_SQUARE_WHISPER, 0, 5, jsonSerializerSettings).GetAwaiter().GetResult();
+
+                IList<Comment> comments = _commentRepository.SelectByIds(reviewEvent.WhisperCommentGuids);
+                int index = 0;
+                Whisper cacheWhisper = null;
+                for (int i = 0; i < whispers.Count; i++)
+                {
+                    if (whispers[i].Id != reviewEvent.WhiperId)
+                        continue;
+                    index = i;
+                    cacheWhisper = new Whisper(
+                     whispers[i].Id,
+                     whispers[i].Account,
+                     whispers[i].AccountName,
+                     whispers[i].Content,
+                     whispers[i].IsPassing,
+                     string.Join(",", comments.Select(s => s.Guid)),
+                     comments,
+                     Convert.ToDateTime(whispers[i].CreateDate));
+                    whispers[i] = cacheWhisper;
+                }
+                if (cacheWhisper == null)
+                    return;
+                _cacheClient.ListInsert(ConstantKey.CACHE_SQUARE_WHISPER, index, cacheWhisper);
+                int count = _tidingsRepository.SelectCountByAccount(reviewEvent.Comment.RevicerUser);
+                Message message = new Message();
+                message.Data = count;
+                _singalrContent.SendClientMessage(reviewEvent.Comment.RevicerUser, message);
+                //首页微语
+                message.Data = whispers;
+                _singalrContent.SendAllClientsMessage(message);
+
             }
-            else//回复评论 
+            catch (AggregateException ex)
             {
-                Comment comment = _commentRepository.SelectById(reviewEvent.Comment.AdditionalData);//被评论的数据;
-                tidings = new Tidings(reviewEvent.Comment.Guid, reviewEvent.Comment.PostUser, reviewEvent.Comment.Content
-                    , comment.PostUser, false, url, comment.Content, DateTime.Now);
+                new LogUtils().LogError(ex, "Blog.Domain.ReviewWhisperEventHandler", ex.Message, reviewEvent.Comment.PostUser);
             }
-            _tidingsRepository.Insert(tidings);
-            JsonSerializerSettings jsonSerializerSettings = new JsonContractResolver().SetJsonSerializerSettings();
-            List<Whisper> whispers = _cacheClient.ListRange<Whisper>(ConstantKey.CACHE_SQUARE_WHISPER, 0, 5, jsonSerializerSettings).GetAwaiter().GetResult();
-    
-            IList<Comment> comments = _commentRepository.SelectByIds(reviewEvent.WhisperCommentGuids);
-            int index = 0;
-            Whisper cacheWhisper = null;
-            for (int i = 0; i < whispers.Count; i++)
-            {
-                if (whispers[i].Id != reviewEvent.WhiperId)
-                    continue;
-                index = i;
-                cacheWhisper = new Whisper(
-                 whispers[i].Id,
-                 whispers[i].Account,
-                 whispers[i].AccountName,
-                 whispers[i].Content,
-                 whispers[i].IsPassing,
-                 string.Join(",", comments.Select(s => s.Guid)),
-                 comments,
-                 Convert.ToDateTime(whispers[i].CreateDate));
-                whispers[i] = cacheWhisper;
-            }
-            if (cacheWhisper == null)
-                return;
-            _cacheClient.ListInsert(ConstantKey.CACHE_SQUARE_WHISPER, index, cacheWhisper);
-            int count = _tidingsRepository.SelectCountByAccount(reviewEvent.Comment.RevicerUser);
-            Message message = new Message();
-            message.Data = count;
-            _singalrContent.SendClientMessage(reviewEvent.Comment.RevicerUser,message);
-            //首页微语
-            message.Data = whispers;
-            _singalrContent.SendAllClientsMessage(message);
+
         }
     }
 }

@@ -54,14 +54,16 @@ namespace BlogApi.Controllers
             }
             return new JsonResult(returnResult);
         }
-        [HttpGet]
+        [HttpPost]
         [Route("page")]
-        public JsonResult LoadWhisper(int pageIndex, int pageSize)
+        public JsonResult LoadWhisper([FromBody] WhisperConditionModel whisperConditionModel)
         {
             PageResult pageResult = new PageResult();
             try
             {
-                IList<WhisperModel> whisperModels=_whisperService.SelectByPage(pageIndex, pageSize);
+                WhisperCondiiton whisperCondiiton = new WhisperCondiiton();
+                whisperCondiiton.Account = whisperCondiiton.Account;
+                IList<WhisperModel> whisperModels=_whisperService.SelectByPage(whisperConditionModel.PageIndex, whisperConditionModel.PageSize,whisperConditionModel);
                 pageResult.Code = "0";
                 pageResult.Data = whisperModels;
                 pageResult.Total = LoadTotal();

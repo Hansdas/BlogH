@@ -23,7 +23,7 @@ namespace Blog.Domain
             RevicerUser = revicer;
             CommentType = commentType;
         }
-        public Comment(string guid, string content, CommentType commentType, string postUser, string postUsername, string revicer,string revicerUsername, string additioanlDate, DateTime postDate)
+        public Comment(string guid, string content, CommentType commentType, string postUser, string postUsername, string revicer,string revicerUsername, string additioanlDate,string usingContent, DateTime postDate)
         {
             Guid = guid;
             Content = content;
@@ -34,6 +34,7 @@ namespace Blog.Domain
             RevicerUser = revicer;
             RevicerUsername = revicerUsername;
             CommentType = commentType;
+            UsingContent = usingContent;
         }
         /// <summary>
         /// guid(数据持久化，存入实体表)
@@ -67,6 +68,10 @@ namespace Blog.Domain
         ///  评论接收人昵称（不存库）
         /// </summary>
         public string RevicerUsername { get; private set; }
+        /// <summary>
+        /// 原文内容
+        /// </summary>
+        public string UsingContent { get; set; }
         /// <summary>
         /// 评论时间
         /// </summary>

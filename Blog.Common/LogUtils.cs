@@ -9,10 +9,9 @@ namespace Blog.Common
     public class LogUtils
     {
         private ILogger _logger;
-        private IHttpContextAccessor _httpContext;
+        public static bool EnableNlog;//是否启用log
         public LogUtils()
         {
-            _httpContext = new HttpContextAccessor();
             _logger = LogManager.GetLogger("");
         }
         /// <summary>
@@ -61,6 +60,8 @@ namespace Blog.Common
         }
         private void Log(LogLevel logLevel, Exception exception, string logger, string message, string account, string requestIp = null, string requestAddress = null)
         {
+            if (!EnableNlog)
+                return;
             if (message == null && exception != null)
                 message = exception.Message;
             LogEventInfo logEventInfo = LogEventInfo.Create(logLevel, logger, exception, null, message);

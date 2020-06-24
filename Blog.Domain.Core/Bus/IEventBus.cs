@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Blog.Domain.Core.Bus
 {
@@ -22,5 +23,11 @@ namespace Blog.Domain.Core.Bus
         /// <typeparam name="TNotification"></typeparam>
         /// <param name="notification"></param>
         void RaiseEvent<TEventData>(TEventData eventData) where TEventData : EventData;
+        /// <summary>
+        /// 触发领域事件
+        /// </summary>
+        /// <typeparam name="TNotification"></typeparam>
+        /// <param name="notification"></param>
+        Task RaiseEventAsync<TEventData>(TEventData eventData) where TEventData : EventData;
     }
 }

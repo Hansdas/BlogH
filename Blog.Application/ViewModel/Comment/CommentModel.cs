@@ -1,4 +1,5 @@
-﻿using Blog.Domain;
+﻿using Blog.Common;
+using Blog.Domain;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -43,6 +44,10 @@ namespace Blog.Application.ViewModel
         /// 评论接收人
         /// </summary>
         public string RevicerName { get; set; }
+        /// <summary>
+        /// 原内容
+        /// </summary>
+        public string UsingContent { get; set; }
         public static CommentModel ConvertToCommentModel(Comment comment)
         {
             CommentModel commentModel = new CommentModel();
@@ -53,7 +58,9 @@ namespace Blog.Application.ViewModel
             commentModel.Revicer = comment.RevicerUser;
             commentModel.AdditionalData = comment.AdditionalData;
             commentModel.RevicerName = comment.RevicerUsername;
+            commentModel.CommentType = comment.CommentType.GetEnumValue();
             commentModel.PostDate = comment.PostDate.ToString("yyyy-MM-dd hh:mm");
+            commentModel.UsingContent = comment.UsingContent;
             return commentModel;
         }
         public static IList<CommentModel> ConvertToCommentModels(IList<Comment> comments)

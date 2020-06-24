@@ -95,7 +95,6 @@ namespace Blog.Application
         {
             Article article = _articleRepository.Select(articleCondition);
             UserModel userModel= _userService.SelectUser(article.Author);
-
             ArticleModel articleModel = new ArticleModel()
             {
                 Id = article.Id,
@@ -106,25 +105,11 @@ namespace Blog.Application
                 Author = userModel.Username,
                 AuthorAccount=userModel.Account,
                 IsDraft = article.IsDraft ? "是" : "否",
-                Comments = GetCommentModels(article.Comments)
+                Comments = CommentModel.ConvertToCommentModels(article.Comments)
             };
             return articleModel;
         }
-        private IList<CommentModel> GetCommentModels(IList<Comment> comments)
-        {
-            IList<CommentModel> commentModels = new List<CommentModel>();
-           foreach (var item in comments)
-            {
-                CommentModel commentModel = new CommentModel();
-                commentModel.Guid = item.Guid;
-                commentModel.Content = item.Content;
-                commentModel.PostUser = item.PostUser;
-                commentModel.PostUsername = item.PostUsername;
-                commentModel.PostDate = item.PostDate.ToString("yyyy-MM-dd hh:mm");
-                commentModels.Add(commentModel);
-            }
-            return commentModels;
-        }
+
         public PageInfoMode SelectContext(int id, ArticleCondition articleCondition = null)
         {
             IEnumerable<dynamic> dynamics = _articleRepository.SelectContext(id, articleCondition);

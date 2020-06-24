@@ -108,6 +108,7 @@ namespace BlogApi.Configure
                     c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                 });
             }
+            LogUtils.EnableNlog = Convert.ToBoolean(ConfigProvider.configuration.GetSection("EnableNlog").Value);
         }
         /// <summary>
         /// 3.0不支持返回IServiceProvider

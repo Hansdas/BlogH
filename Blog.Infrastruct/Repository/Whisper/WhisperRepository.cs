@@ -80,14 +80,8 @@ namespace Blog.Infrastruct
             parameters.Add("pageSize", pageSize, DbType.Int32);
             string where = Where(condiiton, ref parameters);
             string sql = "SELECT w.*,u.user_username " +
-                        "FROM T_Whisper  w INNER JOIN T_User u on w.whisper_account=u.user_account  WHERE " + where +
-                        " AND  whisper_id <=(" +
-                        "SELECT whisper_id FROM T_Whisper WHERE "
-                        + where +
-                        "ORDER BY whisper_id DESC " +
-                        "LIMIT @pageId, 1) " +
-                        "ORDER BY whisper_id DESC " +
-                        "LIMIT @pageSize";
+                        "FROM T_Whisper  w INNER JOIN T_User u on w.whisper_account=u.user_account  WHERE " +
+                        where + " ORDER BY whisper_createtime DESC LIMIT @pageId,@pageSize";
             IEnumerable<dynamic> dynamics = Select(sql, parameters);
             IList<Whisper> whispers = new List<Whisper>();
             List<string> commentGuids = new List<string>();

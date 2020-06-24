@@ -4,6 +4,7 @@ using Blog.Domain.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlogCommon
@@ -46,6 +47,8 @@ namespace BlogCommon
         {
             try
             {
+                string s = "1";
+                List<string> list = s.Split(",").ToList();
                 throw new Exception("11");
             }
             catch (Exception ex)

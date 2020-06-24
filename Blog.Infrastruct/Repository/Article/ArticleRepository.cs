@@ -147,7 +147,10 @@ namespace Blog.Infrastruct
             dynamic d = base.SelectSingle(sql, dynamicParameters);
             IList<Comment> comments = new List<Comment>();
             if (!string.IsNullOrEmpty(d.article_comments))
-                comments = _commentRepository.SelectByIds(d.article_comments.Split(','));
+            {
+                string article_comments = d.article_comments;
+                comments = _commentRepository.SelectByIds(article_comments.Split(','));
+            }
             Article article = new Article(
                 d.article_title
                 , d.article_author
