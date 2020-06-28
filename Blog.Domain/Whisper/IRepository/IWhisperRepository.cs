@@ -44,5 +44,11 @@ namespace Blog.Domain
         /// <param name="id"></param>
         /// <returns></returns>
         IList<string> SelectCommentIds(int id);
+
+        /// <summary>
+        /// 根据id删除
+        /// </summary>
+        /// <param name="id"></param>
+        void DeleteById(int id);
     }
 }

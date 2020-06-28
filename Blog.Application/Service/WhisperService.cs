@@ -72,6 +72,11 @@ namespace Blog.Application
           _eventBus.Publish(command);
         }
 
+        public void DeleteById(int id)
+        {
+            DeleteWhisperCommand deleteWhisperCommand = new DeleteWhisperCommand(id);
+            _eventBus.Publish(deleteWhisperCommand);
+        }
         #region private method
         private IList<WhisperModel> ConvertToModel(IEnumerable<Whisper> whispers)
         {
@@ -100,6 +105,7 @@ namespace Blog.Application
             condiiton.Account = whisperCondition.Account;
             return condiiton;
         }
+
         #endregion
     }
 }

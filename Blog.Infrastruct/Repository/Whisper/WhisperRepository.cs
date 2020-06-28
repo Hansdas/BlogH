@@ -102,6 +102,7 @@ namespace Blog.Infrastruct
             IList<Whisper> list = new List<Whisper>();
             foreach (var item in whispers)
             {
+                commentGuids = Whisper.GetCommentGuidList(item).ToList();
                 Whisper whisper = new Whisper(
                 item.Id
                 , item.Account
@@ -109,7 +110,7 @@ namespace Blog.Infrastruct
                 , item.Content
                 , item.IsPassing
                 , item.CommentGuids
-                , comments.Where(s => item.CommentGuids.Contains(s.Guid)).ToList()
+                , comments.Where(s => commentGuids.Contains(s.Guid)).ToList()
                 , item.CreateTime.Value);
                 list.Add(whisper);
             }
@@ -154,6 +155,22 @@ namespace Blog.Infrastruct
             if (!string.IsNullOrEmpty(commentIds))
                 commnetIdList = commentIds.Split(',').ToList();
             return commnetIdList;
+        }
+        [Transaction(TransactionLevel.ReadCommitted)]
+        public void DeleteById(int id)
+        {
+            IList<string> commnetIdList = new List<string>();
+            string select = "SELECT whisper_commentguids FROM T_Whisper WHERE whisper_id = @Id";
+            string commentIds = SelectSingle(select, new { Id = id }).whisper_commentguids;
+            string delete = "DELETE FROM T_Whisper WHERE whisper_id = @Id";
+            DbConnection.Execute(delete,new {Id=id });
+            if(!string.IsNullOrEmpty(commentIds))
+            {
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@guids", commentIds);
+                delete = "DELETE FROM T_Comment WHERE comment_guid = @guids";
+                DbConnection.Execute(delete, parameters);
+            }
         }
 
     }

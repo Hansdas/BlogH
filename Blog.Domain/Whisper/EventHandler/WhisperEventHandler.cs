@@ -17,14 +17,14 @@ namespace Blog.Domain
     /// <summary>
     /// 评论触发事件处理
     /// </summary>
-    public class ReviewWhisperEventHandler : IEventHandler<ReviewWhiperEvent>
+    public class WhisperEventHandler : IEventHandler<ReviewWhiperEvent>,IEventHandler<DeleteWhisperEvent>
     {
         private ICommentRepository _commentRepository;
         private ITidingsRepository _tidingsRepository;
         private IWhisperRepository _whisperRepository;
         private ISingalrContent _singalrContent;
         private ICacheClient _cacheClient;
-        public ReviewWhisperEventHandler(ICommentRepository commentRepository, ITidingsRepository tidingsRepository, IWhisperRepository whisperRepository
+        public WhisperEventHandler(ICommentRepository commentRepository, ITidingsRepository tidingsRepository, IWhisperRepository whisperRepository
             , ISingalrContent singalrContent, ICacheClient cacheClient)
         {
             _commentRepository = commentRepository;
@@ -42,7 +42,7 @@ namespace Blog.Domain
             try
             {
                 Tidings tidings = null;
-                string url = "../wshiper/detail.html?id=" + reviewEvent.WhiperId;
+                string url = "../whisper/whisper.html?id=" + reviewEvent.WhiperId;
                 if (reviewEvent.Comment.CommentType == CommentType.微语)
                 {
                     Whisper whisper = _whisperRepository.SelectById(reviewEvent.WhiperId);
@@ -94,6 +94,21 @@ namespace Blog.Domain
                 new LogUtils().LogError(ex, "Blog.Domain.ReviewWhisperEventHandler", ex.Message, reviewEvent.Comment.PostUser);
             }
 
+        }
+
+        public void Handler(DeleteWhisperEvent eventData)
+        {
+            _cacheClient.Remove(ConstantKey.CACHE_SQUARE_WHISPER);
+             IList<Whisper> whispers = _whisperRepository.SelectByPage(1, 12).ToList();
+            foreach (var item in whispers)
+            {
+                 _cacheClient.AddListTail(ConstantKey.CACHE_SQUARE_WHISPER, item);
+            }
+            whispers = whispers.Take(6).ToList();
+            Message message = new Message();
+            //首页微语
+            message.Data = whispers;
+            _singalrContent.SendAllClientsMessage(message);
         }
     }
 }

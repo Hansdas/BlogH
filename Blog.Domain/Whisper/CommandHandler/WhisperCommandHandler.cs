@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Blog.Domain
 {
-    public class WhisperCommandHandler : ICommandHandler<CreateWhisperCommand>, ICommandHandler<WhisperCommentCommand>
+    public class WhisperCommandHandler : ICommandHandler<CreateWhisperCommand>, ICommandHandler<WhisperCommentCommand>,ICommandHandler<DeleteWhisperCommand>
     {
         private IWhisperRepository _whisperRepository;
         private ICacheClient _cacheClient;
@@ -46,7 +46,7 @@ namespace Blog.Domain
             if (listLength > 12)
                 _cacheClient.listPop(ConstantKey.CACHE_SQUARE_WHISPER);
             JsonSerializerSettings jsonSerializerSettings = new JsonContractResolver().SetJsonSerializerSettings();
-            List<Whisper> whispers = _cacheClient.ListRange<Whisper>(ConstantKey.CACHE_SQUARE_WHISPER, 0, 5, jsonSerializerSettings).GetAwaiter().GetResult();
+            List<Whisper> whispers = _cacheClient.ListRange<Whisper>(ConstantKey.CACHE_SQUARE_WHISPER, 0, 6, jsonSerializerSettings).GetAwaiter().GetResult();
             Message message = new Message();
             message.Data = whispers;
             _singalrContent.SendAllClientsMessage(message);
@@ -59,6 +59,13 @@ namespace Blog.Domain
             _whisperRepository.InsertComment(command.Comment, command.WhisperId, commentIds);
             ReviewWhiperEvent reviewEvent = new ReviewWhiperEvent(command.Comment, command.WhisperId, commentIds);
             _eventBus.RaiseEventAsync(reviewEvent);
+        }
+
+        public void Handler(DeleteWhisperCommand command)
+        {
+            _whisperRepository.DeleteById(command.Id);
+            DeleteWhisperEvent @event = new DeleteWhisperEvent();
+            _eventBus.RaiseEventAsync(@event);
         }
     }
 }

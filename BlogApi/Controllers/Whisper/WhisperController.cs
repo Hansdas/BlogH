@@ -62,11 +62,14 @@ namespace BlogApi.Controllers
             try
             {
                 WhisperCondiiton whisperCondiiton = new WhisperCondiiton();
-                whisperCondiiton.Account = whisperCondiiton.Account;
+                if (whisperConditionModel.LoginUser)
+                    whisperCondiiton.Account = Auth.GetLoginUser(_httpContext).Account;
+                else
+                    whisperCondiiton.Account = whisperCondiiton.Account;
                 IList<WhisperModel> whisperModels=_whisperService.SelectByPage(whisperConditionModel.PageIndex, whisperConditionModel.PageSize,whisperConditionModel);
                 pageResult.Code = "0";
                 pageResult.Data = whisperModels;
-                pageResult.Total = LoadTotal();
+                pageResult.Total = LoadTotal(whisperConditionModel);
             }
             catch (Exception e)
             {
@@ -110,9 +113,14 @@ namespace BlogApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("total")]
-        public int LoadTotal()
+        public int LoadTotal([FromBody] WhisperConditionModel whisperConditionModel)
         {
-            int total = _whisperRepository.SelectCount();
+            WhisperCondiiton whisperCondiiton = new WhisperCondiiton();
+            if (whisperConditionModel.LoginUser)
+                whisperCondiiton.Account = Auth.GetLoginUser(_httpContext).Account;
+            else
+                whisperCondiiton.Account = whisperCondiiton.Account;
+            int total = _whisperRepository.SelectCount(whisperCondiiton);
             return total;
         }
         /// <summary>
@@ -175,6 +183,13 @@ namespace BlogApi.Controllers
             }
 
             return new JsonResult(returnResult);
+        }
+        [HttpDelete]
+        [Route("{id}")]
+        public JsonResult Delete(int id)
+        {
+            _whisperService.DeleteById(id);
+            return new JsonResult(new ReturnResult("0"));
         }
     }
 }

@@ -34,45 +34,60 @@ namespace BlogApi.Configure
     public static class Configure
     {
         /// <summary>
-        /// 服务集合
+        /// 业务服务集合
         /// </summary>
         /// <param name="services"></param>
         public static void AddServices(this IServiceCollection services)
         {
+            #region User
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IUserService, UserService>();
             services.AddEventBus<ICommandHandler<CreateUserCommand>, CreateUserCommand>();
             services.AddEventBus<ICommandHandler<UpdateUserCommand>, UpdateUserCommand>();
+            #endregion
 
+            #region Article
             services.AddTransient<IArticleRepository, ArticleRepository>();
             services.AddTransient<IArticleService, ArticleService>();
             services.AddEventBus<ICommandHandler<CreateArticleCommand>, CreateArticleCommand>();
             services.AddEventBus<ICommandHandler<UpdateArticleCommand>, UpdateArticleCommand>();
             services.AddEventBus<ICommandHandler<PraiseArticleCommand>, PraiseArticleCommand>();
             services.AddEventBus<IEventHandler<ReviewEvent>, ReviewEvent>();
+            #endregion
 
+            #region UploadFile 
             services.AddTransient<IUploadFileRepository, UploadFileRepository>();
+            #endregion
+
+            #region Whisper 
             services.AddTransient<IWhisperRepository, WhisperRepository>();
             services.AddTransient<IWhisperService, WhisperService>();
             services.AddEventBus<ICommandHandler<CreateWhisperCommand>, CreateWhisperCommand>();
             services.AddEventBus<ICommandHandler<WhisperCommentCommand>, WhisperCommentCommand>();
+            services.AddEventBus<ICommandHandler<DeleteWhisperCommand>, DeleteWhisperCommand>();
             services.AddEventBus<IEventHandler<ReviewWhiperEvent>, ReviewWhiperEvent>();
+            services.AddEventBus<IEventHandler<DeleteWhisperEvent>, DeleteWhisperEvent>();
+            #endregion
+
+            #region Comment
             services.AddTransient<ICommentRepository, CommentRepository>();
+            #endregion
 
-
+            #region Tidings
             services.AddTransient<ITidingsRepository, TidingsRepository>();
             services.AddTransient<ITidingsService, TidingsService>();
+            #endregion
 
+            #region News
             services.AddTransient<INewsRepository, NewsRepository>();
+            #endregion
 
+            #region LeaveMessage
             services.AddTransient<ILeaveMessageRespository, LeaveMessageRespository>();
             services.AddTransient<ILeaveMessageService, LeaveMessageService>();
             services.AddEventBus<ICommandHandler<CreateCommand>, CreateCommand>();
+            #endregion
 
-            services.AddTransient<ICacheClient, CacheClient>();
-
-            services.AddTransient<ICacheInterceptor, CacheInterceptor>();
-            services.AddTransient<ITransactionInterceptor, TransactionInterceptor>();
 
             services.DisposeServiceTypes();
         }
@@ -99,6 +114,9 @@ namespace BlogApi.Configure
             //注册消息通讯SignalR
             services.AddSignalR();
             services.AddTransient<ISingalrContent, SingalrContent>();
+            services.AddTransient<ICacheClient, CacheClient>();
+            services.AddTransient<ICacheInterceptor, CacheInterceptor>();
+            services.AddTransient<ITransactionInterceptor, TransactionInterceptor>();
             bool enableSwagger = Convert.ToBoolean(ConfigProvider.configuration.GetSection("EnableSwagger").Value);
             if (enableSwagger)//本地开发使用swagger
             {
