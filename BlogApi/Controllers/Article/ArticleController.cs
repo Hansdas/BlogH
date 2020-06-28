@@ -114,6 +114,8 @@ namespace BlogApi
             PageResult pageResult = new PageResult();
             try
             {
+                if (condition.LoginUser)
+                    condition.Account = Auth.GetLoginUser(_httpContext).Account;
                 IList<ArticleModel> articleModels = _articleService.SelectByPage(condition);
                 pageResult.Data = articleModels;
                 pageResult.Total = _articleService.SelectCount(condition);

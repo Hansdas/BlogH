@@ -50,15 +50,15 @@ namespace Blog.Quartz
             IList<News> newsList = new List<News>();
             foreach (var item in httpUrls)
             {
-                HttpClient httpClient = new HttpClient();
-                HttpResponseMessage response = await httpClient.GetAsync(item.HttpUrl);
-                response.EnsureSuccessStatusCode();
-                string html = response.Content.ReadAsStringAsync().Result;
-                HtmlDocument document = new HtmlDocument();
-                HtmlNode node = null;
-                News news = null;
                 try
                 {
+                    HttpClient httpClient = new HttpClient();
+                    HttpResponseMessage response = await httpClient.GetAsync(item.HttpUrl);
+                    response.EnsureSuccessStatusCode();
+                    string html = response.Content.ReadAsStringAsync().Result;
+                    HtmlDocument document = new HtmlDocument();
+                    HtmlNode node = null;
+                    News news = null;
                     switch (item.NewsOrigin)
                     {
                         case NewsOrigin.知乎:
@@ -109,13 +109,13 @@ namespace Blog.Quartz
                             // ); ;
                             break;
                     }
+                    newsList.Add(news);
                 }
                 catch (Exception)
                 {
 
                     continue;
                 }
-                newsList.Add(news);
             }
             _newsRepository.InsertOrUpdate(newsList);
         }

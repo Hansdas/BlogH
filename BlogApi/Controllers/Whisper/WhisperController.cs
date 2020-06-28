@@ -61,11 +61,8 @@ namespace BlogApi.Controllers
             PageResult pageResult = new PageResult();
             try
             {
-                WhisperCondiiton whisperCondiiton = new WhisperCondiiton();
                 if (whisperConditionModel.LoginUser)
-                    whisperCondiiton.Account = Auth.GetLoginUser(_httpContext).Account;
-                else
-                    whisperCondiiton.Account = whisperCondiiton.Account;
+                    whisperConditionModel.Account = Auth.GetLoginUser(_httpContext).Account;
                 IList<WhisperModel> whisperModels=_whisperService.SelectByPage(whisperConditionModel.PageIndex, whisperConditionModel.PageSize,whisperConditionModel);
                 pageResult.Code = "0";
                 pageResult.Data = whisperModels;

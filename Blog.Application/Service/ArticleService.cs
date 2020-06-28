@@ -36,6 +36,8 @@ namespace Blog.Application
             articleCondition.FullText = articleConditionModel.FullText;
             articleCondition.IsDraft =Convert.ToBoolean(articleConditionModel.IsDraft);
             articleCondition.TitleContain = articleConditionModel.TitleContain;
+            if (!string.IsNullOrEmpty(articleConditionModel.Account))
+                articleCondition.Account = articleConditionModel.Account;
             return articleCondition;
         }
         public void AddOrUpdate(ArticleModel model)

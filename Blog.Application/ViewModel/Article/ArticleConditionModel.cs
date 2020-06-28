@@ -26,5 +26,9 @@ namespace Blog.Application.ViewModel
         /// 是否是草稿
         /// </summary>
         public string IsDraft { get; set; }
+        /// <summary>
+        /// 是否根据登录人查询
+        /// </summary>
+        public bool LoginUser { get; set; } = false;
     }
 }
