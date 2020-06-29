@@ -103,6 +103,8 @@ namespace Blog.Application
         {
             WhisperCondiiton condiiton = new WhisperCondiiton();
             condiiton.Account = whisperCondition.Account;
+            if(whisperCondition.Id!=0)
+                condiiton.Id = whisperCondition.Id;
             return condiiton;
         }
 

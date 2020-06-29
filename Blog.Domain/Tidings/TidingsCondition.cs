@@ -10,5 +10,9 @@ namespace Blog.Domain
         /// 根据接收人账号查询
         /// </summary>
         public string Account { get; set; }
+        /// <summary>
+        /// 是否已读
+        /// </summary>
+        public bool? IsRead { get; set; }
     }
 }

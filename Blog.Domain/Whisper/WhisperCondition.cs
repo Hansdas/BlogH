@@ -7,6 +7,10 @@ namespace Blog.Domain
    public class WhisperCondiiton:ICondition
     {
         /// <summary>
+        /// 根据id查询
+        /// </summary>
+        public int? Id { get; set; }
+        /// <summary>
         /// 根账号查询
         /// </summary>
         public string Account { get; set; }

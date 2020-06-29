@@ -26,7 +26,6 @@ namespace BlogApi
         }
         public async Task InvokeAsync(HttpContext context)
         {
-            UserModel userModel = null;
             try
             {
              
@@ -39,7 +38,6 @@ namespace BlogApi
                     new JWT(_cacheClient).IfRefreshToken(token, isExpires);
                     context.Response.Headers.Add("refreshToken", token);
                     context.Response.Headers.Add("Access-Control-Expose-Headers", "refreshToken");
-                    userModel = JsonHelper.DeserializeObject<UserModel>(json);
                 }               
             }
             catch (AuthException)
@@ -51,11 +49,7 @@ namespace BlogApi
             }
             catch (Exception e)
             {
-            }
-            context.Request.Headers.TryGetValue("requestIp", out StringValues ip);
-            context.Request.Headers.TryGetValue("requestAddress", out StringValues address);
-            string account = userModel == null ? "" : userModel.Account;
-            new LogUtils().LogInfo(null, context.Request.Path.Value, account,ip,address);
+            }          
             await _next(context);
 
         }

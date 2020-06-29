@@ -36,6 +36,11 @@ namespace Blog.Infrastruct
                     dynamicParameters.Add("IsPassing", condition.IsPassing.Value,DbType.Boolean);
                     sqlList.Add("whisper_ispassing = @IsPassing");
                 }
+                if (condition.Id.HasValue)
+                {
+                    dynamicParameters.Add("id", condition.Id.Value);
+                    sqlList.Add("whisper_id = @id");
+                }
             }
             sqlList.Add(" 1=1 ");
             string sql = string.Join(" AND ", sqlList);

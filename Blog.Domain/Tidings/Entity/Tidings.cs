@@ -10,8 +10,9 @@ namespace Blog.Domain
     /// </summary>
    public  class Tidings:Entity<int>
     {
-        public Tidings(string postUser, string postContent, string reviceUser, bool isRead, string url, string additionalData,DateTime sendDate)
+        public Tidings(int id,string postUser, string postContent, string reviceUser, bool isRead, string url, string additionalData,DateTime sendDate)
         {
+            Id = id;
             PostUser = postUser;
             PostContent = postContent;
             ReviceUser = reviceUser;
@@ -20,10 +21,16 @@ namespace Blog.Domain
             AdditionalData = additionalData;
             SendDate = sendDate;
         }
-        public Tidings(string commentId,string postUser,string postContent,string reviceUser,bool isRead,string url,string additionalData, DateTime sendDate) :
-            this(postUser, postContent, reviceUser, isRead, url, additionalData,sendDate)
+        public Tidings(string commentId,string postUser,string postContent,string reviceUser,bool isRead,string url,string additionalData, DateTime sendDate)
         {
             CommentId = commentId;
+            PostUser = postUser;
+            PostContent = postContent;
+            ReviceUser = reviceUser;
+            IsRead = isRead;
+            Url = url;
+            AdditionalData = additionalData;
+            SendDate = sendDate;
         }
      
         /// <summary>

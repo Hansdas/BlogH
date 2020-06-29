@@ -76,6 +76,8 @@ namespace BlogApi.Configure
             #region Tidings
             services.AddTransient<ITidingsRepository, TidingsRepository>();
             services.AddTransient<ITidingsService, TidingsService>();
+            services.AddEventBus<ICommandHandler<DoneTidingsCommand>, DoneTidingsCommand>();
+            services.AddEventBus<IEventHandler<DoneEvent>, DoneEvent>();
             #endregion
 
             #region News

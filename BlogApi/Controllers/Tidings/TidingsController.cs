@@ -29,5 +29,21 @@ namespace BlogApi
             int count = _tidingsService.SelectCountByAccount(userModel.Account);
             return count;
         }
+        [HttpPost("{id}")]
+        public JsonResult Done(int id)
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                _tidingsService.Done(id);
+                returnResult.Code = "0";
+            }
+            catch (Exception e)
+            {
+                returnResult.Code = "1";
+                returnResult.Data = e.Message;
+            }
+            return new JsonResult(returnResult);
+        }
     }
 }

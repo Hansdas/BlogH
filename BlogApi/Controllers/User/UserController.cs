@@ -195,6 +195,7 @@ namespace BlogApi.Controllers.User
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             TidingsCondition tidingsCondition = new TidingsCondition();
             tidingsCondition.Account = userModel.Account;
+            tidingsCondition.IsRead = false;
             try
             {
                 IList<TidingsModel> tidingsModels = _tidingsService.SelectByPage(pageIndex, pageSize, tidingsCondition);

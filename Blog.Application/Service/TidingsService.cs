@@ -1,6 +1,7 @@
 ﻿using Blog.Application.IService;
 using Blog.Application.ViewMode;
 using Blog.Domain;
+using Blog.Domain.Core.Bus;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,12 @@ namespace Blog.Application.Service
     {
         private ITidingsRepository _tidingsRepository;
         private IUserRepository _userRepository;
-        public TidingsService(ITidingsRepository tidingsRepository, IUserRepository userRepository)
+        private IEventBus _eventBus;
+        public TidingsService(ITidingsRepository tidingsRepository, IUserRepository userRepository, IEventBus eventBus)
         {
             _tidingsRepository = tidingsRepository;
             _userRepository = userRepository;
+            _eventBus = eventBus;
         }
         public int SelectCountByAccount(string account)
         {
@@ -32,16 +35,25 @@ namespace Blog.Application.Service
             foreach(var item in tidingsList)
             {
                 TidingsModel tidingsModel = new TidingsModel();
+                tidingsModel.Id = item.Id;
                 tidingsModel.Content = item.AdditionalData;
                 tidingsModel.IsRead = item.IsRead;
                 tidingsModel.PostContent = item.PostContent;
+                tidingsModel.PostUserAccount = item.PostUser;
                 tidingsModel.PostUsername = dic[item.PostUser];
                 tidingsModel.ReviceUsername = dic[item.ReviceUser];
+                tidingsModel.ReviceUserAccount = item.ReviceUser;
                 tidingsModel.Url = item.Url;
                 tidingsModel.PostDate = item.SendDate.ToString("yyyy-MM-dd hh:mm");
                 tidingsModels.Add(tidingsModel);
             }
             return tidingsModels;
+        }
+
+        public void Done(int id)
+        {
+            DoneTidingsCommand doneTidingsCommand = new DoneTidingsCommand(id);
+            _eventBus.Publish(doneTidingsCommand);
         }
     }
 }

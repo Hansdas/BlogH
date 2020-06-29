@@ -11,5 +11,6 @@ namespace Blog.Application.IService
         int SelectCountByAccount(string account);
 
         IList<TidingsModel> SelectByPage(int pageIndex, int pageSize, TidingsCondition TidingsCondition = null);
+        void Done(int id);
     }
 }

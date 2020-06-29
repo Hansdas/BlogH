@@ -6,6 +6,11 @@ namespace Blog.Application.ViewMode
 {
    public class TidingsModel
     {
+        public int Id { get; set; }
+        /// <summary>
+        /// 评论人账号
+        /// </summary>
+        public string PostUserAccount { get; set; }
         /// <summary>
         /// 评论人
         /// </summary>
@@ -14,6 +19,10 @@ namespace Blog.Application.ViewMode
         /// 评论内容
         /// </summary>
         public string PostContent { get; set; }
+        /// <summary>
+        /// 接收人 账号
+        /// </summary>
+        public string ReviceUserAccount { get; set; }
         /// <summary>
         /// 接收人
         /// </summary>

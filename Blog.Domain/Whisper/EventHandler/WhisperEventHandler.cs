@@ -42,7 +42,7 @@ namespace Blog.Domain
             try
             {
                 Tidings tidings = null;
-                string url = "../whisper/whisper.html?id=" + reviewEvent.WhiperId;
+                string url = "../whisper/whisper.html?id=" + reviewEvent.WhiperId+"&read=1";
                 if (reviewEvent.Comment.CommentType == CommentType.微语)
                 {
                     Whisper whisper = _whisperRepository.SelectById(reviewEvent.WhiperId);

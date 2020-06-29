@@ -33,7 +33,7 @@ namespace Blog.Domain
         public void Handler(ReviewEvent reviewEvent)
         {
             Tidings tidings = null;
-            string url = "../article/detail.html?id=" + reviewEvent.ArticleId;
+            string url = "../article/detail.html?id=" + reviewEvent.ArticleId+"&read=1";
             if (reviewEvent.Comment.CommentType==CommentType.文章)//评论文章
             {
                 Article article = _articleRepository.SelectById(reviewEvent.ArticleId);

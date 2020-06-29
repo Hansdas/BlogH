@@ -11,6 +11,7 @@ namespace Blog.Infrastruct
         private Tidings Map(dynamic d)
         {
             return new Tidings(
+                d.tidings_id,
                 d.tidings_postuser,
                 d.tidings_postcontent,
                 d.tidings_reviceuser,
@@ -30,12 +31,6 @@ namespace Blog.Infrastruct
             }
             return tidingList;
         }
-        public void Insert(Tidings tidings)
-        {
-            string sql = "INSERT INTO T_Tidings(tidings_commentid,tidings_postuser,tidings_postcontent,tidings_reviceuser,tidings_isread,tidings_url,tidings_additionaldata,tidings_senddate) " +
-                 "VALUES (@CommentId,@PostUser,@PostContent,@ReviceUser,@IsRead,@Url,@AdditionalData,@SendDate)";
-            DbConnection.Execute(sql, tidings);
-        }
         private string Where(TidingsCondition condition, ref DynamicParameters parameters)
         {
             IList<string> sqlList = new List<string>();
@@ -44,9 +39,28 @@ namespace Blog.Infrastruct
                 parameters.Add("account", condition.Account);
                 sqlList.Add("tidings_reviceuser = @account");
             }
+            if (condition.IsRead.HasValue)
+            {
+                parameters.Add("isread", condition.IsRead.Value);
+                sqlList.Add("tidings_isread = @isread");
+            }
             sqlList.Add(" 1=1 ");
             string sql = string.Join(" AND ", sqlList);
             return sql;
+        }
+
+        public Tidings SelectById(int id)
+        {
+            string sql = "SELECT tidings_id,tidings_postuser,tidings_postcontent,tidings_reviceuser,tidings_senddate,tidings_isread,tidings_additionaldata,tidings_url "
+                      + " FROM T_Tidings  WHERE tidings_id=@id";
+            dynamic result = DbConnection.QueryFirst(sql,new { id=id});
+            return Map(result);
+        }
+        public void Insert(Tidings tidings)
+        {
+            string sql = "INSERT INTO T_Tidings(tidings_commentid,tidings_postuser,tidings_postcontent,tidings_reviceuser,tidings_isread,tidings_url,tidings_additionaldata,tidings_senddate) " +
+                 "VALUES (@CommentId,@PostUser,@PostContent,@ReviceUser,@IsRead,@Url,@AdditionalData,@SendDate)";
+            DbConnection.Execute(sql, tidings);
         }
         public int SelectCountByAccount(string account)
         {
@@ -60,11 +74,20 @@ namespace Blog.Infrastruct
             parameters.Add("pageId", pageId);
             parameters.Add("pageSize", pageSize);
             string where = Where(TidingsCondition, ref parameters);
-            string sql = "SELECT tidings_postuser,tidings_postcontent,tidings_reviceuser,tidings_senddate,tidings_isread,tidings_additionaldata,tidings_url "
-                         + " FROM T_Tidings  WHERE " + where + " AND tidings_id<=("
-                            + "SELECT tidings_id FROM T_Tidings WHERE " + where + " ORDER BY tidings_id DESC LIMIT @pageId,1) ORDER BY tidings_id DESC LIMIT @pageSize";
+            string sql = "SELECT tidings_id,tidings_postuser,tidings_postcontent,tidings_reviceuser,tidings_senddate,tidings_isread,tidings_additionaldata,tidings_url "
+                         + " FROM T_Tidings  WHERE " + where + " ORDER BY tidings_id DESC LIMIT @pageId,@pageSize";
             IEnumerable<dynamic> dynamics = Select(sql, parameters);
             return Map(dynamics);
         }
+
+        public void Done(int id)
+        {
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("isRead", true,System.Data.DbType.Boolean);
+            parameters.Add("id", id);
+            string sql = "UPDATE T_Tidings SET tidings_isread=@isRead WHERE tidings_id=@id";
+            DbConnection.Execute(sql, parameters);
+        }
+
     }
 }
