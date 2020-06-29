@@ -91,8 +91,8 @@ namespace Blog.Infrastruct
         public void Insert(Article article)
         {
             string sql = "INSERT INTO T_Article(" +
-                "article_author,article_title,article_textsection, article_content, article_articletype, article_praisecount, article_browsercount, article_isdraft, article_relatedfiles, article_createtime)" +
-                   " VALUES (@Author,@Title,@TextSection, @Content, @ArticleType, @PraiseCount,@BrowserCount,@IsDraft,@RelatedFiles, NOW())";
+                "article_author,article_title,article_textsection, article_content, article_articletype, article_praisecount, article_browsercount, article_isdraft,article_sendemail, article_relatedfiles, article_createtime)" +
+                   " VALUES (@Author,@Title,@TextSection, @Content, @ArticleType, @PraiseCount,@BrowserCount,@IsDraft,@IsSendEmail,@RelatedFiles, NOW())";
             DbConnection.Execute(sql, article);
         }
 
@@ -192,6 +192,7 @@ namespace Blog.Infrastruct
             parameters.Add("PraiseCount", article.PraiseCount);
             parameters.Add("BrowserCount", article.BrowserCount);
             parameters.Add("IsDraft", article.IsDraft);
+            parameters.Add("IsSendEmail", article.IsSendEmail);
             parameters.Add("Id", article.Id);
             string sql = "UPDATE T_Article " +
                 "SET article_title = @Ttile" +
@@ -199,6 +200,7 @@ namespace Blog.Infrastruct
                 ", article_content =@Content " +
                 ", article_articletype = @ArticleType" +
                 ", article_isdraft = @IsDraft" +
+                ", article_sendemail=@IsSendEmail" +
                 ", article_createtime = NOW() WHERE article_id =@Id";
             DbConnection.Execute(sql, parameters);
         }

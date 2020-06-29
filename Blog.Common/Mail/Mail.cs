@@ -41,10 +41,5 @@ namespace Blog.Common.Mail
                 await smtp.DisconnectAsync(true);
             }
         }
-
-        private void Smtp_MessageSent(object sender, MailKit.MessageSentEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

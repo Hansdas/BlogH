@@ -59,6 +59,10 @@ namespace Blog.Application.ViewModel
         /// </summary>
         public int CommentCount { get; set; }
         /// <summary>
+        /// 评论是否发送邮件
+        /// </summary>
+        public bool IsSendEmail { get; set; }
+        /// <summary>
         /// 评论
         /// </summary>
         public IList<CommentModel> Comments { get; set; }

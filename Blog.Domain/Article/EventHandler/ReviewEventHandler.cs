@@ -18,13 +18,15 @@ namespace Blog.Domain
         private ITidingsRepository  _tidingsRepository;
         private IArticleRepository _articleRepository;
         private ISingalrContent _singalrContent;
+        private IRepository _repository;
         public ReviewEventHandler(ICommentRepository commentRepository, ITidingsRepository tidingsRepository, IArticleRepository articleRepository
-            , ISingalrContent singalrContent)
+            , ISingalrContent singalrContent, IRepository repository)
         {
             _commentRepository = commentRepository;
             _tidingsRepository = tidingsRepository;
             _articleRepository = articleRepository;
             _singalrContent = singalrContent;
+            _repository = repository;
         }
         /// <summary>
         /// 触发评论事件
@@ -50,6 +52,10 @@ namespace Blog.Domain
             Message message = new Message();
             message.Data = count;
             _singalrContent.SendClientMessage(reviewEvent.Comment.RevicerUser, message);
+
+            string sql = "SELECT config_value where config_key=@key";
+            string result= _repository.SelectSingle(sql,new { key= "MAIL_CONFIG_KEY" }).config_value;
+
         }
     }
 }

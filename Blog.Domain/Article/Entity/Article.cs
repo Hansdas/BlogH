@@ -33,7 +33,7 @@ namespace Blog.Domain
             TextSection = textSection;
             CreateTime = createTime;
         }
-        public Article(int id,string author, string title,string textSection, string content, ArticleType articleType, bool isDraft)
+        public Article(int id,string author, string title,string textSection, string content, ArticleType articleType, bool isDraft,bool isSendEmail)
         {
             Id = id;
             Title = title;
@@ -42,6 +42,7 @@ namespace Blog.Domain
             Content = content;
             IsDraft = isDraft;
             TextSection = textSection;
+            IsSendEmail = isSendEmail;
         }
         public Article(string title, string author, string content, ArticleType articleType, bool isDraft,IList<Comment> comments, DateTime createTime)
         {
@@ -107,6 +108,10 @@ namespace Blog.Domain
         /// 是否为草稿
         /// </summary>
         public bool IsDraft { get; private set; }
+        /// <summary>
+        /// 有人评论是否发送邮件
+        /// </summary>
+        public bool IsSendEmail { get; private set; }
         /// <summary>
         /// 点赞数
         /// </summary>

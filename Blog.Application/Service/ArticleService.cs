@@ -49,7 +49,8 @@ namespace Blog.Application
                 , model.TextSection
                 , model.Content
                 , Enum.Parse<ArticleType>(model.ArticleType)
-                , Convert.ToBoolean(model.IsDraft));
+                , Convert.ToBoolean(model.IsDraft)
+                ,model.IsSendEmail);
             if (article.Id > 0)
             {
                 UpdateArticleCommand updateArticleCommand = new UpdateArticleCommand(article);
