@@ -44,8 +44,9 @@ namespace Blog.Domain
             TextSection = textSection;
             IsSendEmail = isSendEmail;
         }
-        public Article(string title, string author, string content, ArticleType articleType, bool isDraft,IList<Comment> comments, DateTime createTime)
+        public Article(int id,string title, string author, string content, ArticleType articleType, bool isDraft,IList<Comment> comments, DateTime createTime)
         {
+            Id = id;
             Title = title;
             Author = author;
             ArticleType = articleType;

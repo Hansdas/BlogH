@@ -52,6 +52,7 @@ namespace BlogApi.Configure
             services.AddEventBus<ICommandHandler<CreateArticleCommand>, CreateArticleCommand>();
             services.AddEventBus<ICommandHandler<UpdateArticleCommand>, UpdateArticleCommand>();
             services.AddEventBus<ICommandHandler<PraiseArticleCommand>, PraiseArticleCommand>();
+            services.AddEventBus<ICommandHandler<BrowserCommand>, BrowserCommand>();
             services.AddEventBus<IEventHandler<ReviewEvent>, ReviewEvent>();
             #endregion
 

@@ -110,6 +110,8 @@ namespace Blog.Application
                 IsDraft = article.IsDraft ? "是" : "否",
                 Comments = CommentModel.ConvertToCommentModels(article.Comments)
             };
+            BrowserCommand browserCommand = new BrowserCommand(article.Id);
+            _eventBus.Publish(browserCommand);
             return articleModel;
         }
 
@@ -200,6 +202,7 @@ namespace Blog.Application
         }
         public IList<ArticleFileModel> SelectArticleFile(ArticleCondition articleCondition)
         {
+            articleCondition.IsDraft = false;
             IEnumerable<dynamic> resultList = _articleRepository.SelectArticleFile(articleCondition);
             IList<ArticleFileModel> fileModels = new List<ArticleFileModel>();
             foreach(var item in resultList)

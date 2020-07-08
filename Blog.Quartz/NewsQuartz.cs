@@ -21,10 +21,6 @@ namespace Blog.Quartz
         {
             _newsRepository = newsRepository;
         }
-        public NewsQuartz()
-        {
-
-        }
         class NewsUrlItem
         {
             public NewsUrlItem(string httpUrl, NewsOrigin newsOrigin)

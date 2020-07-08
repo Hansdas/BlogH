@@ -14,7 +14,10 @@ namespace Blog.Domain
     /// <summary>
     /// 文章命令处理程序
     /// </summary>
-    public class ArticleCommandHandler : ICommandHandler<CreateArticleCommand>, ICommandHandler<UpdateArticleCommand>, ICommandHandler<PraiseArticleCommand>
+    public class ArticleCommandHandler : ICommandHandler<CreateArticleCommand>, 
+        ICommandHandler<UpdateArticleCommand>, 
+        ICommandHandler<PraiseArticleCommand>,
+        ICommandHandler<BrowserCommand>
     {
         private IArticleRepository _articleRepository;
         private IEventBus _eventBus;
@@ -84,5 +87,9 @@ namespace Blog.Domain
 
         }
 
+        public void Handler(BrowserCommand command)
+        {
+            _articleRepository.UpdateBrowserCount(command.Id);
+        }
     }
 }

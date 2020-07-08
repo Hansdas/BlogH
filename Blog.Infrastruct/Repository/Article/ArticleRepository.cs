@@ -152,7 +152,8 @@ namespace Blog.Infrastruct
                 comments = _commentRepository.SelectByIds(article_comments.Split(','));
             }
             Article article = new Article(
-                d.article_title
+                d.article_id
+                ,d.article_title
                 , d.article_author
                 , d.article_content
                 , (ArticleType)d.article_articletype
@@ -190,7 +191,6 @@ namespace Blog.Infrastruct
             parameters.Add("Content", article.Content);
             parameters.Add("ArticleType",article.ArticleType);
             parameters.Add("PraiseCount", article.PraiseCount);
-            parameters.Add("BrowserCount", article.BrowserCount);
             parameters.Add("IsDraft", article.IsDraft);
             parameters.Add("IsSendEmail", article.IsSendEmail);
             parameters.Add("Id", article.Id);
@@ -249,7 +249,8 @@ namespace Blog.Infrastruct
             if (!string.IsNullOrEmpty(d.article_comments))
                 comments = _commentRepository.SelectByIds(d.article_comments.Split(','));
             Article article = new Article(
-                d.article_title
+                d.article_id
+                , d.article_title
                 , d.article_author
                 , d.article_content
                 , (ArticleType)d.article_articletype
@@ -344,6 +345,12 @@ namespace Blog.Infrastruct
             string sql = "SELECT COUNT(*) as count,article_author,article_articletype FROM T_Article WHERE " + where + "   GROUP BY article_author,article_articletype";
             IEnumerable<dynamic> resultList = Select(sql, parameters);
             return resultList;
+        }
+
+        public void UpdateBrowserCount(int id)
+        {
+            string sql = "UPDATE T_Article SET article_browsercount=article_browsercount+1 WHERE article_id=@id";
+            DbConnection.Execute(sql, new { id });
         }
     }
 }

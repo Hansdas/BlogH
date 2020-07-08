@@ -66,5 +66,11 @@ namespace Blog.Domain
         /// <param name="articleCondition"></param>
         /// <returns></returns>
         IEnumerable<dynamic> SelectArticleFile(ArticleCondition articleCondition);
+        /// <summary>
+        /// 更新浏览次数
+        /// </summary>
+        /// <param name="id"></param>
+
+        void UpdateBrowserCount(int id);
     }
 }
