@@ -70,7 +70,6 @@ namespace Blog.Domain
         /// 更新浏览次数
         /// </summary>
         /// <param name="id"></param>
-
         void UpdateBrowserCount(int id);
     }
 }

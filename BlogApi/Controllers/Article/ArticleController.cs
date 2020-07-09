@@ -392,5 +392,28 @@ namespace BlogApi
             }
             return new JsonResult(returnResult);
         }
+        /// <summary>
+        /// 阅读排行前几
+        /// </summary>
+        /// <param name="articleId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("read/rank/{top}")]
+        public JsonResult ArticleReadRank(int top)
+        {
+            ReturnResult returnResult = new ReturnResult();
+            try
+            {
+                IList<ArticleModel> fileModels = _articleService.SelectByRead(top);
+                returnResult.Data = fileModels;
+                returnResult.Code = "0";
+            }
+            catch (AuthException)
+            {
+                returnResult.Message = "not login";
+                returnResult.Code = "401";
+            }
+            return new JsonResult(returnResult);
+        }
     }
 }
