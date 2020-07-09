@@ -40,29 +40,31 @@ namespace BlogApi.Controllers.Upload
         [Consumes("multipart/form-data")]
         [Route("upload/image")]
         public IActionResult UploadImage()
-        {   
-            int height =Convert.ToInt32(Request.Form["height"]);
-            int width = Convert.ToInt32(Request.Form["height"]);
-            bool b = Convert.ToBoolean(Request.Form["isAbs"]);
+        {
             var imgFile = Request.Form.Files[0];
             if (imgFile == null)
                 return Json(new ReturnResult("500", "附件为null"));
             if (string.IsNullOrEmpty(imgFile.FileName))
                 return Json(new ReturnResult("500", "附件名称为空"));
-            PathValue pathValue =UploadHelper.SaveFile(imgFile.FileName);
-            UploadHelper.CompressImage(pathValue.FilePath, imgFile.OpenReadStream(), height, width, b);
+            PathValue pathValue = UploadHelper.SaveFile(imgFile.FileName);
+            string savepaht = pathValue.FilePath + "/" + pathValue.FileName;
+            using (FileStream fs = System.IO.File.Create(pathValue.FilePath))
+            {
+                imgFile.CopyTo(fs);
+                fs.Flush();
+            }
             //使用虚拟静态资源路径，否则无法读取到图片
             var configuration = ConfigurationProvider.configuration.GetSection("loaclweb");
             string ip = configuration.GetSection("httpAddresss").Value;
             string port = configuration.GetSection("port").Value;
-            string virtualPath = string.Format("http://{0}:{1}{2}", ip,port, ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName);
+            string virtualPath = string.Format("http://{0}:{1}{2}", ip, port, ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName);
             //string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
-            return Json(new { Code = "0", Data = new { Src = virtualPath, Title = imgFile.FileName } });
+            return new JsonResult(new { uploaded = 1, fileName = pathValue.FileName, url = virtualPath });
         }
-         /// <summary>
-         /// 删除图片
-         /// </summary>
-         /// <returns></returns>
+        /// <summary>
+        /// 删除图片
+        /// </summary>
+        /// <returns></returns>
         [HttpDelete]
         [Route("upload/image/delete")]
         public IActionResult DeleteFile()

@@ -32,6 +32,10 @@
     <ProjectReference Include="..\Blog.Quartz\Blog.Quartz.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TempFile\2020\7\" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties configs_4appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>
