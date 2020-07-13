@@ -41,26 +41,35 @@ namespace BlogApi.Controllers.Upload
         [Route("upload/image")]
         public IActionResult UploadImage()
         {
-            var imgFile = Request.Form.Files[0];
-            if (imgFile == null)
-                return Json(new ReturnResult("500", "附件为null"));
-            if (string.IsNullOrEmpty(imgFile.FileName))
-                return Json(new ReturnResult("500", "附件名称为空"));
-            PathValue pathValue = UploadHelper.SaveFile(imgFile.FileName);
-            string savepaht = pathValue.FilePath + "/" + pathValue.FileName;
-            using (FileStream fs = System.IO.File.Create(pathValue.FilePath))
+            try
             {
-                imgFile.CopyTo(fs);
-                fs.Flush();
+                var imgFile = Request.Form.Files[0];
+                if (imgFile == null)
+                    return Json(new ReturnResult("500", "附件为null"));
+                if (string.IsNullOrEmpty(imgFile.FileName))
+                    return Json(new ReturnResult("500", "附件名称为空"));
+                PathValue pathValue = UploadHelper.SaveFile(imgFile.FileName);
+                string savepaht = pathValue.FilePath + "/" + pathValue.FileName;
+                using (FileStream fs = System.IO.File.Create(pathValue.FilePath))
+                {
+                    imgFile.CopyTo(fs);
+                    fs.Flush();
+                }
+                //使用虚拟静态资源路径，否则无法读取到图片
+                var configuration = ConfigurationProvider.configuration.GetSection("loaclweb");
+                string ip = configuration.GetSection("httpAddresss").Value;
+                string port = configuration.GetSection("port").Value;
+                string virtualPath = string.Format("http://{0}:{1}{2}", ip, port, ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName);
+                //string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
+                return new JsonResult(new { uploaded = 1, fileName = pathValue.FileName, url = virtualPath });
             }
-            //使用虚拟静态资源路径，否则无法读取到图片
-            var configuration = ConfigurationProvider.configuration.GetSection("loaclweb");
-            string ip = configuration.GetSection("httpAddresss").Value;
-            string port = configuration.GetSection("port").Value;
-            string virtualPath = string.Format("http://{0}:{1}{2}", ip, port, ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName);
-            //string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
-            return new JsonResult(new { uploaded = 1, fileName = pathValue.FileName, url = virtualPath });
-        }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+          
+        }       
         /// <summary>
         /// 删除图片
         /// </summary>

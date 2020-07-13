@@ -91,6 +91,11 @@ namespace BlogApi.Configure
             services.AddEventBus<ICommandHandler<CreateCommand>, CreateCommand>();
             #endregion
 
+            #region Video
+            services.AddTransient<IVideoRepository, VideoRepository>();
+            services.AddTransient<IVideoService, VideoService>();
+            services.AddEventBus<ICommandHandler<CreateVideoCommand>, CreateVideoCommand>();
+            #endregion
 
             services.DisposeServiceTypes();
         }

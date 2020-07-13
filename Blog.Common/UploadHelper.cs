@@ -123,6 +123,33 @@ namespace Blog.Common
             return pathValue;
         }
         /// <summary>
+        /// 上传附件
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static async Task<PathValue> Upload(FileStream fileStream, string fileName,string type)
+        {
+            HttpContent httpContent = new StreamContent(fileStream);
+            httpContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+            string httpResult = "";
+            using (MultipartFormDataContent mulContent = new MultipartFormDataContent("----WebKitFormBoundaryrXRBKlhEeCbfHIY"))
+            {
+                mulContent.Add(httpContent, "file", fileName);
+                string url = GetHttpAddress() + controller;
+                httpResult = await HttpHelper.PostHttpClient(url, mulContent);
+            }
+            //上传成功后删除本地文件
+            dynamic result = JsonHelper.DeserializeObject(httpResult);
+            if (result.code == "500")
+                throw new ServiceException("webapi请求错误:" + result.message);
+            PathValue pathValue = new PathValue();
+            pathValue.DatePath = result.datepath;
+
+            pathValue.FilePath = string.Format("http://{0}/{1}/{2}", GetConfigurationSection("webapi").GetSection("HttpAddresss").Value,type, pathValue.DatePath);//nginx路由匹配
+            pathValue.FileName = fileName;
+            return pathValue;
+        }
+        /// <summary>
         /// 下载图片
         /// </summary>
         /// <param name="uploadPath">远程文件存放相对路径</param>

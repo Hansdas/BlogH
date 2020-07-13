@@ -50,8 +50,8 @@ namespace BlogApi
             try
             {
                 UserModel userModel = Auth.GetLoginUser(_httpContext);
-                IEnumerable<string> pathValues = UploadHelper.Upload(articleModel.FilePaths).Select(s => s.FilePath);
-                articleModel.Content = RegexContent(articleModel.Content, pathValues);
+                //IEnumerable<string> pathValues = UploadHelper.Upload(articleModel.FilePaths).Select(s => s.FilePath);
+                //articleModel.Content = RegexContent(articleModel.Content, pathValues);
                 articleModel.Author = userModel.Account;
                 _articleService.AddOrUpdate(articleModel);
                 return new JsonResult(new ReturnResult("0"));
