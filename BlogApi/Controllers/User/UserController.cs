@@ -55,6 +55,8 @@ namespace BlogApi.Controllers.User
             {
                 string json = new JWT(_httpContext).ResolveToken();
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
+                if (userModel.HeadPhoto.Contains(ConstantKey.NGINX_FILE_ROUTE_OLD))
+                    userModel.HeadPhoto = userModel.HeadPhoto.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
                 return new JsonResult(new ReturnResult("0", userModel));
             }
             catch (AuthException)
@@ -77,6 +79,8 @@ namespace BlogApi.Controllers.User
             try
             {
                 UserModel userModel = _userService.SelectUser(account);
+                if (userModel.HeadPhoto.Contains(ConstantKey.NGINX_FILE_ROUTE_OLD))
+                    userModel.HeadPhoto = userModel.HeadPhoto.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
                 return new JsonResult(new ReturnResult("0", userModel));
             }
             catch (Exception ex)

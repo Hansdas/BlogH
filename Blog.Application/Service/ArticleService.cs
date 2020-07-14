@@ -98,13 +98,16 @@ namespace Blog.Application
         {
             Article article = _articleRepository.Select(articleCondition);
             UserModel userModel= _userService.SelectUser(article.Author);
+            string content = article.Content;
+            if (content.Contains(ConstantKey.NGINX_FILE_ROUTE_OLD))
+                content = content.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
             ArticleModel articleModel = new ArticleModel()
             {
                 Id = article.Id,
                 Title = article.Title,
                 ArticleType = article.ArticleType.GetEnumText(),
                 CreateTime = article.CreateTime.Value.ToString("yyyy/MM/dd"),
-                Content = article.Content,
+                Content = content,
                 Author = userModel.Username,
                 AuthorAccount=userModel.Account,
                 IsDraft = article.IsDraft ? "是" : "否",

@@ -19,7 +19,7 @@ namespace Blog.Quartz
         {
             _scheduler = await _schedulerFactory.GetScheduler();
             await _scheduler.Start();
-            await CreateJon<NewsQuartz>("news","news", "0 0 1 * * ? *");//每天1点
+            await CreateJon<NewsQuartz>("news","news-group", "0 0 1 * * ? *");//每天1点
         }
         private async Task CreateJon<T>(string name, string group, string cron) where T:IJob
         {

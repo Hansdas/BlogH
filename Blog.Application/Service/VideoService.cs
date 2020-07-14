@@ -49,6 +49,7 @@ namespace Blog.Application.Service
                 videoModel.Id = item.Id;
                 videoModel.Lables = item.Lable.Split(",");
                 videoModel.Description = item.Description;
+                videoModel.Url = item.Url;
                 videoModel.CreateTime = item.CreateTime.Value.ToString("yyyy-MM-dd hh:mm");
                 videoModels.Add(videoModel);
             }
@@ -76,6 +77,7 @@ namespace Blog.Application.Service
             videoModel.AuthorAccount = video.Author;
             videoModel.Size = video.Size;
             videoModel.WatchCount = video.WatchCount;
+            videoModel.Url = video.Url;
             return videoModel;
         }
     }

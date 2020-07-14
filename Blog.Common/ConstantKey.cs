@@ -26,5 +26,15 @@ namespace Blog.Common
         /// 广场页面加载微语cache的ky
         /// </summary>
         public const string CACHE_SQUARE_WHISPER = "SQUARE_WHISPER";
+        /// <summary>
+        /// 旧nginx上传文件虚拟路径
+        /// </summary>
+
+        public const string NGINX_FILE_ROUTE_OLD = "picture";
+        /// <summary>
+        /// nginx上传文件虚拟路径
+        /// </summary>
+
+        public const string NGINX_FILE_ROUTE = "bf";
     }
 }

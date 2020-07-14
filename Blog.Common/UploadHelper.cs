@@ -41,7 +41,7 @@ namespace Blog.Common
     public class UploadHelper
     {
        
-        private static readonly string controller = "/api/Upload";
+        private static readonly string controller = "/api/upload/image";
         private readonly static object obj = new object();
         private static IConfigurationSection GetConfigurationSection(string sctionKey)
         {
