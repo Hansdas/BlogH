@@ -101,7 +101,7 @@ namespace Blog.Infrastruct
             DynamicParameters dynamicParameters = new DynamicParameters();
             string where = Where(condition, ref dynamicParameters);
             string sql = "SELECT COUNT(*) FROM T_Article WHERE " + where;
-            int count = base.SelectCount(sql,where);
+            int count = base.SelectCount(sql, dynamicParameters);
             return count;
         }
 
