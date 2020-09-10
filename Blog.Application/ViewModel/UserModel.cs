@@ -1,4 +1,5 @@
-﻿using Blog.Domain.Core;
+﻿using Blog.Common;
+using Blog.Domain.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -46,9 +47,24 @@ namespace Blog.Application.ViewModel
         /// 是否失效
         /// </summary>
         public bool IsValid { get;  set; }
+        private string _headPhoto;
         /// <summary>
         /// 头像
         /// </summary>
-        public string HeadPhoto { get;  set; }
+        public string HeadPhoto
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_headPhoto))
+                    return "/style/images/touxiang.jpg";
+                if (_headPhoto.Contains(ConstantKey.NGINX_FILE_ROUTE_OLD))
+                    return _headPhoto.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
+                return _headPhoto;
+            }
+            set
+            {
+                _headPhoto=value;
+            }
+        }
     }
 }

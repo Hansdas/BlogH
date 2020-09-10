@@ -30,10 +30,11 @@ namespace Blog
             Task.Factory.StartNew(() =>
             {
                 UserModel userModel= Auth.GetLoginUser(_httpContext);
+                string account = userModel == null ? "" : userModel.Account;
                 new LogUtils().LogError(context.Exception, "GlobaExceptionFilterAttribute", message, userModel.Account);
             });
-            ReturnResult returnResult = new ReturnResult("1", context.Exception.Message);
-            context.Result = new JsonResult(returnResult);
+            ApiResult apiResult = ApiResult.Error(HttpStatusCode.ERROR, message);
+            context.Result = new JsonResult(apiResult);
             context.ExceptionHandled = true;
         }
     }

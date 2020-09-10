@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BlogApi
 {
-    public class PageResult:ReturnResult
+    public class PageResult: ApiResult
     {
         public int Total { get; set; }
     }

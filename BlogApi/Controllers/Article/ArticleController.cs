@@ -29,13 +29,15 @@ namespace BlogApi
         private IArticleService _articleService;
         private IArticleRepository _articleRepository;
         private IHttpContextAccessor _httpContext;
+        private IUserService _userService;
         private NotifyValidationHandler _notifyValidationHandler;
-        public ArticleController(IArticleService articleService,IArticleRepository articleRepository,IHttpContextAccessor httpContext
-            , IEventHandler<NotifyValidation> notifyValidationHandler)
+        public ArticleController(IArticleService articleService, IArticleRepository articleRepository, IHttpContextAccessor httpContext
+            , IUserService userService, IEventHandler<NotifyValidation> notifyValidationHandler)
         {
             _articleService = articleService;
             _articleRepository = articleRepository;
             _httpContext = httpContext;
+            _userService = userService;
             _notifyValidationHandler = (NotifyValidationHandler)notifyValidationHandler;
         }
         /// <summary>
@@ -45,22 +47,12 @@ namespace BlogApi
         /// <returns></returns>
         [HttpPost]
         [Route("add")]
-        public IActionResult AddArticle([FromBody]ArticleModel articleModel)
+        public ApiResult AddArticle([FromBody]ArticleModel articleModel)
         {
-            try
-            {
-                UserModel userModel = Auth.GetLoginUser(_httpContext);
-                //IEnumerable<string> pathValues = UploadHelper.Upload(articleModel.FilePaths).Select(s => s.FilePath);
-                //articleModel.Content = RegexContent(articleModel.Content, pathValues);
-                articleModel.Author = userModel.Account;
-                _articleService.AddOrUpdate(articleModel);
-                return new JsonResult(new ReturnResult("0"));
-            }
-            catch (Exception ex)
-            {
-
-                return new JsonResult(new ReturnResult("1",ex.Message));
-            }
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            articleModel.Author = userModel.Account;
+            _articleService.AddOrUpdate(articleModel);
+            return ApiResult.Success();
 
         }
         /// <summary>
@@ -82,7 +74,7 @@ namespace BlogApi
                     string fileName = path.Substring(path.LastIndexOf("/") + 1);
                     if (src.IndexOf(fileName) > 0)
                     {
-                        content=content.Replace(src, path);
+                        content = content.Replace(src, path);
                     }
                 }
             }
@@ -95,12 +87,12 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("total")]
-        public int LoadTotal(int articleType)
+        public ApiResult LoadTotal(int articleType)
         {
             ArticleCondition condition = new ArticleCondition();
             condition.ArticleType = articleType;
             int count = _articleRepository.SelectCount(condition);
-            return count;
+            return ApiResult.Success(count);
         }
         /// <summary>
         /// 分页
@@ -109,25 +101,13 @@ namespace BlogApi
         /// <returns></returns>
         [HttpPost]
         [Route("page")]
-        public JsonResult SelectArticle([FromBody]ArticleConditionModel condition)
+        public ApiResult SelectArticle([FromBody]ArticleConditionModel condition)
         {
-            PageResult pageResult = new PageResult();
-            try
-            {
-                if (condition.LoginUser)
-                    condition.Account = Auth.GetLoginUser(_httpContext).Account;
-                IList<ArticleModel> articleModels = _articleService.SelectByPage(condition);
-                pageResult.Data = articleModels;
-                pageResult.Total = _articleService.SelectCount(condition);
-                pageResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                pageResult.Data = null;
-                pageResult.Code = "1";
-                pageResult.Message = e.Message;
-            }
-            return new JsonResult(pageResult);
+            if (condition.LoginUser)
+                condition.Account = Auth.GetLoginUser(_httpContext).Account;
+            IList<ArticleModel> articleModels = _articleService.SelectByPage(condition);
+            int total = _articleService.SelectCount(condition);
+            return ApiResult.Success(new { list = articleModels, total = total });
         }
         /// <summary>
         /// 详情
@@ -136,24 +116,12 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("{id}")]
-        public IActionResult Detail(int id)
+        public ApiResult Detail(int id)
         {
-            PageResult pageResult = new PageResult();
             ArticleCondition condition = new ArticleCondition();
             condition.Id = id;
-            try
-            {
-                ArticleModel articleModel = _articleService.Select(condition);
-                pageResult.Data = articleModel;
-                pageResult.Code = "0";
-                pageResult.Message = "ok";
-            }
-            catch (Exception e)
-            {
-                pageResult.Code = "1";
-                pageResult.Message = e.Message;
-            }
-            return new JsonResult(pageResult);
+            ArticleModel articleModel = _articleService.Select(condition);
+            return ApiResult.Success(articleModel);
         }
         /// <summary>
         /// 上一篇下一篇
@@ -163,24 +131,12 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("context/{id}")]
-        public IActionResult SelectContext(int id)
+        public ApiResult SelectContext(int id)
         {
-            ReturnResult returnResult = new ReturnResult();
             ArticleCondition condition = new ArticleCondition();
             condition.IsDraft = false;
-            try
-            {
-                PageInfoMode result = _articleService.SelectContext(id, condition);
-                returnResult.Data = result;
-                returnResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                returnResult.Data = null;
-                returnResult.Code = "1";
-                returnResult.Message = e.Message;
-            }
-            return new JsonResult(returnResult);
+            PageInfoMode result = _articleService.SelectContext(id, condition);
+            return ApiResult.Success(result);
         }
 
         /// <summary>
@@ -190,20 +146,10 @@ namespace BlogApi
         /// <returns></returns>
         [HttpDelete]
         [Route("{id}")]
-        public JsonResult Delete(int id)
+        public ApiResult Delete(int id)
         {
-            ReturnResult result = new ReturnResult();
-            try
-            {
-                _articleRepository.Delete(id);
-                result.Code = "200";
-            }
-            catch (Exception e)
-            {
-                result.Code = "500";
-                result.Message = e.Message;
-            }
-            return new JsonResult(result);
+            _articleRepository.Delete(id);
+            return ApiResult.Success();
         }
         /// <summary>
         /// 评论
@@ -213,14 +159,13 @@ namespace BlogApi
         /// <returns></returns>
         [HttpPost]
         [Route("comment/add")]
-        public  JsonResult Review()
+        public ApiResult Review()
         {
             string content = Request.Form["content"];
             int articleId = Convert.ToInt32(Request.Form["articleId"]);
             string revicer = Request.Form["revicer"];
             string replyId = Request.Form["replyId"];
             int commentType = Convert.ToInt32(Request.Form["commentType"]);
-            ReturnResult returnResult = new ReturnResult();
             try
             {
                 CommentModel commentModel = new CommentModel();
@@ -230,20 +175,13 @@ namespace BlogApi
                 commentModel.Revicer = revicer;
                 commentModel.CommentType = commentType;
                 _articleService.Review(commentModel, articleId);
-                returnResult.Code = "0";
+                return ApiResult.Success();
             }
             catch (AuthException)
             {
-                returnResult.Code = "401";
-                returnResult.Data = "auth fail";
-            }
-            catch (Exception e)
-            {
-                returnResult.Code = "1";
-                returnResult.Data = e.Message;
+                return ApiResult.Error(HttpStatusCode.FORBIDDEN, "not login");
             }
 
-            return new JsonResult(returnResult);
         }
         /// <summary>
         /// 点赞
@@ -252,14 +190,14 @@ namespace BlogApi
         /// <returns></returns>
         [HttpPost]
         [Route("praise/{id}")]
-        public JsonResult Praise(int id)
+        public ApiResult Praise(int id)
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
-            _articleService.Praise(id, userModel.Account,false);
-            string message= _notifyValidationHandler.GetErrorList().Select(s=>s.Value).FirstOrDefault();
-            if(!string.IsNullOrEmpty(message))
-                return new JsonResult(new ReturnResult("0",message));
-            return new JsonResult(new ReturnResult("0","0"));
+            _articleService.Praise(id, userModel.Account, false);
+            string message = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
+            if (!string.IsNullOrEmpty(message))
+                return ApiResult.Error(HttpStatusCode.BAD_REQUEST, message);
+            return ApiResult.Success();
         }
         /// <summary>
         /// 取消点赞
@@ -268,11 +206,11 @@ namespace BlogApi
         /// <returns></returns>
         [HttpPost]
         [Route("praiseout/{id}")]
-        public JsonResult PraiseOut(int id)
+        public ApiResult PraiseOut(int id)
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
-            _articleService.Praise(id, userModel.Account,true);
-            return new JsonResult(new ReturnResult("0"));
+            _articleService.Praise(id, userModel.Account, true);
+            return ApiResult.Success();
         }
         /// <summary>
         /// 热门推荐
@@ -280,22 +218,10 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("hot")]
-        public JsonResult HotArticle()
+        public ApiResult HotArticle()
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                IList<ArticleModel> articleModels = _articleService.SelectHotArticles();
-                returnResult.Data = articleModels;
-                returnResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                returnResult.Data = null;
-                returnResult.Code = "1";
-                returnResult.Message = e.Message;
-            }
-            return new JsonResult(returnResult);
+            IList<ArticleModel> articleModels = _articleService.SelectHotArticles();
+            return ApiResult.Success(articleModels);
         }
         /// <summary>
         /// 查询每种文章最新发布
@@ -303,22 +229,11 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("type/maxtime")]
-        public JsonResult SelectArticleByTypeMaxTime()
+        public ApiResult SelectArticleByTypeMaxTime()
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                IList<ArticleModel> articleModels = _articleService.SelectByTypeMaxTime();
-                returnResult.Data = articleModels;
-                returnResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                returnResult.Data = null;
-                returnResult.Code = "1";
-                returnResult.Message = e.Message;
-            }
-            return new JsonResult(returnResult);
+            IList<ArticleModel> articleModels = _articleService.SelectByTypeMaxTime();
+            return ApiResult.Success(articleModels);
+
         }
         /// <summary>
         /// 获取文章类型
@@ -326,46 +241,22 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("types")]
-        public JsonResult ArticleTypes()
+        public ApiResult ArticleTypes()
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                IList<KeyValueItem> articleTypes = EnumConvert<ArticleType>.AsKeyValueItem();
-                returnResult.Data = articleTypes;
-                returnResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                returnResult.Data = null;
-                returnResult.Code = "1";
-                returnResult.Message = e.Message;
-            }
-            return new JsonResult(returnResult);
+            IList<KeyValueItem> articleTypes = EnumConvert<ArticleType>.AsKeyValueItem();
+            return ApiResult.Success(articleTypes);
         }
         /// <summary>
-        /// 根据文章获取改作者的所有
+        /// 根据文章获取作者的所有文章
         /// </summary>
         /// <param name="articleId"></param>
         /// <returns></returns>
         [HttpGet]
         [Route("all/{articleId}")]
-        public JsonResult SelectAllByArticle(int articleId)
+        public ApiResult SelectAllByArticle(int articleId)
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                IList<ArticleModel> articleModels = _articleService.SelectAllByArticle(articleId);
-                returnResult.Data = articleModels;
-                returnResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                returnResult.Data = null;
-                returnResult.Code = "1";
-                returnResult.Message = e.Message;
-            }
-            return new JsonResult(returnResult);
+            IList<ArticleModel> articleModels = _articleService.SelectAllByArticle(articleId);
+            return ApiResult.Success(articleModels);
         }
         /// <summary>
         /// 根据账号获取个人归档
@@ -374,23 +265,14 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("archive/{account}")]
-        public JsonResult SelectArticleFile(string account)
+        public ApiResult SelectArticleFile(string account)
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                ArticleCondition articleCondition = new ArticleCondition();
-                articleCondition.Account = account;
-                IList<ArticleFileModel> fileModels = _articleService.SelectArticleFile(articleCondition);
-                returnResult.Data = fileModels;
-                returnResult.Code = "0";
-            }
-            catch (AuthException)
-            {
-                returnResult.Message = "not login";
-                returnResult.Code = "401";
-            }
-            return new JsonResult(returnResult);
+            ArticleCondition articleCondition = new ArticleCondition();
+            articleCondition.Account = account;
+            IList<ArticleFileModel> fileModels = _articleService.SelectArticleFile(articleCondition);
+            UserModel userModel= _userService.SelectUser(account);
+            return ApiResult.Success(new { fileModels,userModel});
+
         }
         /// <summary>
         /// 阅读排行前几
@@ -399,21 +281,10 @@ namespace BlogApi
         /// <returns></returns>
         [HttpGet]
         [Route("read/rank/{top}")]
-        public JsonResult ArticleReadRank(int top)
+        public ApiResult ArticleReadRank(int top)
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                IList<ArticleModel> fileModels = _articleService.SelectByRead(top);
-                returnResult.Data = fileModels;
-                returnResult.Code = "0";
-            }
-            catch (AuthException)
-            {
-                returnResult.Message = "not login";
-                returnResult.Code = "401";
-            }
-            return new JsonResult(returnResult);
+            IList<ArticleModel> fileModels = _articleService.SelectByRead(top);
+            return ApiResult.Success(fileModels);
         }
     }
 }

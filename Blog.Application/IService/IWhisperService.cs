@@ -14,7 +14,7 @@ namespace Blog.Application
         Task<IList<WhisperModel>> SelectByPageCache(int pageIndex, int pageSize);
         IList<CommentModel> SelectCommnetsByWhisper(int whisperId);
         void Review(CommentModel commentModel, int whisperId);
-
         void DeleteById(int id);
+        int SelectCount(WhisperConditionModel conditionModel = null);
     }
 }

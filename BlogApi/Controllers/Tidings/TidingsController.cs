@@ -22,28 +22,18 @@ namespace BlogApi
             _httpContext = httpContext;
         }
         [HttpGet]
-        public int NewCount()
+        public ApiResult NewCount()
         {
             string json = new JWT(_httpContext).ResolveToken();
             UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
             int count = _tidingsService.SelectCountByAccount(userModel.Account);
-            return count;
+            return ApiResult.Success(count);
         }
         [HttpPost("{id}")]
-        public JsonResult Done(int id)
+        public ApiResult Done(int id)
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
                 _tidingsService.Done(id);
-                returnResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                returnResult.Code = "1";
-                returnResult.Data = e.Message;
-            }
-            return new JsonResult(returnResult);
+            return ApiResult.Success();
         }
     }
 }

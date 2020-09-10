@@ -16,9 +16,8 @@ namespace BlogApi.Controllers
             _context = httpContext;
         }
         [HttpPost]
-        public JsonResult GetLoginUser()
+        public ApiResult GetLoginUser()
         {
-            ReturnResult returnResult = new ReturnResult();
             try
             {
                 bool noLogin = Response.Headers.TryGetValue("auth", out StringValues value);
@@ -26,27 +25,24 @@ namespace BlogApi.Controllers
                     throw new AuthException();
                 string json = new JWT(_context).ResolveToken();
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
-                returnResult.Code = "0";
-                returnResult.Data = userModel;
+                return ApiResult.Success(userModel);
             }
             catch (AuthException)
             {
-                returnResult.Code = "401";
-                returnResult.Message = "not login";
+                return ApiResult.AuthError();
             }
-            return new JsonResult(returnResult);
         }
         /// <summary>
         /// 是否登录，通过中间件处理
         /// </summary>
         [HttpPost]
         [Route("islogin")]
-        public string IsLogin()
+        public ApiResult IsLogin()
         {
             bool noLogin =Response.Headers.TryGetValue("auth", out StringValues value);
             if (noLogin)
-                return "false";
-            return "200";
+                return ApiResult.AuthError();
+            return ApiResult.Success(); ;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace BlogApi.Controllers
         private IWhisperService _whisperService;
         private IHttpContextAccessor _httpContext;
         public WhisperController(IWhisperRepository whisperRepository, IWhisperService whisperService, IHttpContextAccessor httpContext
-            ,IHubContext<SingalrClient, ISingalrClient> hubContext)
+            , IHubContext<SingalrClient, ISingalrClient> hubContext)
         {
             _whisperRepository = whisperRepository;
             _whisperService = whisperService;
@@ -31,49 +31,30 @@ namespace BlogApi.Controllers
         }
         [HttpPost]
         [Route("add")]
-        public JsonResult Publish()
+        public ApiResult Publish()
         {
-            ReturnResult returnResult = new ReturnResult();
             string content = Request.Form["content"];
             try
             {
                 UserModel userModel = Auth.GetLoginUser(_httpContext);
                 Whisper whisper = new Whisper(userModel.Account, content);
                 _whisperService.Insert(whisper);
-                returnResult.Code = "200";
+                return ApiResult.Success();
             }
-            catch(AuthException)
+            catch (AuthException)
             {
-                returnResult.Code = "401";
-                returnResult.Message ="not login";
+                return ApiResult.AuthError();
             }
-            catch (Exception e)
-            {
-                returnResult.Code = "500";
-                returnResult.Message = e.Message;
-            }
-            return new JsonResult(returnResult);
         }
         [HttpPost]
         [Route("page")]
-        public JsonResult LoadWhisper([FromBody] WhisperConditionModel whisperConditionModel)
+        public ApiResult LoadWhisper([FromBody] WhisperConditionModel whisperConditionModel)
         {
-            PageResult pageResult = new PageResult();
-            try
-            {
-                if (whisperConditionModel.LoginUser)
-                    whisperConditionModel.Account = Auth.GetLoginUser(_httpContext).Account;
-                IList<WhisperModel> whisperModels=_whisperService.SelectByPage(whisperConditionModel.PageIndex, whisperConditionModel.PageSize,whisperConditionModel);
-                pageResult.Code = "0";
-                pageResult.Data = whisperModels;
-                pageResult.Total = LoadTotal(whisperConditionModel);
-            }
-            catch (Exception e)
-            {
-                pageResult.Code = "1";
-                pageResult.Data = e.Message;
-            }
-            return new JsonResult(pageResult) ;
+            if (whisperConditionModel.LoginUser)
+                whisperConditionModel.Account = Auth.GetLoginUser(_httpContext).Account;
+            IList<WhisperModel> whisperModels = _whisperService.SelectByPage(whisperConditionModel.PageIndex, whisperConditionModel.PageSize, whisperConditionModel);
+            int total = _whisperService.SelectCount(whisperConditionModel);
+            return ApiResult.Success(new { list = whisperModels, total = total });
         }
         /// <summary>
         /// 加载广场模块的微语
@@ -83,26 +64,17 @@ namespace BlogApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("square")]
-        public async  Task<JsonResult> LoadSquareWhisper(int pageIndex, int top)
+        public async Task<ApiResult> LoadSquareWhisper(int pageIndex, int top)
         {
-            ReturnResult returnResult = new ReturnResult();
             try
             {
                 IList<WhisperModel> whisperModels = await _whisperService.SelectByPageCache(pageIndex, top);
-                returnResult.Code = "0";
-                returnResult.Data = whisperModels;
+                return ApiResult.Success(whisperModels);
             }
-            catch(AggregateException ex)
+            catch (AggregateException ex)
             {
-                returnResult.Code = "1";
-                returnResult.Data = ex.Message;
+                return ApiResult.Error(HttpStatusCode.BAD_REQUEST, ex.Message);
             }
-            catch (Exception e)
-            {
-                returnResult.Code = "1";
-                returnResult.Data = e.Message;
-            }
-            return new JsonResult(returnResult);
         }
         /// <summary>
         /// 查询数量
@@ -110,7 +82,7 @@ namespace BlogApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("total")]
-        public int LoadTotal([FromBody] WhisperConditionModel whisperConditionModel)
+        public ApiResult LoadTotal([FromBody] WhisperConditionModel whisperConditionModel)
         {
             WhisperCondiiton whisperCondiiton = new WhisperCondiiton();
             if (whisperConditionModel.LoginUser)
@@ -118,7 +90,7 @@ namespace BlogApi.Controllers
             else
                 whisperCondiiton.Account = whisperCondiiton.Account;
             int total = _whisperRepository.SelectCount(whisperCondiiton);
-            return total;
+            return ApiResult.Success(total);
         }
         /// <summary>
         /// 获取微语评论
@@ -127,20 +99,12 @@ namespace BlogApi.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("{whisperId}/comments")]
-        public JsonResult LoadComments(int whisperId)
+        public ApiResult LoadComments(int whisperId)
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                returnResult.Data = _whisperService.SelectCommnetsByWhisper(whisperId);
-                returnResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                returnResult.Code = "1";
-                returnResult.Message = e.Message;
-            }
-            return new JsonResult(returnResult);
+
+            IList<CommentModel> commentModels = _whisperService.SelectCommnetsByWhisper(whisperId);
+            return ApiResult.Success(commentModels);
+
         }
         /// <summary>
         /// 评论微语
@@ -149,14 +113,13 @@ namespace BlogApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("comment/add")]
-        public JsonResult AddComment()
+        public ApiResult AddComment()
         {
             string content = Request.Form["content"];
-            int whisperId =Convert.ToInt32(Request.Form["whisperId"]);
+            int whisperId = Convert.ToInt32(Request.Form["whisperId"]);
             string revicer = Request.Form["revicer"];
             string replyId = Request.Form["replyId"];
             int commentType = Convert.ToInt32(Request.Form["commentType"]);
-            ReturnResult returnResult = new ReturnResult();
             try
             {
                 CommentModel commentModel = new CommentModel();
@@ -166,27 +129,19 @@ namespace BlogApi.Controllers
                 commentModel.Revicer = revicer;
                 commentModel.CommentType = commentType;
                 _whisperService.Review(commentModel, whisperId);
-                returnResult.Code = "0";
+                return ApiResult.Success();
             }
             catch (AuthException)
             {
-                returnResult.Code = "401";
-                returnResult.Data ="auth fail";
+                return ApiResult.AuthError();
             }
-            catch (Exception e)
-            {
-                returnResult.Code = "1";
-                returnResult.Data = e.Message;
-            }
-
-            return new JsonResult(returnResult);
         }
         [HttpDelete]
         [Route("{id}")]
-        public JsonResult Delete(int id)
+        public ApiResult Delete(int id)
         {
             _whisperService.DeleteById(id);
-            return new JsonResult(new ReturnResult("0"));
+            return ApiResult.Success();
         }
     }
 }

@@ -22,59 +22,29 @@ namespace BlogApi.Controllers.Video
         }
         [HttpPost]
         [Route("video/add")]
-        public JsonResult Add([FromBody]VideoModel videoModel)
+        public ApiResult Add([FromBody]VideoModel videoModel)
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
                 UserModel userModel = Auth.GetLoginUser(_httpContext);
                 videoModel.AuthorAccount = userModel.Account;
                 _videoService.Add(videoModel);
-                returnResult.Code = "0";
-            }
-            catch (Exception ex)
-            {
-                returnResult.Code = "1";
-                returnResult.Message = ex.Message;
-            }
-            return new JsonResult(returnResult);
+            return ApiResult.Success();
         }
         [HttpPost]
         [Route("video/page")]
-        public JsonResult ListPage([FromBody]VideoConditionModel conditionModel)
+        public ApiResult ListPage([FromBody]VideoConditionModel conditionModel)
         {
-            PageResult pageResult = new PageResult();
-            try
-            {
+
                 IList<VideoModel> videoModels = _videoService.ListPage(conditionModel);
                 int total = _videoService.Total(conditionModel);
-                pageResult.Data = videoModels;
-                pageResult.Total = total;
+            return ApiResult.Success(new { list = videoModels, total = total });
 
-            }
-            catch (Exception ex)
-            {
-                pageResult.Code = "1";
-                pageResult.Message = ex.Message;
-            }
-            return new JsonResult(pageResult);
         }
 
         [HttpGet]
         [Route("video/{id}")]
-        public JsonResult GetVideo(int id)
+        public ApiResult GetVideo(int id)
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                returnResult.Data = _videoService.GetById(id);
-            }
-            catch (Exception ex)
-            {
-                returnResult.Code = "1";
-                returnResult.Message = ex.Message;
-            }
-            return new JsonResult(returnResult);
+            return ApiResult.Success(_videoService.GetById(id));
         }
     }
 }

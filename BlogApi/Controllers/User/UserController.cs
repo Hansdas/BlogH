@@ -49,7 +49,7 @@ namespace BlogApi.Controllers.User
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult loginUser()
+        public ApiResult loginUser()
         {
             try
             {
@@ -57,36 +57,25 @@ namespace BlogApi.Controllers.User
                 UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
                 if (userModel.HeadPhoto.Contains(ConstantKey.NGINX_FILE_ROUTE_OLD))
                     userModel.HeadPhoto = userModel.HeadPhoto.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
-                return new JsonResult(new ReturnResult("0", userModel));
+                return ApiResult.Success(userModel);
             }
             catch (AuthException)
             {
-                return new JsonResult(new ReturnResult("1", "not login"));
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new ReturnResult("1", ex.Message));
+                return ApiResult.Error(HttpStatusCode.FORBIDDEN, "not login");
             }
         }
         /// <summary>
-        /// 获取登录信息
+        /// 根据账号查询
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [Route("{account}")]
-        public IActionResult SelectUser(string account)
+        public ApiResult SelectUser(string account)
         {
-            try
-            {
-                UserModel userModel = _userService.SelectUser(account);
-                if (userModel.HeadPhoto.Contains(ConstantKey.NGINX_FILE_ROUTE_OLD))
-                    userModel.HeadPhoto = userModel.HeadPhoto.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
-                return new JsonResult(new ReturnResult("0", userModel));
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new ReturnResult("1", ex.Message));
-            }
+            UserModel userModel = _userService.SelectUser(account);
+            if (userModel.HeadPhoto.Contains(ConstantKey.NGINX_FILE_ROUTE_OLD))
+                userModel.HeadPhoto = userModel.HeadPhoto.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
+            return ApiResult.Success(userModel);
         }
         /// <summary>
         /// 更新
@@ -94,15 +83,13 @@ namespace BlogApi.Controllers.User
         /// <param name="userModel"></param>
         /// <returns></returns>
         [HttpPost]
-        public IActionResult UpdateUser([FromBody]UserModel userModel)
+        public ApiResult UpdateUser([FromBody]UserModel userModel)
         {
-            try
-            {
-                _userService.Update(userModel);
-                string domainNotification = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
-                if (!string.IsNullOrEmpty(domainNotification))
-                    return new JsonResult(new ReturnResult() { Code = "500", Data = domainNotification });
-                IList<Claim> claims = new List<Claim>()
+            _userService.Update(userModel);
+            string error = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
+            if (!string.IsNullOrEmpty(error))
+                return ApiResult.Error(HttpStatusCode.BAD_REQUEST, error);
+            IList<Claim> claims = new List<Claim>()
                 {
                     new Claim("account", userModel.Account),
                     new Claim("username", userModel.Username),
@@ -113,16 +100,11 @@ namespace BlogApi.Controllers.User
                     new Claim("phone",userModel.Phone),
                     new Claim("headPhoto",JsonHelper.DeserializeObject<UserModel>(new JWT(_httpContext).ResolveToken()).HeadPhoto)
                 };
-                string jwtToken = new JWT(_cacheClient).CreateToken(claims);
-                if (Response.Headers.ContainsKey("refreshToken"))
-                    Response.Headers.Remove("refreshToken");
-                Response.Headers.Add("refreshToken", jwtToken);
-                return new JsonResult(new ReturnResult() { Code = "0" });
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new ReturnResult("1", ex.Message));
-            }
+            string jwtToken = new JWT(_cacheClient).CreateToken(claims);
+            if (Response.Headers.ContainsKey("refreshToken"))
+                Response.Headers.Remove("refreshToken");
+            Response.Headers.Add("refreshToken", jwtToken);
+            return ApiResult.Success();
         }
         /// <summary>
         /// 更改头像
@@ -131,7 +113,7 @@ namespace BlogApi.Controllers.User
         [HttpPost]
         [Consumes("multipart/form-data")]
         [Route("update/photo")]
-        public JsonResult UploadPhoto()
+        public ApiResult UploadPhoto()
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             string oldPath = userModel.HeadPhoto;
@@ -155,7 +137,7 @@ namespace BlogApi.Controllers.User
                     new Claim("headPhoto",userModel.HeadPhoto)
                 };
             string jwtToken = new JWT(_cacheClient).CreateToken(claims);
-            return new JsonResult(new ReturnResult() { Code = "200", Data = new { Path = pathValue.FilePath, token = jwtToken } });
+            return ApiResult.Success(new { Path = pathValue.FilePath, token = jwtToken });
         }
         /// <summary>
         /// 更改密码
@@ -163,17 +145,17 @@ namespace BlogApi.Controllers.User
         /// <returns></returns>
         [HttpPost]
         [Route("update/password")]
-        public IActionResult UpdatePassword()
+        public ApiResult UpdatePassword()
         {
             string password = Request.Form["password"];
             string OldPawword = Request.Form["oldpassword"];
             string json = new JWT(_httpContext).ResolveToken();
             UserModel userModel = JsonHelper.DeserializeObject<UserModel>(json);
             _userService.UpdatePassword(userModel.Account, password, OldPawword);
-            string domainNotification = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
-            if (!string.IsNullOrEmpty(domainNotification))
-                return new JsonResult(new ReturnResult() { Code = "500", Message = domainNotification });
-            return new JsonResult(new ReturnResult() { Code = "200" });
+            string error = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
+            if (!string.IsNullOrEmpty(error))
+                return ApiResult.Error(HttpStatusCode.BAD_REQUEST, error);
+            return ApiResult.Success();
         }
         /// <summary>
         /// 获取头像
@@ -181,10 +163,10 @@ namespace BlogApi.Controllers.User
         /// <returns></returns>
         [HttpGet]
         [Route("photo")]
-        public string GetPhoto()
+        public ApiResult GetPhoto()
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
-            return userModel.HeadPhoto;
+            return ApiResult.Success(userModel.HeadPhoto);
         }
         /// <summary>
         /// 获取消息
@@ -194,21 +176,14 @@ namespace BlogApi.Controllers.User
         /// <returns></returns>
         [HttpGet]
         [Route("tidings")]
-        public JsonResult GetTidings(int pageIndex, int pageSize)
+        public ApiResult GetTidings(int pageIndex, int pageSize)
         {
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             TidingsCondition tidingsCondition = new TidingsCondition();
             tidingsCondition.Account = userModel.Account;
             tidingsCondition.IsRead = false;
-            try
-            {
                 IList<TidingsModel> tidingsModels = _tidingsService.SelectByPage(pageIndex, pageSize, tidingsCondition);
-                return new JsonResult(new ReturnResult() { Code = "0", Data = tidingsModels });
-            }
-            catch (Exception ex)
-            {
-                return new JsonResult(new ReturnResult() { Code = "1", Message = ex.Message });
-            }
+            return ApiResult.Success(tidingsModels);
 
         }
         /// <summary>
@@ -218,9 +193,8 @@ namespace BlogApi.Controllers.User
         /// <returns></returns>
         [HttpGet]
         [Route("article/archive")]
-        public JsonResult SelectArchive()
+        public ApiResult SelectArchive()
         {
-            ReturnResult returnResult = new ReturnResult();
             try
             {
                 string json = new JWT(_httpContext).ResolveToken();
@@ -228,15 +202,12 @@ namespace BlogApi.Controllers.User
                 ArticleCondition articleCondition = new ArticleCondition();
                 articleCondition.Account = userModel.Account;
                 IList<ArticleFileModel> fileModels = _articleService.SelectArticleFile(articleCondition);
-                returnResult.Data = fileModels;
-                returnResult.Code = "0";
+                return ApiResult.Success(fileModels);
             }
             catch (AuthException)
             {
-                returnResult.Message = "not login";
-                returnResult.Code = "401";
+                return ApiResult.Error(HttpStatusCode.BAD_REQUEST,"not login");
             }
-            return new JsonResult(returnResult);
         }
     }
 }

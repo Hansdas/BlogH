@@ -30,7 +30,6 @@ namespace Blog.Common.CacheFactory
             ConfigurationOptions options = new ConfigurationOptions() {
                 EndPoints = { { connStr } },
                 DefaultDatabase = _defaultDB,
-                ServiceName= connStr,
                 Password=model.Password,
                 ReconnectRetryPolicy = new ExponentialRetry(5000)
             };

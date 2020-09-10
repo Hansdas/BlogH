@@ -28,7 +28,7 @@ namespace BlogApi.Controllers
             _cacheClient = cacheClient;
         }
         [HttpPost]
-        public ActionResult Login()
+        public ApiResult Login()
         {
             string account = Request.Form["Account"];
             string passWord = Request.Form["Password"];
@@ -48,18 +48,18 @@ namespace BlogApi.Controllers
                     new Claim("headPhoto", string.IsNullOrEmpty(user.HeadPhoto)?"":user.HeadPhoto)
                 };
                 string jwtToken = new JWT(_cacheClient).CreateToken(claims);
-                return new JsonResult(new ReturnResult() { Code = "0", Data = jwtToken});
+                return ApiResult.Success(jwtToken);
             }
             catch (ValidationException e)
             {
-                return new JsonResult(new ReturnResult() { Code = "1", Message = e.Message });
+                return ApiResult.AuthError(e.Message);
             }
            
         }
 
         [HttpPost]
         [Route("logon")]
-        public IActionResult Logon([FromBody]UserModel userModel)
+        public ApiResult Logon([FromBody]UserModel userModel)
         {
             string message = string.Empty;
             try
@@ -80,8 +80,8 @@ namespace BlogApi.Controllers
                 };
             string jwtToken = new JWT(_cacheClient).CreateToken(claims);
             if (!string.IsNullOrEmpty(message))
-                return Json(new ReturnResult() { Code = "1", Message = message });
-            return Json(new ReturnResult() { Code = "0", Data = jwtToken });
+                return ApiResult.Error(HttpStatusCode.BAD_REQUEST, message);
+            return ApiResult.Success(jwtToken);
         }
         [HttpPost]
         [Route("out")]

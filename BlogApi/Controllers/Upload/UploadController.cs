@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using HttpStatusCode = Blog.Common.HttpStatusCode;
 
 namespace BlogApi.Controllers.Upload
 {
@@ -39,15 +40,13 @@ namespace BlogApi.Controllers.Upload
         [HttpPost]
         [Consumes("multipart/form-data")]
         [Route("upload/image")]
-        public IActionResult UploadImage()
+        public ApiResult UploadImage()
         {
-            try
-            {
                 var imgFile = Request.Form.Files[0];
                 if (imgFile == null)
-                    return Json(new ReturnResult("500", "附件为null"));
+                    return ApiResult.Error(HttpStatusCode.BAD_REQUEST, "附件为null");
                 if (string.IsNullOrEmpty(imgFile.FileName))
-                    return Json(new ReturnResult("500", "附件名称为空"));
+                    return ApiResult.Error(HttpStatusCode.BAD_REQUEST, "附件名称为空");
                 PathValue pathValue = UploadHelper.SaveFile(imgFile.FileName);
                 string savepaht = pathValue.FilePath + "/" + pathValue.FileName;
                 using (FileStream fs = System.IO.File.Create(pathValue.FilePath))
@@ -61,13 +60,7 @@ namespace BlogApi.Controllers.Upload
                 string port = configuration.GetSection("port").Value;
                 string virtualPath = string.Format("http://{0}:{1}{2}", ip, port, ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName);
                 //string virtualPath = GetIp() + ConstantKey.STATIC_FILE + pathValue.DatePath + pathValue.FileName;
-                return new JsonResult(new { uploaded = 1, fileName = pathValue.FileName, url = virtualPath });
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
+                return ApiResult.Success(new { uploaded = 1, fileName = pathValue.FileName, url = virtualPath });
           
         }       
         /// <summary>
@@ -76,13 +69,13 @@ namespace BlogApi.Controllers.Upload
         /// <returns></returns>
         [HttpDelete]
         [Route("upload/image/delete")]
-        public IActionResult DeleteFile()
+        public ApiResult DeleteFile()
         {
             string imgpath = Request.Form["imgpath"];
             int index = imgpath.IndexOf(ConstantKey.STATIC_FILE) + ConstantKey.STATIC_FILE.Length;
             string path = _webHostEnvironment.ContentRootPath + "/TempFile" + imgpath.Substring(index);
             DirectoryHelper.Delete(path);
-            return Json(new ReturnResult("0"));
+            return ApiResult.Success();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Blog.Common.Mail
         /// </summary>
         public string Password { get; set; }
         /// <summary>
-        /// 找好名字
+        /// 账号名字
         /// </summary>
         public string EmailName { get; set; }
     }

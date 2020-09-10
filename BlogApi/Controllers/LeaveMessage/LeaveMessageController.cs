@@ -20,20 +20,10 @@ namespace BlogApi.Controllers
         }
         [HttpPost]
         [Route("add")]
-        public JsonResult Add([FromBody] LeaveMessageModel model)
+        public ApiResult Add([FromBody] LeaveMessageModel model)
         {
-            ReturnResult returnResult = new ReturnResult();
-            try
-            {
-                _leaveMessageService.Add(model);
-                returnResult.Code = "0";
-            }
-            catch (Exception e)
-            {
-                returnResult.Code = "1";
-                returnResult.Message = e.Message;
-            }
-            return new JsonResult(returnResult);
+            _leaveMessageService.Add(model);
+            return ApiResult.Success();
         }
     }
 }

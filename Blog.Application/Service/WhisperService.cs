@@ -108,6 +108,12 @@ namespace Blog.Application
             return condiiton;
         }
 
+        public int SelectCount(WhisperConditionModel conditionModel = null)
+        {
+            WhisperCondiiton condiiton = ConvertCondition(conditionModel);
+            return _whisperRepository.SelectCount(condiiton);
+        }
+
         #endregion
     }
 }
