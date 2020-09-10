@@ -112,7 +112,8 @@ namespace BlogApi
                     "/api/login/login",
                     "/chatHub/negotiate",//SingalR通讯请求的地址
                     "/chatHub", //SingalR通讯请求的地址
-                    "/api/login/logon"
+                    "/api/login/logon",
+                    "/api/qq/login"
                 });
             });
             app.UseEndpoints(endpoints =>

@@ -49,11 +49,11 @@ namespace Blog.Application
             UserModel userModel = new UserModel();
             userModel.Account = user.Account;
             userModel.BirthDate = user.BirthDate.HasValue ? user.BirthDate.Value.ToString("yyyy-MM-dd") : "";
-            userModel.Email = user.Email;
+            userModel.Email = string.IsNullOrEmpty(user.Email)?"":user.Email;
             userModel.HeadPhoto = user.HeadPhoto;
             userModel.Phone = user.Phone;
             userModel.Sex = user.Sex.GetEnumText();
-            userModel.Sign = user.Sign;
+            userModel.Sign = string.IsNullOrEmpty(user.Sign)?"":user.Sign;
             userModel.Username = user.Username;
             return userModel;
         }

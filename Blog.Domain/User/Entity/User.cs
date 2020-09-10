@@ -55,6 +55,10 @@ namespace Blog.Domain
         /// </summary>
         public string Account { get; private set; }
         /// <summary>
+        /// 账号类型
+        /// </summary>
+        public LoginType LoginType { get; set; }
+        /// <summary>
         /// 密码
         /// </summary>
         public string Password { get; private set; }

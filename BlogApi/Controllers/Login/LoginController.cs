@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Threading;
+using System.Threading.Tasks;
 using Blog;
 using Blog.Application;
 using Blog.Application.ViewModel;
@@ -56,7 +58,6 @@ namespace BlogApi.Controllers
             }
            
         }
-
         [HttpPost]
         [Route("logon")]
         public ApiResult Logon([FromBody]UserModel userModel)
