@@ -52,9 +52,9 @@ namespace Blog.Infrastruct
         /// <param name="user"></param>
         public void Insert(User user)
         {
-            string sql = "INSERT INTO T_User(user_username, user_account, user_password, user_sex, user_phone, user_email,user_birthdate" +
+            string sql = "INSERT INTO T_User(user_logintype,user_username, user_account, user_password, user_sex, user_phone, user_email,user_birthdate" +
                 ",user_sign, user_isvalid,user_headphoto, user_createtime)" +
-                  " VALUES (@Username, @Account, @Password, @Sex,@Phone,@Email,@Birthdate,@Sign, @IsValid,@HeadPhoto,NOW())";
+                  " VALUES (@LoginType,@Username, @Account, @Password, @Sex,@Phone,@Email,@Birthdate,@Sign, @IsValid,@HeadPhoto,NOW())";
             DbConnection.Execute(sql,user);
         }
         public string SelectPassword(string account)

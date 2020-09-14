@@ -13,6 +13,14 @@ namespace Blog.Domain
             ContractEmail = contractEmail;
             IsAction = IsAction;
         }
+        public leaveMessage(int id,string content, string contractEmail, bool isAction,DateTime createTime)
+        {
+            Id = id;
+            Content = content;
+            ContractEmail = contractEmail;
+            IsAction = IsAction;
+            CreateTime = createTime;
+        }
         /// <summary>
         /// 留言内容
         /// </summary>

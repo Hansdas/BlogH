@@ -25,5 +25,13 @@ namespace BlogApi.Controllers
             _leaveMessageService.Add(model);
             return ApiResult.Success();
         }
+        [HttpPost]
+        [Route("page/{pageIndex}/{pageSize}")]
+        public ApiResult Load(int pageIndex, int pageSize)
+        {
+            IList<LeaveMessageModel> leaveMessageModels = _leaveMessageService.SelectByPage(pageIndex,pageSize);
+            int count = _leaveMessageService.SelectCount();
+            return ApiResult.Success(new { list=leaveMessageModels,total=count});
+        }
     }
 }

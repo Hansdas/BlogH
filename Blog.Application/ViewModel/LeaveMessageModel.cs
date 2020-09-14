@@ -8,5 +8,6 @@ namespace Blog.Application.ViewModel
     {
         public string Content { get; set; }
         public string ContractEmail { get; set; }
+        public string CreateTime { get; set; }
     }
 }

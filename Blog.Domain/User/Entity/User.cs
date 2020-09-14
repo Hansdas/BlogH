@@ -16,7 +16,7 @@ namespace Blog.Domain
 
         }
         public User(string username, string account, string password, Sex? sex, bool isvalid,DateTime? birthDate,string email,string sign
-            ,string phone,string photo)
+            ,string phone,string photo,LoginType loginType)
         {
             Username = username;
             Account = account;
@@ -28,6 +28,23 @@ namespace Blog.Domain
             BirthDate = birthDate;
             Sign = sign;
             HeadPhoto = photo;
+            LoginType = loginType;
+        }
+        public User(int id,string username, string account, string password, Sex? sex, bool isvalid, DateTime? birthDate, string email, string sign
+         , string phone, string photo, LoginType loginType)
+        {
+            Id =id;
+            Username = username;
+            Account = account;
+            Password = password;
+            Sex = sex.HasValue ? sex.Value : Sex.男;
+            IsValid = isvalid;
+            Email = email;
+            Phone = phone;
+            BirthDate = birthDate;
+            Sign = sign;
+            HeadPhoto = photo;
+            LoginType = loginType;
         }
         public User(int id,string username, string account, string password, Sex sex, bool isvalid,string email
             ,string phone,DateTime? birthDate,string sign,string headPhoto, DateTime createtime,DateTime? updatetime)

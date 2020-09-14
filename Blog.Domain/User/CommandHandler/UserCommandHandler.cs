@@ -25,13 +25,40 @@ namespace Blog.Domain
 
         public void Handler(CreateUserCommand command)
         {
-            int count = _userRepository.SelectCountByAccount(command.User.Account);
-            if (count > 0)
+            User user = command.User;
+            if (user.LoginType == LoginType.SITE)
             {
-                _eventBus.RaiseEvent(new NotifyValidation("该账号已存在"));
-                return;
+                int count = _userRepository.SelectCountByAccount(user.Account);
+                if (count > 0)
+                {
+                    _eventBus.RaiseEvent(new NotifyValidation("该账号已存在"));
+                    return;
+                }
+                _userRepository.Insert(command.User);
             }
-            _userRepository.Insert(command.User);
+            else
+            {
+                User oldUser = _userRepository.SelectUserByAccount(user.Account);
+                if (oldUser != null)
+                {
+                    oldUser = new User(
+                      oldUser.Id
+                      , user.Username
+                      , user.Account
+                      , ""
+                      , user.Sex
+                      , false
+                      , oldUser.BirthDate
+                      , oldUser.Email
+                      , oldUser.Sign
+                      , oldUser.Phone
+                      , user.HeadPhoto
+                      , LoginType.QQ);
+                    _userRepository.UpdateUser(oldUser);
+                }
+                else
+                    _userRepository.Insert(command.User);
+            }
         }
 
         public void Handler(UpdateUserCommand command)

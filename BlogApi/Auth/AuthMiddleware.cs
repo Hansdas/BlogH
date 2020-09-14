@@ -28,8 +28,7 @@ namespace BlogApi
         {
             try
             {
-             
-                if (!_whiteList.Contains(context.Request.Path.Value))
+                if (!_whiteList.Contains(context.Request.Path.Value)&&!context.Request.Path.Value.Contains("api/qq"))
                 {
                     bool IsAuthorized = context.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
                     string token = authStr.ToString().Substring("Bearer ".Length).Trim();

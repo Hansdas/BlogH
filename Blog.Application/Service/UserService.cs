@@ -35,8 +35,9 @@ namespace Blog.Application
                 , birthDate
                 , userModel.Email
                 , userModel.Sign
-                ,userModel.Phone
-                ,userModel.HeadPhoto);
+                , userModel.Phone
+                , userModel.HeadPhoto
+                , userModel.LoginType) ;
             return user;
         }
         /// <summary>

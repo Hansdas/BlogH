@@ -49,10 +49,18 @@ namespace BlogApi
         [Route("add")]
         public ApiResult AddArticle([FromBody]ArticleModel articleModel)
         {
-            UserModel userModel = Auth.GetLoginUser(_httpContext);
-            articleModel.Author = userModel.Account;
-            _articleService.AddOrUpdate(articleModel);
-            return ApiResult.Success();
+            try
+            {
+                UserModel userModel = Auth.GetLoginUser(_httpContext);
+                articleModel.Author = userModel.Account;
+                _articleService.AddOrUpdate(articleModel);
+                return ApiResult.Success();
+            }
+            catch (AuthException)
+            {
+                return ApiResult.AuthError();
+            }
+
 
         }
         /// <summary>
@@ -211,17 +219,6 @@ namespace BlogApi
             UserModel userModel = Auth.GetLoginUser(_httpContext);
             _articleService.Praise(id, userModel.Account, true);
             return ApiResult.Success();
-        }
-        /// <summary>
-        /// 热门推荐
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("hot")]
-        public ApiResult HotArticle()
-        {
-            IList<ArticleModel> articleModels = _articleService.SelectHotArticles();
-            return ApiResult.Success(articleModels);
         }
         /// <summary>
         /// 查询每种文章最新发布

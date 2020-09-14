@@ -24,6 +24,10 @@ namespace Blog.Application.ViewModel
         /// </summary>
         public string Password { get; set; }
         /// <summary>
+        /// 账号类型
+        /// </summary>
+        public LoginType LoginType { get; set; }
+        /// <summary>
         /// 性别
         /// </summary>
         public string Sex { get; set; }

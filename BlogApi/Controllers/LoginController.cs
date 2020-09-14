@@ -65,6 +65,7 @@ namespace BlogApi.Controllers
             string message = string.Empty;
             try
             {
+                userModel.LoginType = LoginType.SITE;
                 _userService.Insert(userModel);
                 string domainNotification = _notifyValidationHandler.GetErrorList().Select(s => s.Value).FirstOrDefault();
                 if (!string.IsNullOrEmpty(domainNotification))

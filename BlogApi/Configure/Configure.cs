@@ -115,7 +115,7 @@ namespace BlogApi.Configure
             services.AddNotifyValidation();
             //注册Redis
             services.AddSingleton(new CacheProvider("Redis"));
-            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+            //services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<ApiSettingModel>(ConfigProvider.configuration.GetSection("webapi"));
             services.Configure<RedisSettingModel>(ConfigProvider.configuration.GetSection("Redis"));

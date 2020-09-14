@@ -152,22 +152,6 @@ namespace Blog.Application
             _eventBus.Publish(praiseArticleCommand);
         }
 
-        public IList<ArticleModel> SelectHotArticles()
-        {
-            NameValueCollection collection = new NameValueCollection();
-            collection.Add("article_praisecount", "DESC");
-            IEnumerable<Article> articles = _articleRepository.SelectTop(5, collection);
-            IList<ArticleModel> articleModels = new List<ArticleModel>();
-            foreach (var item in articles)
-            {
-                ArticleModel articleModel = new ArticleModel();
-                articleModel.Id = item.Id;
-                articleModel.ArticleType = item.ArticleType.GetEnumText();
-                articleModel.Title = item.Title.Length>22?item.Title.Substring(0,20):item.Title;
-                articleModels.Add(articleModel);
-            }
-            return articleModels;
-        }
         public IList<ArticleModel> SelectByTypeMaxTime()
         {
             IEnumerable<Article> articles = _articleRepository.SelectByTypeMaxTime();

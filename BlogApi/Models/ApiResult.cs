@@ -23,6 +23,7 @@ namespace BlogApi
         }
         public ApiResult(string code, string message, dynamic data) : this(code, message)
         {
+            Message = message;
             Data = data;
         }
         /// <summary>

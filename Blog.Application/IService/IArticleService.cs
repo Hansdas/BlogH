@@ -35,11 +35,6 @@ namespace Blog.Application
         /// <param name="cancle"></param>
         void Praise(int articleId, string account, bool cancle);
         /// <summary>
-        /// 查询热门推荐
-        /// </summary>
-        /// <returns></returns>
-        IList<ArticleModel> SelectHotArticles();
-        /// <summary>
         /// 查询每种文章发布最新的
         /// </summary>
         /// <returns></returns>
