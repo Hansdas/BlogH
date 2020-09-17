@@ -24,9 +24,9 @@ namespace BlogApi.Controllers.Video
         [Route("video/add")]
         public ApiResult Add([FromBody]VideoModel videoModel)
         {
-                UserModel userModel = Auth.GetLoginUser(_httpContext);
-                videoModel.AuthorAccount = userModel.Account;
-                _videoService.Add(videoModel);
+            UserModel userModel = Auth.GetLoginUser(_httpContext);
+            videoModel.AuthorAccount = userModel.Account;
+            _videoService.Add(videoModel);
             return ApiResult.Success();
         }
         [HttpPost]
@@ -34,8 +34,8 @@ namespace BlogApi.Controllers.Video
         public ApiResult ListPage([FromBody]VideoConditionModel conditionModel)
         {
 
-                IList<VideoModel> videoModels = _videoService.ListPage(conditionModel);
-                int total = _videoService.Total(conditionModel);
+            IList<VideoModel> videoModels = _videoService.ListPage(conditionModel);
+            int total = _videoService.Total(conditionModel);
             return ApiResult.Success(new { list = videoModels, total = total });
 
         }

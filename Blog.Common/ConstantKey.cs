@@ -36,5 +36,13 @@ namespace Blog.Common
         /// </summary>
 
         public const string NGINX_FILE_ROUTE = "bf";
+        /// <summary>
+        /// 就数据的文件http
+        /// </summary>
+        public const string OLD_FILE_HTTP = "http://58.87.92.221";
+        /// <summary>
+        /// 新数据的文件https
+        /// </summary>
+        public const string FILE_HTTPS = "https://www.ttblog.site";
     }
 }

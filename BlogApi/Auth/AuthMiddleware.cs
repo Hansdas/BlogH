@@ -32,7 +32,6 @@ namespace BlogApi
                 {
                     bool IsAuthorized = context.Request.Headers.TryGetValue("Authorization", out StringValues authStr);
                     string token = authStr.ToString().Substring("Bearer ".Length).Trim();
-                    string json = new JWT().ResolveToken(token);
                     bool isExpires = context.Request.Headers.TryGetValue("isExpires", out StringValues expires);                
                     new JWT(_cacheClient).IfRefreshToken(token, isExpires);
                     context.Response.Headers.Add("refreshToken", token);
@@ -43,11 +42,12 @@ namespace BlogApi
             {
                 if (_requestPaths.Contains(context.Request.Path.Value.ToLower()))
                 {
-                    context.Response.Headers.Add("auth", "false");
+                    context.Response.Headers.Add("refreshToken", "isExpires");
                 }
             }
             catch (Exception e)
             {
+                new LogUtils().LogError(e, "AuthMiddleware", e.Message,null, context.Request.Path.Value);
             }          
             await _next(context);
 

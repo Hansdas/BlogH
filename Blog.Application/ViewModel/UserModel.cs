@@ -60,9 +60,11 @@ namespace Blog.Application.ViewModel
             get
             {
                 if (string.IsNullOrEmpty(_headPhoto))
-                    return "/style/images/touxiang.jpg";
+                    _headPhoto= "/style/images/touxiang.jpg";
                 if (_headPhoto.Contains(ConstantKey.NGINX_FILE_ROUTE_OLD))
-                    return _headPhoto.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
+                    _headPhoto= _headPhoto.Replace(ConstantKey.NGINX_FILE_ROUTE_OLD, ConstantKey.NGINX_FILE_ROUTE);
+                if (_headPhoto.Contains(ConstantKey.OLD_FILE_HTTP))
+                    _headPhoto= _headPhoto.Replace(ConstantKey.OLD_FILE_HTTP, ConstantKey.FILE_HTTPS);
                 return _headPhoto;
             }
             set

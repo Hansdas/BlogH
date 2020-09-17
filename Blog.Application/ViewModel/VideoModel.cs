@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Blog.Common;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -22,10 +23,25 @@ namespace Blog.Application.ViewModel
         /// 描述
         /// </summary>
         public string Description { get; set; }
+        private string _url;
         /// <summary>
         /// 地址
         /// </summary>
-        public string Url { get; set; }
+        public string Url 
+        {
+            get
+            {
+                if (_url.Contains(ConstantKey.OLD_FILE_HTTP))
+                    _url=_url.Replace(ConstantKey.OLD_FILE_HTTP, ConstantKey.FILE_HTTPS);
+                if (_url.Contains("http://www.ttblog.site"))
+                    _url = _url.Replace(ConstantKey.OLD_FILE_HTTP, ConstantKey.FILE_HTTPS);
+                return _url;
+            }
+            set
+            {
+                _url = value;
+            }
+        }
         /// <summary>
         /// 大小
         /// </summary>
