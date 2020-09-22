@@ -28,6 +28,8 @@ using System;
 using ConfigProvider = Blog.Common.ConfigurationProvider;
 using Quartz;
 using Quartz.Impl;
+using Blog.Common.Cache;
+using Blog.Common.Configure;
 
 namespace BlogApi.Configure
 {

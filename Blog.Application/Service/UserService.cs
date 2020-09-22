@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Blog.Application.ViewModel;
 using Blog.Common;
+using Blog.Common.EnumExtensions;
 using Blog.Domain;
 using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;

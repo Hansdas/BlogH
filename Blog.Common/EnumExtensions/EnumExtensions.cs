@@ -2,9 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
-namespace Blog.Common
+namespace Blog.Common.EnumExtensions
 {
     public static class EnumExtensions
     {
@@ -26,6 +27,21 @@ namespace Blog.Common
         public static string GetEnumText<T>(this T enumValue)
         {
             return Enum.GetName(typeof(T), enumValue);
+        }
+        /// <summary>
+        /// 返回枚举所对应的附加数据
+        /// </summary>
+        /// <param name="enum"></param>
+        /// <returns></returns>
+        public static string GetEnumAditional<T>(this T @enum)
+        {
+            string value = @enum.ToString();
+            FieldInfo fieldInfo= @enum.GetType().GetField(value);
+            var obj= fieldInfo.GetCustomAttributes(typeof(EnumAdditionalAttribute), false).First();
+            EnumAdditionalAttribute attribute = obj as EnumAdditionalAttribute;
+            if (attribute == null)
+                return "";
+            return attribute.Additional;
         }
         /// <summary>
         /// 根据值返回枚举名字
@@ -61,6 +77,10 @@ namespace Blog.Common
             }
         }
     }
+    /// <summary>
+    /// 枚举装换
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class EnumConvert<T> where T : Enum
     {
         /// <summary>

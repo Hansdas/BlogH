@@ -33,5 +33,11 @@ namespace Blog.Domain
         /// <param name="param"></param>
         /// <returns></returns>
         int SelectCount(string sql, object param);
+        /// <summary>
+        /// 查询KeyValue配置
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        string SelectKeyValue(string key);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Blog.Common;
+﻿
+using Blog.Common.EnumExtensions;
 using Castle.DynamicProxy;
 using System;
 using System.Collections.Generic;

@@ -50,5 +50,12 @@ namespace Blog.Infrastruct
         {
           return  DbConnection.ExecuteScalar<int>(sql, param);
         }
+
+        public string SelectKeyValue(string key)
+        {
+            string sql = "select  config_value from SYS_Config where config_key=@key";
+            string value= DbConnection.ExecuteScalar<string>(sql, new { key });
+            return value;
+        }
     }
 }

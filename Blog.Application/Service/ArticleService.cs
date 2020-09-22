@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Blog.Application.ViewModel;
 using Blog.Common;
+using Blog.Common.EnumExtensions;
 using Blog.Domain;
 using Blog.Domain.Core;
 using Blog.Domain.Core.Bus;
@@ -154,7 +155,7 @@ namespace Blog.Application
 
         public IList<ArticleModel> SelectByTypeMaxTime()
         {
-            IEnumerable<Article> articles = _articleRepository.SelectByTypeMaxTime();
+            IEnumerable<Article> articles = _articleRepository.SelectByTypeMaxTime().OrderBy(s =>Convert.ToInt32(s.ArticleType.GetEnumAditional()));
             Dictionary<string, string> users = _userRepository.SelectNameWithAccountDic(articles.Select(s => s.Author).Distinct());
             IList<ArticleModel> articleModels = new List<ArticleModel>();
             foreach(var item in articles)

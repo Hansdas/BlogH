@@ -9,6 +9,7 @@ using Blog.Application;
 using Blog.Application.ViewModel;
 using Blog.Common;
 using Blog.Common.CacheFactory;
+using Blog.Common.EnumExtensions;
 using Blog.Domain.Core;
 using Blog.Domain.Core.Event;
 using Blog.Domain.Core.Notifications;

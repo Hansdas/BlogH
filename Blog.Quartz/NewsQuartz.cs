@@ -1,4 +1,5 @@
 ﻿using Blog.Common;
+using Blog.Common.EnumExtensions;
 using Blog.Domain;
 using Blog.Domain.Core;
 using HtmlAgilityPack;

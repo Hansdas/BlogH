@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Blog.Common.Cache;
+using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;

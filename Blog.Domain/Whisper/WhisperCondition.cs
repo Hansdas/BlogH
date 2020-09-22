@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Blog.Domain
 {
-   public class WhisperCondiiton:ICondition
+   public class WhisperCondiiton
     {
         /// <summary>
         /// 根据id查询

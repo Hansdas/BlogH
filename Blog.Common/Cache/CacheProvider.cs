@@ -5,7 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Blog.Common.CacheFactory
+namespace Blog.Common.Cache
 {
     public class CacheProvider
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Blog.Common.AppSetting
+namespace Blog.Common.Configure
 {
    public class ApiSettingModel
     {
